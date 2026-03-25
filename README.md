@@ -1,5 +1,9 @@
 # Mailtrap CLI
 
+[![CI](https://github.com/mailtrap/mailtrap-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/mailtrap/mailtrap-cli/actions/workflows/ci.yml)
+[![Release](https://github.com/mailtrap/mailtrap-cli/actions/workflows/release.yml/badge.svg)](https://github.com/mailtrap/mailtrap-cli/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Command-line interface for the [Mailtrap](https://mailtrap.io) email delivery platform. Send transactional and bulk emails, manage sandboxes, contacts, templates, and more.
 
 ## Installation
@@ -28,50 +32,59 @@ cd mailtrap-cli
 make build
 ```
 
-## Configuration
+## Quick Start
 
-Set your API token:
+### 1. Configure
 
 ```bash
 mailtrap configure --api-token YOUR_TOKEN
 ```
 
-Or set an environment variable:
+This validates your token, detects your account ID, and saves both to `~/.mailtrap.yaml`.
+
+You can also use environment variables:
 
 ```bash
 export MAILTRAP_API_TOKEN=your-token
 ```
 
-Or create `~/.mailtrap.yaml`:
-
-```yaml
-api-token: your-token
-```
-
-## Usage
-
-### Send email
+### 2. Send an email
 
 ```bash
-# Transactional
 mailtrap send transactional \
   --from "you@yourdomain.com" \
   --to "recipient@example.com" \
   --subject "Hello" \
   --text "Hello from Mailtrap CLI"
+```
+
+## Usage
+
+### Transactional & bulk sending
+
+```bash
+# Transactional (single)
+mailtrap send transactional \
+  --from "App <noreply@yourdomain.com>" \
+  --to user@example.com \
+  --subject "Welcome!" \
+  --html "<h1>Welcome</h1>"
 
 # Bulk
 mailtrap send bulk \
-  --from "you@yourdomain.com" \
-  --to "recipient@example.com" \
-  --subject "Newsletter" \
-  --html "<h1>Hello</h1>"
+  --from "newsletter@yourdomain.com" \
+  --to subscriber@example.com \
+  --subject "Weekly Update" \
+  --text "Here's what's new..."
+
+# Batch (from JSON file)
+mailtrap send batch-transactional --file emails.json
 ```
 
 ### Sandbox testing
 
 ```bash
-# Send test email to sandbox
+# Send test email to a sandbox
 mailtrap sandbox-send single \
   --sandbox-id 12345 \
   --from "test@example.com" \
@@ -79,10 +92,8 @@ mailtrap sandbox-send single \
   --subject "Test" \
   --text "Hello"
 
-# List messages in sandbox inbox
+# Inspect messages
 mailtrap messages list --sandbox-id 12345
-
-# Get spam score
 mailtrap messages spam-score --sandbox-id 12345 --id 67890
 ```
 
@@ -91,17 +102,17 @@ mailtrap messages spam-score --sandbox-id 12345 --id 67890
 ```bash
 # Domains
 mailtrap domains list
-mailtrap domains get --id 123
+mailtrap domains create --name "yourdomain.com"
 
 # Templates
 mailtrap templates list
-mailtrap templates create --name "Welcome" --subject "Hello" --text "Welcome!"
+mailtrap templates create --name "Welcome" --subject "Hello {{name}}" --body-html "<h1>Hi!</h1>"
 
 # Contacts
-mailtrap contacts create --email "user@example.com"
+mailtrap contacts create --email "user@example.com" --first-name "John"
 mailtrap contact-lists list
 
-# Projects & Sandboxes
+# Sandboxes & projects
 mailtrap projects list
 mailtrap sandboxes list
 ```
@@ -112,7 +123,7 @@ mailtrap sandboxes list
 # Table (default)
 mailtrap domains list
 
-# JSON
+# JSON (for scripting)
 mailtrap domains list --output json
 
 # Text
@@ -124,17 +135,17 @@ mailtrap domains list --output text
 | Group | Commands |
 |-------|----------|
 | **Sending** | `send transactional`, `send bulk`, `send batch-transactional`, `send batch-bulk` |
+| **Sandbox Send** | `sandbox-send single`, `sandbox-send batch` |
 | **Domains** | `domains list`, `domains get`, `domains create`, `domains delete` |
 | **Templates** | `templates list`, `templates get`, `templates create`, `templates update`, `templates delete` |
 | **Suppressions** | `suppressions list`, `suppressions delete` |
 | **Stats** | `stats get`, `stats by-domain`, `stats by-category`, `stats by-esp`, `stats by-date` |
 | **Email Logs** | `email-logs list`, `email-logs get` |
-| **Contacts** | `contacts get`, `contacts create`, `contacts update`, `contacts delete`, `contacts import`, `contacts import-status`, `contacts export`, `contacts export-status`, `contacts create-event` |
+| **Contacts** | `contacts get`, `contacts create`, `contacts update`, `contacts delete`, `contacts import`, `contacts export`, `contacts import-status`, `contacts export-status`, `contacts create-event` |
 | **Contact Lists** | `contact-lists list`, `contact-lists get`, `contact-lists create`, `contact-lists update`, `contact-lists delete` |
 | **Contact Fields** | `contact-fields list`, `contact-fields get`, `contact-fields create`, `contact-fields update`, `contact-fields delete` |
-| **Sandbox** | `sandbox-send single`, `sandbox-send batch` |
 | **Projects** | `projects list`, `projects get`, `projects create`, `projects update`, `projects delete` |
-| **Sandboxes** | `sandboxes list`, `inboxes get`, `inboxes create`, `inboxes update`, `inboxes delete`, `inboxes clean`, `inboxes mark-read`, `inboxes reset-credentials`, `inboxes toggle-email-username`, `inboxes reset-email-username` |
+| **Sandboxes** | `sandboxes list`, `sandboxes get`, `sandboxes create`, `sandboxes update`, `sandboxes delete`, `sandboxes clean`, `sandboxes mark-read`, `sandboxes reset-credentials`, `sandboxes toggle-email`, `sandboxes reset-email` |
 | **Messages** | `messages list`, `messages get`, `messages update`, `messages delete`, `messages forward`, `messages spam-score`, `messages html-analysis`, `messages headers`, `messages html`, `messages text`, `messages source`, `messages raw`, `messages eml` |
 | **Attachments** | `attachments list`, `attachments get` |
 | **Accounts** | `accounts list` |
@@ -145,18 +156,26 @@ mailtrap domains list --output text
 | **Organizations** | `organizations list-sub-accounts`, `organizations create-sub-account` |
 | **Config** | `configure`, `completion [bash\|zsh\|fish\|powershell]` |
 
-## Releasing
-
-Releases are automated via [GoReleaser](https://goreleaser.com). To create a release:
+## Shell Completion
 
 ```bash
-git tag v0.1.0
-git push origin v0.1.0
+# Bash
+mailtrap completion bash > /etc/bash_completion.d/mailtrap
+
+# Zsh
+mailtrap completion zsh > "${fpath[1]}/_mailtrap"
+
+# Fish
+mailtrap completion fish > ~/.config/fish/completions/mailtrap.fish
 ```
 
-This triggers the GitHub Actions workflow which builds binaries for Linux, macOS, and Windows (amd64/arm64), creates a GitHub Release, and updates the Homebrew tap.
+## Contributing
 
-### Prerequisites for Homebrew tap
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/my-feature`)
+3. Commit your changes
+4. Push and open a Pull Request
 
-1. Create a repo `mailtrap/homebrew-cli`
-2. Add a `HOMEBREW_TAP_GITHUB_TOKEN` secret to this repo with write access to the tap repo
+## License
+
+[MIT](LICENSE)

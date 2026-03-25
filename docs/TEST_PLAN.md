@@ -12,15 +12,13 @@ Tests read credentials from `~/.mailtrap.yaml`:
 
 ```yaml
 api-token: <your-mailtrap-api-token>
-account-id: "<your-account-id>"
 ```
 
 The `.mailtrap.yaml` file is in `.gitignore` — **never commit credentials**.
 
-You can also set environment variables instead:
+You can also set an environment variable instead:
 ```bash
 export MAILTRAP_API_TOKEN=your-token
-export MAILTRAP_ACCOUNT_ID=your-account-id
 ```
 
 ### 2. Sandbox Setup
@@ -28,11 +26,8 @@ export MAILTRAP_ACCOUNT_ID=your-account-id
 Before running integration tests, ensure you have:
 - A Mailtrap account with API access
 - At least one **sandbox project** with an **inbox**
-- Note down the **inbox ID** for sandbox send tests
-
-The test account used during development:
-- Account ID: `<YOUR_ACCOUNT_ID>`
-- Test inbox: `mailtrap-cli` (ID: `<YOUR_INBOX_ID>`)
+- Note down your **inbox ID** for sandbox send tests
+- A verified **sending domain** for transactional/bulk send tests
 
 ### 3. Build the CLI
 
@@ -170,17 +165,17 @@ Prerequisite: Send an email with an attachment to the sandbox inbox.
 
 ## 7. Email Sending (Transactional/Bulk)
 
-**Note:** Requires a verified sending domain. Use `yourdomain.com` (domain ID: <DOMAIN_ID>).
+**Note:** Requires a verified sending domain.
 
 | # | Test | Command | Expected |
 |---|------|---------|----------|
-| 7.1 | Send transactional | `mailtrap send transactional --from demo@yourdomain.com --to recipient@example.com --subject "CLI Test" --text "Hello"` | Success with message IDs |
-| 7.2 | Send bulk | `mailtrap send bulk --from demo@yourdomain.com --to recipient@example.com --subject "Bulk CLI Test" --text "Hello"` | Success |
-| 7.3 | Send with named from | `mailtrap send transactional --from "CLI Test <demo@yourdomain.com>" --to recipient@example.com --subject "Named" --text "Hi"` | Success, `from.name` populated |
-| 7.4 | Batch transactional | `mailtrap send batch-transactional --from demo@yourdomain.com --to recipient@example.com --subject "Batch" --text "Hi"` | Success |
-| 7.5 | Batch bulk | `mailtrap send batch-bulk --from demo@yourdomain.com --to recipient@example.com --subject "Batch Bulk" --text "Hi"` | Success |
+| 7.1 | Send transactional | `mailtrap send transactional --from you@yourdomain.com --to recipient@example.com --subject "CLI Test" --text "Hello"` | Success with message IDs |
+| 7.2 | Send bulk | `mailtrap send bulk --from you@yourdomain.com --to recipient@example.com --subject "Bulk CLI Test" --text "Hello"` | Success |
+| 7.3 | Send with named from | `mailtrap send transactional --from "CLI Test <you@yourdomain.com>" --to recipient@example.com --subject "Named" --text "Hi"` | Success, `from.name` populated |
+| 7.4 | Batch transactional | `mailtrap send batch-transactional --from you@yourdomain.com --to recipient@example.com --subject "Batch" --text "Hi"` | Success |
+| 7.5 | Batch bulk | `mailtrap send batch-bulk --from you@yourdomain.com --to recipient@example.com --subject "Batch Bulk" --text "Hi"` | Success |
 | 7.6 | Missing flags | `mailtrap send transactional` | Error: required flags |
-| 7.7 | JSON output | `mailtrap send transactional --from demo@yourdomain.com --to recipient@example.com --subject "JSON" --text "Hi" --output json` | Valid JSON |
+| 7.7 | JSON output | `mailtrap send transactional --from you@yourdomain.com --to recipient@example.com --subject "JSON" --text "Hi" --output json` | Valid JSON |
 
 ## 8. Domains (Sending)
 

@@ -30,24 +30,22 @@ make build
 
 ## Configuration
 
-Set your API token and account ID:
+Set your API token:
 
 ```bash
 mailtrap configure --api-token YOUR_TOKEN
 ```
 
-Or use environment variables:
+Or set an environment variable:
 
 ```bash
 export MAILTRAP_API_TOKEN=your-token
-export MAILTRAP_ACCOUNT_ID=your-account-id
 ```
 
 Or create `~/.mailtrap.yaml`:
 
 ```yaml
 api-token: your-token
-account-id: "your-account-id"
 ```
 
 ## Usage

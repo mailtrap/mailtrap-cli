@@ -413,15 +413,16 @@ func TestGetRaw_Error(t *testing.T) {
 	}
 }
 
-// --- 12. Auth header is set correctly (Api-Token) ---
+// --- 12. Auth header is set correctly (Authorization: Bearer) ---
 
 func TestAuthHeader(t *testing.T) {
 	const token = "secret-token-12345"
 
 	_, c, base := setupTestServer(t, func(w http.ResponseWriter, r *http.Request) {
-		got := r.Header.Get("Api-Token")
-		if got != token {
-			t.Errorf("expected Api-Token header %q, got %q", token, got)
+		expected := "Bearer " + token
+		got := r.Header.Get("Authorization")
+		if got != expected {
+			t.Errorf("expected Authorization header %q, got %q", expected, got)
 		}
 		w.WriteHeader(http.StatusOK)
 	})
@@ -437,9 +438,10 @@ func TestAuthHeader_GetRaw(t *testing.T) {
 	const token = "raw-token-xyz"
 
 	_, c, base := setupTestServer(t, func(w http.ResponseWriter, r *http.Request) {
-		got := r.Header.Get("Api-Token")
-		if got != token {
-			t.Errorf("expected Api-Token header %q, got %q", token, got)
+		expected := "Bearer " + token
+		got := r.Header.Get("Authorization")
+		if got != expected {
+			t.Errorf("expected Authorization header %q, got %q", expected, got)
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("ok"))

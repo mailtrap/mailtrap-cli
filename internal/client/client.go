@@ -15,6 +15,7 @@ type BaseURL string
 const (
 	BaseTransactional BaseURL = "https://send.api.mailtrap.io"
 	BaseBulk          BaseURL = "https://bulk.api.mailtrap.io"
+	BaseSandbox       BaseURL = "https://sandbox.api.mailtrap.io"
 	BaseGeneral       BaseURL = "https://mailtrap.io"
 )
 
@@ -68,7 +69,7 @@ func (c *Client) do(ctx context.Context, base BaseURL, method, path string, quer
 		return fmt.Errorf("create request: %w", err)
 	}
 
-	req.Header.Set("Api-Token", c.apiToken)
+	c.setAuthHeader(req, base)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 
@@ -98,6 +99,10 @@ func (c *Client) do(ctx context.Context, base BaseURL, method, path string, quer
 	}
 
 	return nil
+}
+
+func (c *Client) setAuthHeader(req *http.Request, base BaseURL) {
+	req.Header.Set("Authorization", "Bearer "+c.apiToken)
 }
 
 func (c *Client) Get(ctx context.Context, base BaseURL, path string, query url.Values, result interface{}) error {
@@ -132,7 +137,7 @@ func (c *Client) GetRaw(ctx context.Context, base BaseURL, path string, query ur
 		return nil, fmt.Errorf("create request: %w", err)
 	}
 
-	req.Header.Set("Api-Token", c.apiToken)
+	c.setAuthHeader(req, base)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {

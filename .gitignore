@@ -1,3 +1,6 @@
 mailtrap
 *.exe
 .DS_Store
+.mailtrap.yaml
+.mailtrap*.yml
+.mailtarp*.yml

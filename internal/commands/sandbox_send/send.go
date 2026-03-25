@@ -99,7 +99,7 @@ func NewCmdSingle(f *cmdutil.Factory) *cobra.Command {
 			path := fmt.Sprintf("/api/send/%s", inboxID)
 
 			var resp sendResponse
-			if err := c.Post(context.Background(), client.BaseGeneral, path, req, &resp); err != nil {
+			if err := c.Post(context.Background(), client.BaseSandbox, path, req, &resp); err != nil {
 				return err
 			}
 

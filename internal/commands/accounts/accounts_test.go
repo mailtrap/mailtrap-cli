@@ -51,8 +51,8 @@ func TestAccountsList(t *testing.T) {
 		if r.URL.Path != "/api/accounts" {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
-		if r.Header.Get("Api-Token") != "test-token" {
-			t.Errorf("expected Api-Token header 'test-token', got %q", r.Header.Get("Api-Token"))
+		if r.Header.Get("Authorization") != "Bearer test-token" {
+			t.Errorf("expected Authorization header 'Bearer test-token', got %q", r.Header.Get("Authorization"))
 		}
 
 		w.Header().Set("Content-Type", "application/json")

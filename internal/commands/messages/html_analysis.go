@@ -37,7 +37,7 @@ func NewCmdHTMLAnalysis(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "messages", fmt.Sprintf("%s", messageID), "html_analysis")
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "messages", fmt.Sprintf("%s", messageID), "analyze")
 
 			var result json.RawMessage
 			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &result); err != nil {

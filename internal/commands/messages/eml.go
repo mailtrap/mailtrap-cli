@@ -38,7 +38,7 @@ func NewCmdEml(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "messages", fmt.Sprintf("%s", messageID), "eml")
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "messages", fmt.Sprintf("%s", messageID), "body.eml")
 
 			data, err := c.GetRaw(context.Background(), client.BaseGeneral, path, nil)
 			if err != nil {

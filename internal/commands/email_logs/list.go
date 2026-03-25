@@ -13,19 +13,25 @@ import (
 )
 
 type EmailLog struct {
-	ID        string `json:"id"`
+	MessageID string `json:"message_id"`
 	Subject   string `json:"subject"`
-	FromEmail string `json:"from_email"`
-	ToEmail   string `json:"to_email"`
+	From      string `json:"from"`
+	To        string `json:"to"`
 	Status    string `json:"status"`
 	SentAt    string `json:"sent_at"`
 }
 
+type emailLogListResponse struct {
+	Messages       []EmailLog `json:"messages"`
+	TotalCount     int        `json:"total_count"`
+	NextPageCursor string     `json:"next_page_cursor"`
+}
+
 var emailLogColumns = []output.Column{
-	{Header: "ID", Field: "id"},
+	{Header: "MESSAGE ID", Field: "message_id"},
 	{Header: "SUBJECT", Field: "subject"},
-	{Header: "FROM", Field: "from_email"},
-	{Header: "TO", Field: "to_email"},
+	{Header: "FROM", Field: "from"},
+	{Header: "TO", Field: "to"},
 	{Header: "STATUS", Field: "status"},
 	{Header: "SENT AT", Field: "sent_at"},
 }
@@ -65,13 +71,13 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 				path = fmt.Sprintf("%s?%s", path, params.Encode())
 			}
 
-			var result []EmailLog
-			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &result); err != nil {
+			var resp emailLogListResponse
+			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &resp); err != nil {
 				return err
 			}
 
 			format := cmdutil.GetOutputFormat()
-			output.Print(f.IOStreams.Out, format, result, emailLogColumns)
+			output.Print(f.IOStreams.Out, format, resp.Messages, emailLogColumns)
 
 			return nil
 		},

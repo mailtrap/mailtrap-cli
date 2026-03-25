@@ -45,7 +45,7 @@ func NewCmdBatch(f *cmdutil.Factory) *cobra.Command {
 			path := fmt.Sprintf("/api/batch/%s", inboxID)
 
 			var resp batchResponse
-			if err := c.Post(context.Background(), client.BaseGeneral, path, body, &resp); err != nil {
+			if err := c.Post(context.Background(), client.BaseSandbox, path, body, &resp); err != nil {
 				return err
 			}
 

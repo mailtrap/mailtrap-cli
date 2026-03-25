@@ -11,17 +11,17 @@ import (
 )
 
 type ContactField struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	FieldType string `json:"field_type"`
-	CreatedAt string `json:"created_at"`
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	DataType string `json:"data_type"`
+	MergeTag string `json:"merge_tag"`
 }
 
 var contactFieldColumns = []output.Column{
 	{Header: "ID", Field: "id"},
 	{Header: "NAME", Field: "name"},
-	{Header: "FIELD_TYPE", Field: "field_type"},
-	{Header: "CREATED_AT", Field: "created_at"},
+	{Header: "DATA TYPE", Field: "data_type"},
+	{Header: "MERGE TAG", Field: "merge_tag"},
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {

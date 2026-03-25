@@ -52,14 +52,16 @@ func TestDomainsList(t *testing.T) {
 		if !strings.HasSuffix(r.URL.Path, "/api/accounts/123/sending_domains") {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
-		if r.Header.Get("Api-Token") != "test-token" {
-			t.Errorf("expected Api-Token header 'test-token', got %q", r.Header.Get("Api-Token"))
+		if r.Header.Get("Authorization") != "Bearer test-token" {
+			t.Errorf("expected Authorization header 'Bearer test-token', got %q", r.Header.Get("Authorization"))
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"id": 1, "name": "example.com", "status": "verified", "created_at": "2024-01-01"},
-			{"id": 2, "name": "test.com", "status": "pending", "created_at": "2024-01-02"},
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"data": []map[string]interface{}{
+				{"id": 1, "domain_name": "example.com", "dns_verified": true, "compliance_status": "compliant"},
+				{"id": 2, "domain_name": "test.com", "dns_verified": false, "compliance_status": "pending"},
+			},
 		})
 	})
 	defer cleanup()
@@ -80,8 +82,8 @@ func TestDomainsList(t *testing.T) {
 	if !strings.Contains(output, "test.com") {
 		t.Errorf("expected output to contain 'test.com', got:\n%s", output)
 	}
-	if !strings.Contains(output, "verified") {
-		t.Errorf("expected output to contain 'verified', got:\n%s", output)
+	if !strings.Contains(output, "compliant") {
+		t.Errorf("expected output to contain 'compliant', got:\n%s", output)
 	}
 	if !strings.Contains(output, "ID") {
 		t.Errorf("expected output to contain header 'ID', got:\n%s", output)
@@ -91,8 +93,10 @@ func TestDomainsList(t *testing.T) {
 func TestDomainsListJSON(t *testing.T) {
 	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"id": 1, "name": "example.com", "status": "verified", "created_at": "2024-01-01"},
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"data": []map[string]interface{}{
+				{"id": 1, "domain_name": "example.com", "dns_verified": true, "compliance_status": "compliant"},
+			},
 		})
 	})
 	defer cleanup()
@@ -118,8 +122,8 @@ func TestDomainsListJSON(t *testing.T) {
 	if len(result) != 1 {
 		t.Fatalf("expected 1 domain, got %d", len(result))
 	}
-	if result[0]["name"] != "example.com" {
-		t.Errorf("expected name 'example.com', got %v", result[0]["name"])
+	if result[0]["domain_name"] != "example.com" {
+		t.Errorf("expected domain_name 'example.com', got %v", result[0]["domain_name"])
 	}
 }
 
@@ -134,7 +138,7 @@ func TestDomainsGet(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"id": 1, "name": "example.com", "status": "verified", "created_at": "2024-01-01",
+			"id": 1, "domain_name": "example.com", "dns_verified": true, "compliance_status": "compliant",
 		})
 	})
 	defer cleanup()
@@ -152,8 +156,8 @@ func TestDomainsGet(t *testing.T) {
 	if !strings.Contains(output, "example.com") {
 		t.Errorf("expected output to contain 'example.com', got:\n%s", output)
 	}
-	if !strings.Contains(output, "verified") {
-		t.Errorf("expected output to contain 'verified', got:\n%s", output)
+	if !strings.Contains(output, "compliant") {
+		t.Errorf("expected output to contain 'compliant', got:\n%s", output)
 	}
 }
 
@@ -176,7 +180,7 @@ func TestDomainsCreate(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"id": 10, "name": "example.com", "status": "pending", "created_at": "2024-03-01",
+			"id": 10, "domain_name": "example.com", "dns_verified": false, "compliance_status": "pending",
 		})
 	})
 	defer cleanup()

@@ -12,16 +12,20 @@ import (
 )
 
 type Suppression struct {
-	ID        int    `json:"id"`
-	Email     string `json:"email"`
-	Reason    string `json:"reason"`
-	CreatedAt string `json:"created_at"`
+	ID            string `json:"id"`
+	Type          string `json:"type"`
+	Email         string `json:"email"`
+	DomainName    string `json:"domain_name"`
+	SendingStream string `json:"sending_stream"`
+	CreatedAt     string `json:"created_at"`
 }
 
 var suppressionColumns = []output.Column{
 	{Header: "ID", Field: "id"},
+	{Header: "TYPE", Field: "type"},
 	{Header: "EMAIL", Field: "email"},
-	{Header: "REASON", Field: "reason"},
+	{Header: "DOMAIN", Field: "domain_name"},
+	{Header: "STREAM", Field: "sending_stream"},
 	{Header: "CREATED_AT", Field: "created_at"},
 }
 

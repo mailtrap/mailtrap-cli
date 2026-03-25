@@ -36,7 +36,7 @@ func NewCmdText(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "messages", fmt.Sprintf("%s", messageID), "text")
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "messages", fmt.Sprintf("%s", messageID), "body.txt")
 
 			data, err := c.GetRaw(context.Background(), client.BaseGeneral, path, nil)
 			if err != nil {

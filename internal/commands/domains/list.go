@@ -11,17 +11,21 @@ import (
 )
 
 type Domain struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	Status    string `json:"status"`
-	CreatedAt string `json:"created_at"`
+	ID               int    `json:"id"`
+	DomainName       string `json:"domain_name"`
+	DNSVerified      bool   `json:"dns_verified"`
+	ComplianceStatus string `json:"compliance_status"`
+}
+
+type domainListResponse struct {
+	Data []Domain `json:"data"`
 }
 
 var domainColumns = []output.Column{
 	{Header: "ID", Field: "id"},
-	{Header: "NAME", Field: "name"},
-	{Header: "STATUS", Field: "status"},
-	{Header: "CREATED_AT", Field: "created_at"},
+	{Header: "DOMAIN", Field: "domain_name"},
+	{Header: "DNS VERIFIED", Field: "dns_verified"},
+	{Header: "COMPLIANCE", Field: "compliance_status"},
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {
@@ -41,13 +45,13 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 
 			path := cmdutil.AccountPath("sending_domains")
 
-			var domains []Domain
-			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &domains); err != nil {
+			var resp domainListResponse
+			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &resp); err != nil {
 				return err
 			}
 
 			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, domains, domainColumns)
+			return output.Print(f.IOStreams.Out, format, resp.Data, domainColumns)
 		},
 	}
 

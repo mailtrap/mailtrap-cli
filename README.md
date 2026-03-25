@@ -124,19 +124,19 @@ mailtrap domains list --output text
 | Group | Commands |
 |-------|----------|
 | **Sending** | `send transactional`, `send bulk`, `send batch-transactional`, `send batch-bulk` |
-| **Sandbox** | `sandbox-send single`, `sandbox-send batch` |
 | **Domains** | `domains list`, `domains get`, `domains create`, `domains delete` |
 | **Templates** | `templates list`, `templates get`, `templates create`, `templates update`, `templates delete` |
 | **Suppressions** | `suppressions list`, `suppressions delete` |
 | **Stats** | `stats get`, `stats by-domain`, `stats by-category`, `stats by-esp`, `stats by-date` |
 | **Email Logs** | `email-logs list`, `email-logs get` |
+| **Contacts** | `contacts get`, `contacts create`, `contacts update`, `contacts delete`, `contacts import`, `contacts import-status`, `contacts export`, `contacts export-status`, `contacts create-event` |
+| **Contact Lists** | `contact-lists list`, `contact-lists get`, `contact-lists create`, `contact-lists update`, `contact-lists delete` |
+| **Contact Fields** | `contact-fields list`, `contact-fields get`, `contact-fields create`, `contact-fields update`, `contact-fields delete` |
+| **Sandbox** | `sandbox-send single`, `sandbox-send batch` |
 | **Projects** | `projects list`, `projects get`, `projects create`, `projects update`, `projects delete` |
 | **Inboxes** | `inboxes list`, `inboxes get`, `inboxes create`, `inboxes update`, `inboxes delete`, `inboxes clean`, `inboxes mark-read`, `inboxes reset-credentials`, `inboxes toggle-email-username`, `inboxes reset-email-username` |
 | **Messages** | `messages list`, `messages get`, `messages update`, `messages delete`, `messages forward`, `messages spam-score`, `messages html-analysis`, `messages headers`, `messages html`, `messages text`, `messages source`, `messages raw`, `messages eml` |
 | **Attachments** | `attachments list`, `attachments get` |
-| **Contacts** | `contacts get`, `contacts create`, `contacts update`, `contacts delete`, `contacts import`, `contacts import-status`, `contacts export`, `contacts export-status`, `contacts create-event` |
-| **Contact Lists** | `contact-lists list`, `contact-lists get`, `contact-lists create`, `contact-lists update`, `contact-lists delete` |
-| **Contact Fields** | `contact-fields list`, `contact-fields get`, `contact-fields create`, `contact-fields update`, `contact-fields delete` |
 | **Accounts** | `accounts list` |
 | **Account Access** | `account-access list`, `account-access remove` |
 | **Permissions** | `permissions resources`, `permissions bulk-update` |

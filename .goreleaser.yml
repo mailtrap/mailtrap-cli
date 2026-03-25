@@ -28,7 +28,7 @@ archives:
 brews:
   - repository:
       owner: mailtrap
-      name: homebrew-tap
+      name: homebrew-cli
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     homepage: "https://github.com/mailtrap/mailtrap-cli"
     description: "CLI for the Mailtrap email delivery platform"

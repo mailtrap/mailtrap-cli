@@ -7,7 +7,7 @@ Command-line interface for the [Mailtrap](https://mailtrap.io) email delivery pl
 ### Homebrew (macOS / Linux)
 
 ```bash
-brew install mailtrap/tap/mailtrap
+brew install mailtrap/cli/mailtrap
 ```
 
 ### Download binary
@@ -158,5 +158,5 @@ This triggers the GitHub Actions workflow which builds binaries for Linux, macOS
 
 ### Prerequisites for Homebrew tap
 
-1. Create a repo `mailtrap/homebrew-tap`
+1. Create a repo `mailtrap/homebrew-cli`
 2. Add a `HOMEBREW_TAP_GITHUB_TOKEN` secret to this repo with write access to the tap repo

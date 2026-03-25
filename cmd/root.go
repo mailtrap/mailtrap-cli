@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -106,8 +108,16 @@ func newCompletionCmd() *cobra.Command {
 	}
 }
 
+var buildVersion = "dev"
+
+func SetVersion(version, commit, date string) {
+	buildVersion = fmt.Sprintf("%s (commit: %s, built: %s)", version, commit, date)
+}
+
 func Execute() error {
 	f := cmdutil.NewFactory()
 	f.Config() // load ~/.mailtrap.yaml into viper
-	return NewRootCmd(f).Execute()
+	root := NewRootCmd(f)
+	root.Version = buildVersion
+	return root.Execute()
 }

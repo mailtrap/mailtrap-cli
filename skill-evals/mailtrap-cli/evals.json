@@ -37,10 +37,10 @@
   },
   {
     "name": "sandbox_send_to_inbox",
-    "prompt": "Send a test email to my sandbox inbox 12345 from test@example.com to dev@test.com with subject 'Test'",
+    "prompt": "Send a test email to my sandbox 12345 from test@example.com to dev@test.com with subject 'Test'",
     "expected": {
       "command": "sandbox-send single",
-      "flags": ["--inbox-id", "--from", "--to", "--subject"],
+      "flags": ["--sandbox-id", "--from", "--to", "--subject"],
       "must_not_contain": ["send transactional", "send bulk"]
     }
   },
@@ -112,7 +112,7 @@
     "prompt": "Show me the spam score of message 999 in inbox 123",
     "expected": {
       "command": "messages spam-score",
-      "flags": ["--inbox-id", "--id"],
+      "flags": ["--sandbox-id", "--id"],
       "must_not_contain": ["html", "text", "raw", "email-logs"]
     }
   },
@@ -121,7 +121,7 @@
     "prompt": "Download the EML file for message 456 in inbox 789 and save it to email.eml",
     "expected": {
       "command": "messages eml",
-      "flags": ["--inbox-id", "--id", "--output-file"],
+      "flags": ["--sandbox-id", "--id", "--output-file"],
       "must_not_contain": ["raw", "source", "html"]
     }
   },
@@ -153,12 +153,12 @@
     }
   },
   {
-    "name": "clean_sandbox_inbox",
-    "prompt": "Delete all messages in sandbox inbox 555",
+    "name": "clean_sandbox",
+    "prompt": "Delete all messages in sandbox 555",
     "expected": {
-      "command": "inboxes clean",
+      "command": "sandboxes clean",
       "flags": ["--id"],
-      "must_not_contain": ["messages delete", "inboxes delete"]
+      "must_not_contain": ["messages delete", "sandboxes delete"]
     }
   },
   {

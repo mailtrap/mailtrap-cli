@@ -1,4 +1,4 @@
-package inboxes
+package sandboxes
 
 import (
 	"context"
@@ -29,7 +29,7 @@ var inboxColumns = []output.Column{
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
-		Short: "List all inboxes",
+		Short: "List all sandboxes",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := f.NewClient()
 			if err != nil {

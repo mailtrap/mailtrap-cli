@@ -11,7 +11,7 @@ import (
 )
 
 func NewCmdForward(f *cmdutil.Factory) *cobra.Command {
-	var inboxID string
+	var sandboxID string
 	var messageID string
 	var email string
 
@@ -19,7 +19,7 @@ func NewCmdForward(f *cmdutil.Factory) *cobra.Command {
 		Use:   "forward",
 		Short: "Forward a message to an email address",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cmdutil.RequireFlag("inbox-id", inboxID); err != nil {
+			if err := cmdutil.RequireFlag("sandbox-id", sandboxID); err != nil {
 				return err
 			}
 			if err := cmdutil.RequireFlag("id", messageID); err != nil {
@@ -39,7 +39,7 @@ func NewCmdForward(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "messages", fmt.Sprintf("%s", messageID), "forward")
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID), "messages", fmt.Sprintf("%s", messageID), "forward")
 			body := map[string]string{"email": email}
 
 			if err := c.Post(context.Background(), client.BaseGeneral, path, body, nil); err != nil {
@@ -51,7 +51,7 @@ func NewCmdForward(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "inbox-id", "", "Inbox ID")
+	cmd.Flags().StringVar(&sandboxID, "sandbox-id", "", "Sandbox ID")
 	cmd.Flags().StringVar(&messageID, "id", "", "Message ID")
 	cmd.Flags().StringVar(&email, "email", "", "Email address to forward to")
 

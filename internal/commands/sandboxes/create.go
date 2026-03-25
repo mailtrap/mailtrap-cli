@@ -1,4 +1,4 @@
-package inboxes
+package sandboxes
 
 import (
 	"context"
@@ -17,7 +17,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "create",
-		Short: "Create an inbox",
+		Short: "Create a sandbox",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := cmdutil.RequireFlag("project-id", projectID); err != nil {
 				return err
@@ -52,7 +52,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&projectID, "project-id", "", "Project ID")
-	cmd.Flags().StringVar(&name, "name", "", "Inbox name")
+	cmd.Flags().StringVar(&name, "name", "", "Sandbox name")
 
 	return cmd
 }

@@ -1,17 +1,17 @@
 # sandbox
 
 Detailed flag specifications for sandbox commands: `mailtrap sandbox-send`, `mailtrap projects`,
-`mailtrap inboxes`, `mailtrap messages`, and `mailtrap attachments`.
+`mailtrap sandboxes`, `mailtrap messages`, and `mailtrap attachments`.
 
 ---
 
 ## sandbox-send single
 
-Send a single email to a sandbox inbox for testing.
+Send a single email to a sandbox for testing.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--inbox-id` | string | Yes | Sandbox inbox ID |
+| `--sandbox-id` | string | Yes | Sandbox ID |
 | `--from` | string | Yes | Sender address |
 | `--to` | string[] | Yes | Recipient(s), can be repeated |
 | `--subject` | string | Yes | Email subject |
@@ -29,11 +29,11 @@ Send a single email to a sandbox inbox for testing.
 
 ## sandbox-send batch
 
-Send a batch of emails to a sandbox inbox.
+Send a batch of emails to a sandbox.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--inbox-id` | string | Yes | Sandbox inbox ID |
+| `--sandbox-id` | string | Yes | Sandbox ID |
 | `--file` | string | Yes | Path to JSON file with email array |
 
 ---
@@ -87,114 +87,114 @@ Delete a sandbox project.
 
 ---
 
-## inboxes list
+## sandboxes list
 
-List all sandbox inboxes.
+List all sandboxes.
 
 No additional flags.
 
 ---
 
-## inboxes get
+## sandboxes get
 
-Get a specific sandbox inbox.
+Get a specific sandbox.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--id` | string | Yes | Inbox ID |
+| `--id` | string | Yes | Sandbox ID |
 
 ---
 
-## inboxes create
+## sandboxes create
 
-Create a new sandbox inbox.
+Create a new sandbox.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--project-id` | string | Yes | Project ID to create the inbox in |
-| `--name` | string | Yes | Inbox name |
+| `--project-id` | string | Yes | Project ID to create the sandbox in |
+| `--name` | string | Yes | Sandbox name |
 
 ---
 
-## inboxes update
+## sandboxes update
 
-Update a sandbox inbox.
+Update a sandbox.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--id` | string | Yes | Inbox ID |
-| `--name` | string | Yes | New inbox name |
+| `--id` | string | Yes | Sandbox ID |
+| `--name` | string | Yes | New sandbox name |
 
 ---
 
-## inboxes delete
+## sandboxes delete
 
-Delete a sandbox inbox.
+Delete a sandbox.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--id` | string | Yes | Inbox ID |
+| `--id` | string | Yes | Sandbox ID |
 
 ---
 
-## inboxes clean
+## sandboxes clean
 
-Delete all messages in a sandbox inbox.
+Delete all messages in a sandbox.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--id` | string | Yes | Inbox ID |
+| `--id` | string | Yes | Sandbox ID |
 
 ---
 
-## inboxes mark-read
+## sandboxes mark-read
 
-Mark all messages in a sandbox inbox as read.
+Mark all messages in a sandbox as read.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--id` | string | Yes | Inbox ID |
+| `--id` | string | Yes | Sandbox ID |
 
 ---
 
-## inboxes reset-credentials
+## sandboxes reset-credentials
 
-Reset SMTP credentials of a sandbox inbox.
+Reset SMTP credentials of a sandbox.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--id` | string | Yes | Inbox ID |
+| `--id` | string | Yes | Sandbox ID |
 
 ---
 
-## inboxes toggle-email
+## sandboxes toggle-email
 
-Toggle email forwarding for a sandbox inbox.
+Toggle email forwarding for a sandbox.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--id` | string | Yes | Inbox ID |
+| `--id` | string | Yes | Sandbox ID |
 | `--email` | string | Yes | Email address to toggle forwarding for |
 
 ---
 
-## inboxes reset-email
+## sandboxes reset-email
 
-Reset the email username of a sandbox inbox.
+Reset the email username of a sandbox.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--id` | string | Yes | Inbox ID |
+| `--id` | string | Yes | Sandbox ID |
 
 ---
 
 ## messages list
 
-List all messages in a sandbox inbox.
+List all messages in a sandbox.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--inbox-id` | string | Yes | Inbox ID |
+| `--sandbox-id` | string | Yes | Sandbox ID |
 
 ---
 
@@ -204,7 +204,7 @@ Get a specific sandbox message.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--inbox-id` | string | Yes | Inbox ID |
+| `--sandbox-id` | string | Yes | Sandbox ID |
 | `--id` | string | Yes | Message ID |
 
 ---
@@ -215,7 +215,7 @@ Update a sandbox message (mark as read/unread).
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--inbox-id` | string | Yes | Inbox ID |
+| `--sandbox-id` | string | Yes | Sandbox ID |
 | `--id` | string | Yes | Message ID |
 | `--is-read` | bool | No | Mark as read (default: false) |
 
@@ -227,7 +227,7 @@ Delete a sandbox message.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--inbox-id` | string | Yes | Inbox ID |
+| `--sandbox-id` | string | Yes | Sandbox ID |
 | `--id` | string | Yes | Message ID |
 
 ---
@@ -238,7 +238,7 @@ Forward a sandbox message to a real email address.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--inbox-id` | string | Yes | Inbox ID |
+| `--sandbox-id` | string | Yes | Sandbox ID |
 | `--id` | string | Yes | Message ID |
 | `--email` | string | Yes | Destination email address |
 
@@ -250,7 +250,7 @@ Get the rendered HTML body of a sandbox message.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--inbox-id` | string | Yes | Inbox ID |
+| `--sandbox-id` | string | Yes | Sandbox ID |
 | `--id` | string | Yes | Message ID |
 
 ---
@@ -285,7 +285,7 @@ Download the EML file of a sandbox message.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--inbox-id` | string | Yes | Inbox ID |
+| `--sandbox-id` | string | Yes | Sandbox ID |
 | `--id` | string | Yes | Message ID |
 | `--output-file` | string | No | File path to save EML (default: stdout) |
 
@@ -321,7 +321,7 @@ List attachments for a sandbox message.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--inbox-id` | string | Yes | Inbox ID |
+| `--sandbox-id` | string | Yes | Sandbox ID |
 | `--message-id` | string | Yes | Message ID |
 
 ---
@@ -332,6 +332,6 @@ Get a specific attachment from a sandbox message.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--inbox-id` | string | Yes | Inbox ID |
+| `--sandbox-id` | string | Yes | Sandbox ID |
 | `--message-id` | string | Yes | Message ID |
 | `--id` | string | Yes | Attachment ID |

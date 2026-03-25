@@ -1,14 +1,14 @@
-package inboxes
+package sandboxes
 
 import (
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
 	"github.com/spf13/cobra"
 )
 
-func NewCmdInboxes(f *cmdutil.Factory) *cobra.Command {
+func NewCmdSandboxes(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "inboxes",
-		Short: "Manage inboxes",
+		Use:   "sandboxes",
+		Short: "Manage sandboxes",
 	}
 
 	cmd.AddCommand(NewCmdList(f))

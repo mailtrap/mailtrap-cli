@@ -1,4 +1,4 @@
-package inboxes
+package sandboxes
 
 import (
 	"context"
@@ -11,14 +11,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
+func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 	var inboxID string
+	var name string
 
 	cmd := &cobra.Command{
-		Use:   "get",
-		Short: "Get an inbox",
+		Use:   "update",
+		Short: "Update a sandbox",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := cmdutil.RequireFlag("id", inboxID); err != nil {
+				return err
+			}
+			if err := cmdutil.RequireFlag("name", name); err != nil {
 				return err
 			}
 
@@ -33,9 +37,12 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID))
+			body := map[string]interface{}{
+				"inbox": map[string]string{"name": name},
+			}
 
 			var inbox Inbox
-			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &inbox); err != nil {
+			if err := c.Patch(context.Background(), client.BaseGeneral, path, body, &inbox); err != nil {
 				return err
 			}
 
@@ -44,7 +51,8 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "id", "", "Inbox ID")
+	cmd.Flags().StringVar(&inboxID, "id", "", "Sandbox ID")
+	cmd.Flags().StringVar(&name, "name", "", "Sandbox name")
 
 	return cmd
 }

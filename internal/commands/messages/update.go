@@ -12,7 +12,7 @@ import (
 )
 
 func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
-	var inboxID string
+	var sandboxID string
 	var messageID string
 	var isRead bool
 
@@ -20,7 +20,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 		Use:   "update",
 		Short: "Update a message",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cmdutil.RequireFlag("inbox-id", inboxID); err != nil {
+			if err := cmdutil.RequireFlag("sandbox-id", sandboxID); err != nil {
 				return err
 			}
 			if err := cmdutil.RequireFlag("id", messageID); err != nil {
@@ -37,7 +37,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "messages", fmt.Sprintf("%s", messageID))
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID), "messages", fmt.Sprintf("%s", messageID))
 			body := map[string]interface{}{
 				"message": map[string]interface{}{"is_read": isRead},
 			}
@@ -52,7 +52,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "inbox-id", "", "Inbox ID")
+	cmd.Flags().StringVar(&sandboxID, "sandbox-id", "", "Sandbox ID")
 	cmd.Flags().StringVar(&messageID, "id", "", "Message ID")
 	cmd.Flags().BoolVar(&isRead, "is-read", false, "Mark message as read")
 

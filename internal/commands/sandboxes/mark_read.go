@@ -1,4 +1,4 @@
-package inboxes
+package sandboxes
 
 import (
 	"context"
@@ -16,7 +16,7 @@ func NewCmdMarkRead(f *cmdutil.Factory) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "mark-read",
-		Short: "Mark all messages in an inbox as read",
+		Short: "Mark all messages in a sandbox as read",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := cmdutil.RequireFlag("id", inboxID); err != nil {
 				return err
@@ -44,7 +44,7 @@ func NewCmdMarkRead(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "id", "", "Inbox ID")
+	cmd.Flags().StringVar(&inboxID, "id", "", "Sandbox ID")
 
 	return cmd
 }

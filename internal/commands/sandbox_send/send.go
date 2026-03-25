@@ -30,7 +30,7 @@ type sendResponse struct {
 
 func NewCmdSingle(f *cmdutil.Factory) *cobra.Command {
 	var (
-		inboxID      string
+		sandboxID    string
 		from         string
 		to           []string
 		subject      string
@@ -45,7 +45,7 @@ func NewCmdSingle(f *cmdutil.Factory) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "single",
-		Short: "Send a single email to a sandbox inbox",
+		Short: "Send a single email to a sandbox",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := f.NewClient()
 			if err != nil {
@@ -96,7 +96,7 @@ func NewCmdSingle(f *cmdutil.Factory) *cobra.Command {
 				req.ReplyTo = &addr
 			}
 
-			path := fmt.Sprintf("/api/send/%s", inboxID)
+			path := fmt.Sprintf("/api/send/%s", sandboxID)
 
 			var resp sendResponse
 			if err := c.Post(context.Background(), client.BaseSandbox, path, req, &resp); err != nil {
@@ -111,7 +111,7 @@ func NewCmdSingle(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "inbox-id", "", "Sandbox inbox ID")
+	cmd.Flags().StringVar(&sandboxID, "sandbox-id", "", "Sandbox ID")
 	cmd.Flags().StringVar(&from, "from", "", "Sender email address (e.g. 'Name <email>' or 'email')")
 	cmd.Flags().StringSliceVar(&to, "to", nil, "Recipient email address (can be repeated)")
 	cmd.Flags().StringVar(&subject, "subject", "", "Email subject")
@@ -123,7 +123,7 @@ func NewCmdSingle(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().StringVar(&templateUUID, "template-uuid", "", "Template UUID")
 	cmd.Flags().StringVar(&replyTo, "reply-to", "", "Reply-to email address")
 
-	_ = cmd.MarkFlagRequired("inbox-id")
+	_ = cmd.MarkFlagRequired("sandbox-id")
 	_ = cmd.MarkFlagRequired("from")
 	_ = cmd.MarkFlagRequired("to")
 	_ = cmd.MarkFlagRequired("subject")

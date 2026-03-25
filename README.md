@@ -1,6 +1,6 @@
 # Mailtrap CLI
 
-Command-line interface for the [Mailtrap](https://mailtrap.io) email delivery platform. Send transactional and bulk emails, manage sandbox inboxes, contacts, templates, and more.
+Command-line interface for the [Mailtrap](https://mailtrap.io) email delivery platform. Send transactional and bulk emails, manage sandboxes, contacts, templates, and more.
 
 ## Installation
 
@@ -73,17 +73,17 @@ mailtrap send bulk \
 ```bash
 # Send test email to sandbox
 mailtrap sandbox-send single \
-  --inbox-id 12345 \
+  --sandbox-id 12345 \
   --from "test@example.com" \
   --to "recipient@example.com" \
   --subject "Test" \
   --text "Hello"
 
 # List messages in sandbox inbox
-mailtrap messages list --inbox-id 12345
+mailtrap messages list --sandbox-id 12345
 
 # Get spam score
-mailtrap messages spam-score --inbox-id 12345 --id 67890
+mailtrap messages spam-score --sandbox-id 12345 --id 67890
 ```
 
 ### Manage resources
@@ -101,9 +101,9 @@ mailtrap templates create --name "Welcome" --subject "Hello" --text "Welcome!"
 mailtrap contacts create --email "user@example.com"
 mailtrap contact-lists list
 
-# Projects & Inboxes
+# Projects & Sandboxes
 mailtrap projects list
-mailtrap inboxes list
+mailtrap sandboxes list
 ```
 
 ### Output formats
@@ -134,7 +134,7 @@ mailtrap domains list --output text
 | **Contact Fields** | `contact-fields list`, `contact-fields get`, `contact-fields create`, `contact-fields update`, `contact-fields delete` |
 | **Sandbox** | `sandbox-send single`, `sandbox-send batch` |
 | **Projects** | `projects list`, `projects get`, `projects create`, `projects update`, `projects delete` |
-| **Inboxes** | `inboxes list`, `inboxes get`, `inboxes create`, `inboxes update`, `inboxes delete`, `inboxes clean`, `inboxes mark-read`, `inboxes reset-credentials`, `inboxes toggle-email-username`, `inboxes reset-email-username` |
+| **Sandboxes** | `sandboxes list`, `inboxes get`, `inboxes create`, `inboxes update`, `inboxes delete`, `inboxes clean`, `inboxes mark-read`, `inboxes reset-credentials`, `inboxes toggle-email-username`, `inboxes reset-email-username` |
 | **Messages** | `messages list`, `messages get`, `messages update`, `messages delete`, `messages forward`, `messages spam-score`, `messages html-analysis`, `messages headers`, `messages html`, `messages text`, `messages source`, `messages raw`, `messages eml` |
 | **Attachments** | `attachments list`, `attachments get` |
 | **Accounts** | `accounts list` |

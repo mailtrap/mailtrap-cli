@@ -12,14 +12,14 @@ import (
 )
 
 func NewCmdRaw(f *cmdutil.Factory) *cobra.Command {
-	var inboxID string
+	var sandboxID string
 	var messageID string
 
 	cmd := &cobra.Command{
 		Use:   "raw",
 		Short: "Get raw email of a message",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cmdutil.RequireFlag("inbox-id", inboxID); err != nil {
+			if err := cmdutil.RequireFlag("sandbox-id", sandboxID); err != nil {
 				return err
 			}
 			if err := cmdutil.RequireFlag("id", messageID); err != nil {
@@ -36,7 +36,7 @@ func NewCmdRaw(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "messages", fmt.Sprintf("%s", messageID), "body.raw")
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID), "messages", fmt.Sprintf("%s", messageID), "body.raw")
 
 			data, err := c.GetRaw(context.Background(), client.BaseGeneral, path, nil)
 			if err != nil {
@@ -47,7 +47,7 @@ func NewCmdRaw(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "inbox-id", "", "Inbox ID")
+	cmd.Flags().StringVar(&sandboxID, "sandbox-id", "", "Sandbox ID")
 	cmd.Flags().StringVar(&messageID, "id", "", "Message ID")
 
 	return cmd

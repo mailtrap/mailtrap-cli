@@ -1,4 +1,4 @@
-package inboxes
+package sandboxes
 
 import (
 	"context"
@@ -7,15 +7,16 @@ import (
 	"github.com/mailtrap/mailtrap-cli/internal/client"
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
 	"github.com/mailtrap/mailtrap-cli/internal/config"
+	"github.com/mailtrap/mailtrap-cli/internal/output"
 	"github.com/spf13/cobra"
 )
 
-func NewCmdClean(f *cmdutil.Factory) *cobra.Command {
+func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 	var inboxID string
 
 	cmd := &cobra.Command{
-		Use:   "clean",
-		Short: "Clean an inbox",
+		Use:   "get",
+		Short: "Get a sandbox",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := cmdutil.RequireFlag("id", inboxID); err != nil {
 				return err
@@ -31,18 +32,19 @@ func NewCmdClean(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "clean")
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID))
 
-			if err := c.Patch(context.Background(), client.BaseGeneral, path, nil, nil); err != nil {
+			var inbox Inbox
+			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &inbox); err != nil {
 				return err
 			}
 
-			fmt.Fprintln(f.IOStreams.Out, "Inbox cleaned successfully.")
-			return nil
+			format := cmdutil.GetOutputFormat()
+			return output.Print(f.IOStreams.Out, format, inbox, inboxColumns)
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "id", "", "Inbox ID")
+	cmd.Flags().StringVar(&inboxID, "id", "", "Sandbox ID")
 
 	return cmd
 }

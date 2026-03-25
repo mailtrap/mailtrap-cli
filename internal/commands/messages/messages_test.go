@@ -78,7 +78,7 @@ func TestMessagesList(t *testing.T) {
 	defer cleanup()
 
 	cmd := messages.NewCmdMessages(f)
-	cmd.SetArgs([]string{"list", "--inbox-id", "1"})
+	cmd.SetArgs([]string{"list", "--sandbox-id", "1"})
 	cmd.SetOut(buf)
 
 	err := cmd.Execute()
@@ -101,7 +101,7 @@ func TestMessagesList(t *testing.T) {
 	}
 }
 
-func TestMessagesListMissingInboxID(t *testing.T) {
+func TestMessagesListMissingSandboxID(t *testing.T) {
 	f, _, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {})
 	defer cleanup()
 
@@ -114,10 +114,10 @@ func TestMessagesListMissingInboxID(t *testing.T) {
 
 	err := cmd.Execute()
 	if err == nil {
-		t.Fatal("expected error when --inbox-id is missing")
+		t.Fatal("expected error when --sandbox-id is missing")
 	}
-	if !strings.Contains(err.Error(), "--inbox-id is required") {
-		t.Errorf("expected '--inbox-id is required' error, got: %v", err)
+	if !strings.Contains(err.Error(), "--sandbox-id is required") {
+		t.Errorf("expected '--sandbox-id is required' error, got: %v", err)
 	}
 }
 
@@ -143,7 +143,7 @@ func TestMessagesGet(t *testing.T) {
 	defer cleanup()
 
 	cmd := messages.NewCmdMessages(f)
-	cmd.SetArgs([]string{"get", "--inbox-id", "1", "--id", "1"})
+	cmd.SetArgs([]string{"get", "--sandbox-id", "1", "--id", "1"})
 	cmd.SetOut(buf)
 
 	err := cmd.Execute()
@@ -179,7 +179,7 @@ func TestMessagesGetMissingFlags(t *testing.T) {
 
 	// Missing --id
 	cmd2 := messages.NewCmdMessages(f)
-	cmd2.SetArgs([]string{"get", "--inbox-id", "1"})
+	cmd2.SetArgs([]string{"get", "--sandbox-id", "1"})
 	cmd2.SetOut(buf)
 
 	err = cmd2.Execute()
@@ -210,7 +210,7 @@ func TestMessagesListJSON(t *testing.T) {
 	viper.Set("output", "json")
 
 	cmd := messages.NewCmdMessages(f)
-	cmd.SetArgs([]string{"list", "--inbox-id", "1"})
+	cmd.SetArgs([]string{"list", "--sandbox-id", "1"})
 	cmd.SetOut(buf)
 
 	err := cmd.Execute()

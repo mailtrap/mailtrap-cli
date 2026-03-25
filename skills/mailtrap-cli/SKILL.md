@@ -53,7 +53,7 @@ For scripting and piping, always use `--output json`.
 | `contact-fields` | Custom contact fields | [contacts.md](references/contacts.md) |
 | `sandbox-send` | Sandbox email testing | [sandbox.md](references/sandbox.md) |
 | `projects` | Sandbox project management | [sandbox.md](references/sandbox.md) |
-| `inboxes` | Sandbox inbox management | [sandbox.md](references/sandbox.md) |
+| `sandboxes` | Sandbox management | [sandbox.md](references/sandbox.md) |
 | `messages` | Sandbox message inspection | [sandbox.md](references/sandbox.md) |
 | `attachments` | Sandbox attachment retrieval | [sandbox.md](references/sandbox.md) |
 | `accounts` | Account listing | [accounts.md](references/accounts.md) |
@@ -66,9 +66,9 @@ For scripting and piping, always use `--output json`.
 
 ## Gotchas
 
-- `sandbox-send` requires `--inbox-id` — this is separate from the production `send` commands
+- `sandbox-send` requires `--sandbox-id` — this is separate from the production `send` commands
 - Batch commands require a `--file` flag pointing to a valid JSON file; they do not accept inline JSON
 - Stats commands always require `--start-date` and `--end-date`
-- Message inspection commands (`messages html`, `messages raw`, etc.) require both `--inbox-id` and `--id`
+- Message inspection commands (`messages html`, `messages raw`, etc.) require both `--sandbox-id` and `--id`
 - The `configure` command validates the token against the API before saving
 - Domain verification is handled through the Mailtrap web dashboard, not the CLI

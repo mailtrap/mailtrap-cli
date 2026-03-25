@@ -19,13 +19,13 @@ type batchResponse struct {
 
 func NewCmdBatch(f *cmdutil.Factory) *cobra.Command {
 	var (
-		inboxID string
+		sandboxID string
 		file    string
 	)
 
 	cmd := &cobra.Command{
 		Use:   "batch",
-		Short: "Send a batch of emails to a sandbox inbox",
+		Short: "Send a batch of emails to a sandbox",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := f.NewClient()
 			if err != nil {
@@ -42,7 +42,7 @@ func NewCmdBatch(f *cmdutil.Factory) *cobra.Command {
 				return fmt.Errorf("parse JSON from %s: %w", file, err)
 			}
 
-			path := fmt.Sprintf("/api/batch/%s", inboxID)
+			path := fmt.Sprintf("/api/batch/%s", sandboxID)
 
 			var resp batchResponse
 			if err := c.Post(context.Background(), client.BaseSandbox, path, body, &resp); err != nil {
@@ -57,9 +57,9 @@ func NewCmdBatch(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "inbox-id", "", "Sandbox inbox ID")
+	cmd.Flags().StringVar(&sandboxID, "sandbox-id", "", "Sandbox ID")
 	cmd.Flags().StringVar(&file, "file", "", "Path to JSON file containing the batch request body")
-	_ = cmd.MarkFlagRequired("inbox-id")
+	_ = cmd.MarkFlagRequired("sandbox-id")
 	_ = cmd.MarkFlagRequired("file")
 
 	return cmd

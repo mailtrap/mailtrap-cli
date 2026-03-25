@@ -13,7 +13,7 @@ import (
 )
 
 func NewCmdEml(f *cmdutil.Factory) *cobra.Command {
-	var inboxID string
+	var sandboxID string
 	var messageID string
 	var outputFile string
 
@@ -21,7 +21,7 @@ func NewCmdEml(f *cmdutil.Factory) *cobra.Command {
 		Use:   "eml",
 		Short: "Download EML file of a message",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cmdutil.RequireFlag("inbox-id", inboxID); err != nil {
+			if err := cmdutil.RequireFlag("sandbox-id", sandboxID); err != nil {
 				return err
 			}
 			if err := cmdutil.RequireFlag("id", messageID); err != nil {
@@ -38,7 +38,7 @@ func NewCmdEml(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "messages", fmt.Sprintf("%s", messageID), "body.eml")
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID), "messages", fmt.Sprintf("%s", messageID), "body.eml")
 
 			data, err := c.GetRaw(context.Background(), client.BaseGeneral, path, nil)
 			if err != nil {
@@ -57,7 +57,7 @@ func NewCmdEml(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "inbox-id", "", "Inbox ID")
+	cmd.Flags().StringVar(&sandboxID, "sandbox-id", "", "Sandbox ID")
 	cmd.Flags().StringVar(&messageID, "id", "", "Message ID")
 	cmd.Flags().StringVar(&outputFile, "output-file", "", "Output file path (default: stdout)")
 

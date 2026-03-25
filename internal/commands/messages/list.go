@@ -30,13 +30,13 @@ var messageColumns = []output.Column{
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {
-	var inboxID string
+	var sandboxID string
 
 	cmd := &cobra.Command{
 		Use:   "list",
-		Short: "List all messages in an inbox",
+		Short: "List all messages in a sandbox",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cmdutil.RequireFlag("inbox-id", inboxID); err != nil {
+			if err := cmdutil.RequireFlag("sandbox-id", sandboxID); err != nil {
 				return err
 			}
 
@@ -50,7 +50,7 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "messages")
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID), "messages")
 
 			var messages []Message
 			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &messages); err != nil {
@@ -62,7 +62,7 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "inbox-id", "", "Inbox ID")
+	cmd.Flags().StringVar(&sandboxID, "sandbox-id", "", "Sandbox ID")
 
 	return cmd
 }

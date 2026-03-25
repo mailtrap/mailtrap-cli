@@ -12,14 +12,14 @@ import (
 )
 
 func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
-	var inboxID string
+	var sandboxID string
 	var messageID string
 
 	cmd := &cobra.Command{
 		Use:   "get",
 		Short: "Get a message",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cmdutil.RequireFlag("inbox-id", inboxID); err != nil {
+			if err := cmdutil.RequireFlag("sandbox-id", sandboxID); err != nil {
 				return err
 			}
 			if err := cmdutil.RequireFlag("id", messageID); err != nil {
@@ -36,7 +36,7 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "messages", fmt.Sprintf("%s", messageID))
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID), "messages", fmt.Sprintf("%s", messageID))
 
 			var message Message
 			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &message); err != nil {
@@ -48,7 +48,7 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "inbox-id", "", "Inbox ID")
+	cmd.Flags().StringVar(&sandboxID, "sandbox-id", "", "Sandbox ID")
 	cmd.Flags().StringVar(&messageID, "id", "", "Message ID")
 
 	return cmd

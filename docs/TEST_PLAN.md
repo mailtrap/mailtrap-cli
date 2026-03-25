@@ -219,65 +219,65 @@ Tests are organized by endpoint group. Each test specifies:
 
 **Cleanup:** Delete any created test project.
 
-## 12. Inboxes (Sandbox)
+## 12. Sandboxes
 
 | # | Test | Command | Expected |
 |---|------|---------|----------|
-| 12.1 | List inboxes | `mailtrap inboxes list` | Table with inbox entries |
-| 12.2 | Get inbox | `mailtrap inboxes get --id <INBOX_ID>` | Single inbox details |
-| 12.3 | Create inbox | `mailtrap inboxes create --project-id <PROJECT_ID> --name "test-inbox"` | New inbox in output |
-| 12.4 | Update inbox | `mailtrap inboxes update --id <NEW_ID> --name "test-inbox-updated"` | Updated name |
-| 12.5 | Mark read | `mailtrap inboxes mark-read --id <INBOX_ID>` | Success message |
-| 12.6 | Reset credentials | `mailtrap inboxes reset-credentials --id <NEW_ID>` | Success/new credentials |
-| 12.7 | Toggle email username | `mailtrap inboxes toggle-email-username --id <NEW_ID>` | Toggled response |
-| 12.8 | Reset email username | `mailtrap inboxes reset-email-username --id <NEW_ID>` | Reset response |
-| 12.9 | Clean inbox | `mailtrap inboxes clean --id <NEW_ID>` | Success message |
-| 12.10 | Delete inbox | `mailtrap inboxes delete --id <NEW_ID>` | Success message |
-| 12.11 | Get missing ID | `mailtrap inboxes get` | Error: `--id is required` |
+| 12.1 | List inboxes | `mailtrap sandboxes list` | Table with sandbox entries |
+| 12.2 | Get inbox | `mailtrap sandboxes get --id <INBOX_ID>` | Single sandbox details |
+| 12.3 | Create inbox | `mailtrap sandboxes create --project-id <PROJECT_ID> --name "test-sandbox"` | New inbox in output |
+| 12.4 | Update inbox | `mailtrap sandboxes update --id <NEW_ID> --name "test-sandbox-updated"` | Updated name |
+| 12.5 | Mark read | `mailtrap sandboxes mark-read --id <INBOX_ID>` | Success message |
+| 12.6 | Reset credentials | `mailtrap sandboxes reset-credentials --id <NEW_ID>` | Success/new credentials |
+| 12.7 | Toggle email username | `mailtrap sandboxes toggle-email-username --id <NEW_ID>` | Toggled response |
+| 12.8 | Reset email username | `mailtrap sandboxes reset-email-username --id <NEW_ID>` | Reset response |
+| 12.9 | Clean inbox | `mailtrap sandboxes clean --id <NEW_ID>` | Success message |
+| 12.10 | Delete inbox | `mailtrap sandboxes delete --id <NEW_ID>` | Success message |
+| 12.11 | Get missing ID | `mailtrap sandboxes get` | Error: `--id is required` |
 
-**Cleanup:** Delete test inbox.
+**Cleanup:** Delete test sandbox.
 
 ## 13. Sandbox Send
 
 | # | Test | Command | Expected |
 |---|------|---------|----------|
-| 13.1 | Send single | `mailtrap sandbox-send single --inbox-id <INBOX_ID> --from test@example.com --to recipient@example.com --subject "Integration Test" --text "Hello from CLI"` | Success response with message ID |
-| 13.2 | Send batch | `mailtrap sandbox-send batch --inbox-id <INBOX_ID> --from test@example.com --to recipient@example.com --subject "Batch Test" --text "Batch hello"` | Success response |
+| 13.1 | Send single | `mailtrap sandbox-send single --sandbox-id <INBOX_ID> --from test@example.com --to recipient@example.com --subject "Integration Test" --text "Hello from CLI"` | Success response with message ID |
+| 13.2 | Send batch | `mailtrap sandbox-send batch --sandbox-id <INBOX_ID> --from test@example.com --to recipient@example.com --subject "Batch Test" --text "Batch hello"` | Success response |
 | 13.3 | Missing flags | `mailtrap sandbox-send single` | Error: required flags |
 
-**Verification:** After 13.1, run `mailtrap messages list --inbox-id <INBOX_ID>` to confirm the message appears.
+**Verification:** After 13.1, run `mailtrap messages list --sandbox-id <INBOX_ID>` to confirm the message appears.
 
 ## 14. Messages (Sandbox)
 
-Prerequisite: Send a test email to the sandbox inbox first (test 13.1).
+Prerequisite: Send a test email to the sandbox first (test 13.1).
 
 | # | Test | Command | Expected |
 |---|------|---------|----------|
-| 14.1 | List messages | `mailtrap messages list --inbox-id <INBOX_ID>` | Table with message entries |
-| 14.2 | List messages (JSON) | `mailtrap messages list --inbox-id <INBOX_ID> --output json` | Valid JSON array |
-| 14.3 | Get message | `mailtrap messages get --inbox-id <INBOX_ID> --id <MSG_ID>` | Single message details |
-| 14.4 | Update message | `mailtrap messages update --inbox-id <INBOX_ID> --id <MSG_ID> --is-read true` | Updated message |
-| 14.5 | Spam score | `mailtrap messages spam-score --inbox-id <INBOX_ID> --id <MSG_ID>` | Spam score data |
-| 14.6 | HTML analysis | `mailtrap messages html-analysis --inbox-id <INBOX_ID> --id <MSG_ID>` | Analysis data |
-| 14.7 | Headers | `mailtrap messages headers --inbox-id <INBOX_ID> --id <MSG_ID>` | Email headers |
-| 14.8 | HTML body | `mailtrap messages html --inbox-id <INBOX_ID> --id <MSG_ID>` | Raw HTML content |
-| 14.9 | Text body | `mailtrap messages text --inbox-id <INBOX_ID> --id <MSG_ID>` | Raw text content |
-| 14.10 | Source | `mailtrap messages source --inbox-id <INBOX_ID> --id <MSG_ID>` | Raw source |
-| 14.11 | Raw | `mailtrap messages raw --inbox-id <INBOX_ID> --id <MSG_ID>` | Raw message |
-| 14.12 | EML | `mailtrap messages eml --inbox-id <INBOX_ID> --id <MSG_ID>` | EML format |
-| 14.13 | Forward | `mailtrap messages forward --inbox-id <INBOX_ID> --id <MSG_ID> --email forward@example.com` | Success |
-| 14.14 | Delete message | `mailtrap messages delete --inbox-id <INBOX_ID> --id <MSG_ID>` | Success message |
-| 14.15 | Missing inbox-id | `mailtrap messages list` | Error: `--inbox-id is required` |
-| 14.16 | Missing id | `mailtrap messages get --inbox-id <INBOX_ID>` | Error: `--id is required` |
+| 14.1 | List messages | `mailtrap messages list --sandbox-id <INBOX_ID>` | Table with message entries |
+| 14.2 | List messages (JSON) | `mailtrap messages list --sandbox-id <INBOX_ID> --output json` | Valid JSON array |
+| 14.3 | Get message | `mailtrap messages get --sandbox-id <INBOX_ID> --id <MSG_ID>` | Single message details |
+| 14.4 | Update message | `mailtrap messages update --sandbox-id <INBOX_ID> --id <MSG_ID> --is-read true` | Updated message |
+| 14.5 | Spam score | `mailtrap messages spam-score --sandbox-id <INBOX_ID> --id <MSG_ID>` | Spam score data |
+| 14.6 | HTML analysis | `mailtrap messages html-analysis --sandbox-id <INBOX_ID> --id <MSG_ID>` | Analysis data |
+| 14.7 | Headers | `mailtrap messages headers --sandbox-id <INBOX_ID> --id <MSG_ID>` | Email headers |
+| 14.8 | HTML body | `mailtrap messages html --sandbox-id <INBOX_ID> --id <MSG_ID>` | Raw HTML content |
+| 14.9 | Text body | `mailtrap messages text --sandbox-id <INBOX_ID> --id <MSG_ID>` | Raw text content |
+| 14.10 | Source | `mailtrap messages source --sandbox-id <INBOX_ID> --id <MSG_ID>` | Raw source |
+| 14.11 | Raw | `mailtrap messages raw --sandbox-id <INBOX_ID> --id <MSG_ID>` | Raw message |
+| 14.12 | EML | `mailtrap messages eml --sandbox-id <INBOX_ID> --id <MSG_ID>` | EML format |
+| 14.13 | Forward | `mailtrap messages forward --sandbox-id <INBOX_ID> --id <MSG_ID> --email forward@example.com` | Success |
+| 14.14 | Delete message | `mailtrap messages delete --sandbox-id <INBOX_ID> --id <MSG_ID>` | Success message |
+| 14.15 | Missing sandbox-id | `mailtrap messages list` | Error: `--sandbox-id is required` |
+| 14.16 | Missing id | `mailtrap messages get --sandbox-id <INBOX_ID>` | Error: `--id is required` |
 
 ## 15. Attachments (Sandbox)
 
-Prerequisite: Send an email with an attachment to the sandbox inbox.
+Prerequisite: Send an email with an attachment to the sandbox.
 
 | # | Test | Command | Expected |
 |---|------|---------|----------|
-| 15.1 | List attachments | `mailtrap attachments list --inbox-id <INBOX_ID> --message-id <MSG_ID>` | Table with attachments |
-| 15.2 | Get attachment | `mailtrap attachments get --inbox-id <INBOX_ID> --message-id <MSG_ID> --id <ATT_ID>` | Attachment details |
+| 15.1 | List attachments | `mailtrap attachments list --sandbox-id <INBOX_ID> --message-id <MSG_ID>` | Table with attachments |
+| 15.2 | Get attachment | `mailtrap attachments get --sandbox-id <INBOX_ID> --message-id <MSG_ID> --id <ATT_ID>` | Attachment details |
 | 15.3 | Missing flags | `mailtrap attachments list` | Error: required flags |
 
 ## 16. Account Access
@@ -363,9 +363,9 @@ Run tests in dependency order so earlier tests create resources needed by later 
 8. **Contact Lists** (CRUD)
 9. **Contact Fields** (CRUD)
 10. **Contacts** (CRUD)
-11. **Projects** (CRUD — creates project for inbox tests)
-12. **Inboxes** (CRUD — creates inbox for sandbox send/message tests)
-13. **Sandbox Send** (sends email to inbox for message tests)
+11. **Projects** (CRUD — creates project for sandbox tests)
+12. **Inboxes** (CRUD — creates sandbox for sandbox send/message tests)
+13. **Sandbox Send** (sends email to sandbox for message tests)
 14. **Messages** (all subcommands on the sent message)
 15. **Attachments** (requires message with attachment)
 16. **Account Access** (read-only)
@@ -392,7 +392,7 @@ Run tests in dependency order so earlier tests create resources needed by later 
 | Contact Fields | 5 | 6 |
 | Contacts | 10 | 10 |
 | Projects | 5 | 6 |
-| Inboxes | 10 | 11 |
+| Sandboxes | 10 | 11 |
 | Sandbox Send | 2 | 3 |
 | Messages | 14 | 16 |
 | Attachments | 2 | 3 |

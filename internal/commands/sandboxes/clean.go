@@ -1,4 +1,4 @@
-package inboxes
+package sandboxes
 
 import (
 	"context"
@@ -10,12 +10,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCmdDelete(f *cmdutil.Factory) *cobra.Command {
+func NewCmdClean(f *cmdutil.Factory) *cobra.Command {
 	var inboxID string
 
 	cmd := &cobra.Command{
-		Use:   "delete",
-		Short: "Delete an inbox",
+		Use:   "clean",
+		Short: "Clean a sandbox",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := cmdutil.RequireFlag("id", inboxID); err != nil {
 				return err
@@ -31,18 +31,18 @@ func NewCmdDelete(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID))
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "clean")
 
-			if err := c.Delete(context.Background(), client.BaseGeneral, path, nil); err != nil {
+			if err := c.Patch(context.Background(), client.BaseGeneral, path, nil, nil); err != nil {
 				return err
 			}
 
-			fmt.Fprintln(f.IOStreams.Out, "Inbox deleted successfully.")
+			fmt.Fprintln(f.IOStreams.Out, "Sandbox cleaned successfully.")
 			return nil
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "id", "", "Inbox ID")
+	cmd.Flags().StringVar(&inboxID, "id", "", "Sandbox ID")
 
 	return cmd
 }

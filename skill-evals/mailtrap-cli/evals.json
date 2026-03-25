@@ -1,0 +1,182 @@
+[
+  {
+    "name": "send_transactional_with_html",
+    "prompt": "Send a transactional email from noreply@acme.com to user@example.com with the subject 'Welcome' and an HTML body saying Hello World",
+    "expected": {
+      "command": "send transactional",
+      "flags": ["--from", "--to", "--subject", "--html"],
+      "must_not_contain": ["sandbox-send", "bulk", "--file"]
+    }
+  },
+  {
+    "name": "send_bulk_email",
+    "prompt": "Send a bulk marketing email from marketing@acme.com to newsletter@example.com about our Spring Sale",
+    "expected": {
+      "command": "send bulk",
+      "flags": ["--from", "--to", "--subject"],
+      "must_not_contain": ["transactional", "sandbox-send"]
+    }
+  },
+  {
+    "name": "send_batch_from_file",
+    "prompt": "I have a file called emails.json with 50 transactional emails. Send them all.",
+    "expected": {
+      "command": "send batch-transactional",
+      "flags": ["--file"],
+      "must_not_contain": ["--from", "--to", "--subject", "sandbox-send"]
+    }
+  },
+  {
+    "name": "send_with_template",
+    "prompt": "Send a transactional email using template UUID abc-123 to user@test.com from app@acme.com",
+    "expected": {
+      "command": "send transactional",
+      "flags": ["--from", "--to", "--template-uuid"],
+      "must_not_contain": ["--html", "--text"]
+    }
+  },
+  {
+    "name": "sandbox_send_to_inbox",
+    "prompt": "Send a test email to my sandbox inbox 12345 from test@example.com to dev@test.com with subject 'Test'",
+    "expected": {
+      "command": "sandbox-send single",
+      "flags": ["--inbox-id", "--from", "--to", "--subject"],
+      "must_not_contain": ["send transactional", "send bulk"]
+    }
+  },
+  {
+    "name": "list_domains",
+    "prompt": "Show me all my sending domains",
+    "expected": {
+      "command": "domains list",
+      "flags": [],
+      "must_not_contain": ["--id", "create", "delete"]
+    }
+  },
+  {
+    "name": "create_domain",
+    "prompt": "Add acme.com as a new sending domain",
+    "expected": {
+      "command": "domains create",
+      "flags": ["--name"],
+      "must_not_contain": ["--id", "delete"]
+    }
+  },
+  {
+    "name": "create_template_with_variables",
+    "prompt": "Create a template called 'Order Confirmation' with subject 'Order #{{order_id}} confirmed' and HTML body with order details",
+    "expected": {
+      "command": "templates create",
+      "flags": ["--name", "--subject", "--body-html"],
+      "must_not_contain": ["--id", "update", "delete"]
+    }
+  },
+  {
+    "name": "get_stats_for_date_range",
+    "prompt": "Show me email sending statistics for January 2024",
+    "expected": {
+      "command": "stats get",
+      "flags": ["--start-date", "--end-date"],
+      "must_not_contain": ["by-domain", "by-category"]
+    }
+  },
+  {
+    "name": "stats_grouped_by_domain",
+    "prompt": "Break down my sending stats by domain for Q1 2024",
+    "expected": {
+      "command": "stats by-domain",
+      "flags": ["--start-date", "--end-date"],
+      "must_not_contain": ["stats get", "by-category", "by-esp"]
+    }
+  },
+  {
+    "name": "create_contact_with_lists",
+    "prompt": "Add john@acme.com as a contact with name John Smith and add them to lists 1 and 2",
+    "expected": {
+      "command": "contacts create",
+      "flags": ["--email", "--first-name", "--last-name", "--list-ids"],
+      "must_not_contain": ["update", "delete", "import"]
+    }
+  },
+  {
+    "name": "import_contacts_from_file",
+    "prompt": "Import contacts from my contacts.json file into list 5",
+    "expected": {
+      "command": "contacts import",
+      "flags": ["--file", "--list-id"],
+      "must_not_contain": ["create", "export"]
+    }
+  },
+  {
+    "name": "inspect_sandbox_message",
+    "prompt": "Show me the spam score of message 999 in inbox 123",
+    "expected": {
+      "command": "messages spam-score",
+      "flags": ["--inbox-id", "--id"],
+      "must_not_contain": ["html", "text", "raw", "email-logs"]
+    }
+  },
+  {
+    "name": "download_eml",
+    "prompt": "Download the EML file for message 456 in inbox 789 and save it to email.eml",
+    "expected": {
+      "command": "messages eml",
+      "flags": ["--inbox-id", "--id", "--output-file"],
+      "must_not_contain": ["raw", "source", "html"]
+    }
+  },
+  {
+    "name": "create_api_token",
+    "prompt": "Create a new API token called 'CI Pipeline'",
+    "expected": {
+      "command": "tokens create",
+      "flags": ["--name"],
+      "must_not_contain": ["delete", "reset"]
+    }
+  },
+  {
+    "name": "configure_cli",
+    "prompt": "Set up the CLI with my API token abc123xyz",
+    "expected": {
+      "command": "configure",
+      "flags": ["--api-token"],
+      "must_not_contain": ["tokens", "accounts"]
+    }
+  },
+  {
+    "name": "json_output_for_scripting",
+    "prompt": "List all templates and give me the output as JSON so I can pipe it to jq",
+    "expected": {
+      "command": "templates list",
+      "flags": ["--output json"],
+      "must_not_contain": ["--output table", "--output text"]
+    }
+  },
+  {
+    "name": "clean_sandbox_inbox",
+    "prompt": "Delete all messages in sandbox inbox 555",
+    "expected": {
+      "command": "inboxes clean",
+      "flags": ["--id"],
+      "must_not_contain": ["messages delete", "inboxes delete"]
+    }
+  },
+  {
+    "name": "create_sub_account",
+    "prompt": "Create a sub-account called 'Staging' under organization org-42",
+    "expected": {
+      "command": "organizations create-sub-account",
+      "flags": ["--org-id", "--name"],
+      "must_not_contain": ["accounts", "list-sub-accounts"]
+    }
+  },
+  {
+    "name": "send_with_cc_bcc",
+    "prompt": "Send a transactional email from boss@acme.com to team@acme.com, CC manager@acme.com, BCC hr@acme.com with subject 'Update'",
+    "expected": {
+      "command": "send transactional",
+      "flags": ["--from", "--to", "--subject", "--cc", "--bcc"],
+      "must_not_contain": ["sandbox-send", "bulk"]
+    }
+  }
+]

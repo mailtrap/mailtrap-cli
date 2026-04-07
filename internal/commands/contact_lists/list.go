@@ -11,17 +11,13 @@ import (
 )
 
 type ContactList struct {
-	ID            int    `json:"id"`
-	Name          string `json:"name"`
-	ContactsCount int    `json:"contacts_count"`
-	CreatedAt     string `json:"created_at"`
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
 
 var contactListColumns = []output.Column{
 	{Header: "ID", Field: "id"},
 	{Header: "NAME", Field: "name"},
-	{Header: "CONTACTS_COUNT", Field: "contacts_count"},
-	{Header: "CREATED_AT", Field: "created_at"},
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {

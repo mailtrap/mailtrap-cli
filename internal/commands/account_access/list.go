@@ -10,20 +10,41 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type Specifier struct {
+	ID    int    `json:"id"`
+	Email string `json:"email"`
+	Name  string `json:"name"`
+}
+
+type Resource struct {
+	ResourceID   int    `json:"resource_id"`
+	ResourceType string `json:"resource_type"`
+	AccessLevel  int    `json:"access_level"`
+}
+
 type AccountAccess struct {
-	ID          int    `json:"id"`
-	UserID      int    `json:"specifier_id"`
-	UserEmail   string `json:"specifier_email"`
-	AccessLevel int    `json:"access_level"`
-	CreatedAt   string `json:"created_at"`
+	ID            int        `json:"id"`
+	SpecifierType string     `json:"specifier_type"`
+	Specifier     Specifier  `json:"specifier"`
+	Resources     []Resource `json:"resources"`
+}
+
+type accountAccessRow struct {
+	ID            int    `json:"id"`
+	SpecifierType string `json:"specifier_type"`
+	Email         string `json:"email"`
+	Name          string `json:"name"`
+	AccessLevel   int    `json:"access_level"`
+	ResourceType  string `json:"resource_type"`
 }
 
 var accountAccessColumns = []output.Column{
 	{Header: "ID", Field: "id"},
-	{Header: "USER_ID", Field: "specifier_id"},
-	{Header: "USER_EMAIL", Field: "specifier_email"},
+	{Header: "TYPE", Field: "specifier_type"},
+	{Header: "EMAIL", Field: "email"},
+	{Header: "NAME", Field: "name"},
 	{Header: "ACCESS_LEVEL", Field: "access_level"},
-	{Header: "CREATED_AT", Field: "created_at"},
+	{Header: "RESOURCE_TYPE", Field: "resource_type"},
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {
@@ -49,7 +70,29 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, accesses, accountAccessColumns)
+
+			if format == output.FormatJSON {
+				return output.Print(f.IOStreams.Out, format, accesses, nil)
+			}
+
+			var rows []accountAccessRow
+			for _, a := range accesses {
+				topLevel := 0
+				topResource := ""
+				if len(a.Resources) > 0 {
+					topLevel = a.Resources[0].AccessLevel
+					topResource = a.Resources[0].ResourceType
+				}
+				rows = append(rows, accountAccessRow{
+					ID:            a.ID,
+					SpecifierType: a.SpecifierType,
+					Email:         a.Specifier.Email,
+					Name:          a.Specifier.Name,
+					AccessLevel:   topLevel,
+					ResourceType:  topResource,
+				})
+			}
+			return output.Print(f.IOStreams.Out, format, rows, accountAccessColumns)
 		},
 	}
 

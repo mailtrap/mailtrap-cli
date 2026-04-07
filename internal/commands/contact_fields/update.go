@@ -14,6 +14,7 @@ import (
 func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 	var fieldID string
 	var name string
+	var mergeTag string
 
 	cmd := &cobra.Command{
 		Use:   "update",
@@ -35,10 +36,12 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 
 			path := cmdutil.AccountPath("contacts", "fields", fmt.Sprintf("%s", fieldID))
 
-			body := map[string]interface{}{
-				"contact_field": map[string]string{
-					"name": name,
-				},
+			body := map[string]interface{}{}
+			if name != "" {
+				body["name"] = name
+			}
+			if mergeTag != "" {
+				body["merge_tag"] = mergeTag
 			}
 
 			var field ContactField
@@ -51,8 +54,9 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&fieldID, "id", "", "Contact field ID")
+	cmd.Flags().StringVar(&fieldID, "id", "", "Contact field ID (required)")
 	cmd.Flags().StringVar(&name, "name", "", "Contact field name")
+	cmd.Flags().StringVar(&mergeTag, "merge-tag", "", "Merge tag (max 80 chars)")
 
 	return cmd
 }

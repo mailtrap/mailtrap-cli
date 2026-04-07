@@ -13,8 +13,8 @@ import (
 
 func NewCmdCreateEvent(f *cmdutil.Factory) *cobra.Command {
 	var contactID string
-	var eventType string
-	var data string
+	var eventName string
+	var params string
 
 	cmd := &cobra.Command{
 		Use:   "create-event",
@@ -23,7 +23,7 @@ func NewCmdCreateEvent(f *cmdutil.Factory) *cobra.Command {
 			if err := cmdutil.RequireFlag("id", contactID); err != nil {
 				return err
 			}
-			if err := cmdutil.RequireFlag("type", eventType); err != nil {
+			if err := cmdutil.RequireFlag("name", eventName); err != nil {
 				return err
 			}
 
@@ -40,15 +40,15 @@ func NewCmdCreateEvent(f *cmdutil.Factory) *cobra.Command {
 			path := cmdutil.AccountPath("contacts", fmt.Sprintf("%s", contactID), "events")
 
 			body := map[string]interface{}{
-				"type": eventType,
+				"name": eventName,
 			}
 
-			if data != "" {
-				var dataObj interface{}
-				if err := json.Unmarshal([]byte(data), &dataObj); err != nil {
-					return fmt.Errorf("parse data JSON: %w", err)
+			if params != "" {
+				var paramsObj interface{}
+				if err := json.Unmarshal([]byte(params), &paramsObj); err != nil {
+					return fmt.Errorf("parse params JSON: %w", err)
 				}
-				body["data"] = dataObj
+				body["params"] = paramsObj
 			}
 
 			var resp interface{}
@@ -66,9 +66,9 @@ func NewCmdCreateEvent(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&contactID, "id", "", "Contact ID")
-	cmd.Flags().StringVar(&eventType, "type", "", "Event type (required)")
-	cmd.Flags().StringVar(&data, "data", "", "Event data as JSON string")
+	cmd.Flags().StringVar(&contactID, "id", "", "Contact ID (required)")
+	cmd.Flags().StringVar(&eventName, "name", "", "Event name (required, max 255 chars)")
+	cmd.Flags().StringVar(&params, "params", "", "Event params as JSON string")
 
 	return cmd
 }

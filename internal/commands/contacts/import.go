@@ -14,7 +14,6 @@ import (
 
 func NewCmdImport(f *cmdutil.Factory) *cobra.Command {
 	var file string
-	var listID int
 
 	cmd := &cobra.Command{
 		Use:   "import",
@@ -61,8 +60,7 @@ func NewCmdImport(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&file, "file", "", "Path to JSON file with import data")
-	cmd.Flags().IntVar(&listID, "list-id", 0, "List ID to import contacts into")
+	cmd.Flags().StringVar(&file, "file", "", "Path to JSON file with contacts array")
 
 	return cmd
 }

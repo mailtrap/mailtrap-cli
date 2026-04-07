@@ -11,15 +11,20 @@ import (
 )
 
 type APIToken struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	CreatedAt string `json:"created_at"`
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Last4Digits string `json:"last_4_digits"`
+	CreatedBy   string `json:"created_by"`
+	ExpiresAt   string `json:"expires_at"`
+	Token       string `json:"token,omitempty"`
 }
 
 var tokenColumns = []output.Column{
 	{Header: "ID", Field: "id"},
 	{Header: "NAME", Field: "name"},
-	{Header: "CREATED_AT", Field: "created_at"},
+	{Header: "LAST_4_DIGITS", Field: "last_4_digits"},
+	{Header: "CREATED_BY", Field: "created_by"},
+	{Header: "EXPIRES_AT", Field: "expires_at"},
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {

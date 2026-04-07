@@ -12,7 +12,8 @@ import (
 )
 
 func NewCmdExport(f *cmdutil.Factory) *cobra.Command {
-	var listID int
+	var listIDs []int
+	var status string
 
 	cmd := &cobra.Command{
 		Use:   "export",
@@ -30,8 +31,25 @@ func NewCmdExport(f *cmdutil.Factory) *cobra.Command {
 
 			path := cmdutil.AccountPath("contacts", "exports")
 
-			body := map[string]interface{}{
-				"list_id": listID,
+			var filters []map[string]interface{}
+			if len(listIDs) > 0 {
+				filters = append(filters, map[string]interface{}{
+					"name":     "list_id",
+					"operator": "equal",
+					"value":    listIDs,
+				})
+			}
+			if status != "" {
+				filters = append(filters, map[string]interface{}{
+					"name":     "subscription_status",
+					"operator": "equal",
+					"value":    status,
+				})
+			}
+
+			body := map[string]interface{}{}
+			if len(filters) > 0 {
+				body["filters"] = filters
 			}
 
 			var resp interface{}
@@ -49,7 +67,8 @@ func NewCmdExport(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().IntVar(&listID, "list-id", 0, "List ID to export contacts from")
+	cmd.Flags().IntSliceVar(&listIDs, "list-ids", nil, "Filter by list IDs")
+	cmd.Flags().StringVar(&status, "status", "", "Filter by subscription status (subscribed|unsubscribed)")
 
 	return cmd
 }

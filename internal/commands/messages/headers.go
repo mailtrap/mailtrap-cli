@@ -44,8 +44,12 @@ func NewCmdHeaders(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, result, nil)
+			indented, err := json.MarshalIndent(json.RawMessage(result), "", "  ")
+			if err != nil {
+				return err
+			}
+
+			return output.PrintRaw(f.IOStreams.Out, append(indented, '\n'))
 		},
 	}
 

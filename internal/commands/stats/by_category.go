@@ -42,7 +42,7 @@ func NewCmdByCategory(f *cmdutil.Factory) *cobra.Command {
 			params.Set("start_date", opts.StartDate)
 			params.Set("end_date", opts.EndDate)
 			for _, d := range opts.DomainIDs {
-				params.Add("domain_ids[]", d)
+				params.Add("sending_domain_ids[]", d)
 			}
 			for _, s := range opts.Streams {
 				params.Add("streams[]", s)

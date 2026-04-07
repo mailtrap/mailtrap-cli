@@ -33,7 +33,7 @@ func NewCmdCreateSubAccount(f *cmdutil.Factory) *cobra.Command {
 			path := fmt.Sprintf("/api/organizations/%s/sub_accounts", orgID)
 
 			body := map[string]interface{}{
-				"sub_account": map[string]string{
+				"account": map[string]string{
 					"name": name,
 				},
 			}

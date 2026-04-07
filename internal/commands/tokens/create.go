@@ -2,6 +2,8 @@ package tokens
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
@@ -12,13 +14,31 @@ import (
 
 func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	var name string
+	var permissions string
 
 	cmd := &cobra.Command{
 		Use:   "create",
 		Short: "Create an API token",
+		Long: `Create an API token with permissions.
+
+Permissions must be provided as a JSON array. Each entry requires:
+  - resource_type: "account", "project", "inbox", or "sending_domain"
+  - resource_id: the resource ID (integer)
+  - access_level: 10 (viewer) or 100 (admin)
+
+Example:
+  mailtrap tokens create --name "my-token" --permissions '[{"resource_type":"account","resource_id":12345,"access_level":100}]'`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := cmdutil.RequireFlag("name", name); err != nil {
 				return err
+			}
+			if err := cmdutil.RequireFlag("permissions", permissions); err != nil {
+				return err
+			}
+
+			var resources []map[string]interface{}
+			if err := json.Unmarshal([]byte(permissions), &resources); err != nil {
+				return fmt.Errorf("invalid permissions JSON: %w", err)
 			}
 
 			c, err := f.NewClient()
@@ -34,8 +54,9 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 			path := cmdutil.AccountPath("api_tokens")
 
 			body := map[string]interface{}{
-				"api_token": map[string]string{
-					"name": name,
+				"api_token": map[string]interface{}{
+					"name":      name,
+					"resources": resources,
 				},
 			}
 
@@ -49,7 +70,8 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&name, "name", "", "API token name")
+	cmd.Flags().StringVar(&name, "name", "", "API token name (required)")
+	cmd.Flags().StringVar(&permissions, "permissions", "", `Permissions JSON array (required), e.g. '[{"resource_type":"account","resource_id":123,"access_level":100}]'`)
 
 	return cmd
 }

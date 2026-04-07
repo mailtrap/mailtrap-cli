@@ -103,6 +103,7 @@ mailtrap messages spam-score --sandbox-id 12345 --id 67890
 # Domains
 mailtrap domains list
 mailtrap domains create --name "yourdomain.com"
+mailtrap domains send-setup-instructions --id 123 --email "admin@yourdomain.com"
 
 # Templates
 mailtrap templates list
@@ -111,6 +112,7 @@ mailtrap templates create --name "Welcome" --subject "Hello {{name}}" --body-htm
 # Contacts
 mailtrap contacts create --email "user@example.com" --first-name "John"
 mailtrap contact-lists list
+mailtrap contact-fields create --name "Company" --data-type text
 
 # Sandboxes & projects
 mailtrap projects list
@@ -136,7 +138,7 @@ mailtrap domains list --output text
 |-------|----------|
 | **Sending** | `send transactional`, `send bulk`, `send batch-transactional`, `send batch-bulk` |
 | **Sandbox Send** | `sandbox-send single`, `sandbox-send batch` |
-| **Domains** | `domains list`, `domains get`, `domains create`, `domains delete` |
+| **Domains** | `domains list`, `domains get`, `domains create`, `domains delete`, `domains send-setup-instructions` |
 | **Templates** | `templates list`, `templates get`, `templates create`, `templates update`, `templates delete` |
 | **Suppressions** | `suppressions list`, `suppressions delete` |
 | **Stats** | `stats get`, `stats by-domain`, `stats by-category`, `stats by-esp`, `stats by-date` |

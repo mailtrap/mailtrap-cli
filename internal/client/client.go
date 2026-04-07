@@ -102,7 +102,7 @@ func (c *Client) do(ctx context.Context, base BaseURL, method, path string, quer
 }
 
 func (c *Client) setAuthHeader(req *http.Request, base BaseURL) {
-	req.Header.Set("Authorization", "Bearer "+c.apiToken)
+	req.Header.Set("Api-Token", c.apiToken)
 }
 
 func (c *Client) Get(ctx context.Context, base BaseURL, path string, query url.Values, result interface{}) error {

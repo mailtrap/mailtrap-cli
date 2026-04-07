@@ -39,12 +39,18 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 			contactData := map[string]interface{}{
 				"email": email,
 			}
+
+			fields := map[string]interface{}{}
 			if firstName != "" {
-				contactData["first_name"] = firstName
+				fields["first_name"] = firstName
 			}
 			if lastName != "" {
-				contactData["last_name"] = lastName
+				fields["last_name"] = lastName
 			}
+			if len(fields) > 0 {
+				contactData["fields"] = fields
+			}
+
 			if len(listIDs) > 0 {
 				contactData["list_ids"] = listIDs
 			}
@@ -53,13 +59,13 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 				"contact": contactData,
 			}
 
-			var contact Contact
-			if err := c.Post(context.Background(), client.BaseGeneral, path, body, &contact); err != nil {
+			var resp contactResponse
+			if err := c.Post(context.Background(), client.BaseGeneral, path, body, &resp); err != nil {
 				return err
 			}
 
 			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, contact, contactColumns)
+			return output.Print(f.IOStreams.Out, format, resp.Data, contactColumns)
 		},
 	}
 

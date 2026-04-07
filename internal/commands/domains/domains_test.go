@@ -52,8 +52,8 @@ func TestDomainsList(t *testing.T) {
 		if !strings.HasSuffix(r.URL.Path, "/api/accounts/123/sending_domains") {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
-		if r.Header.Get("Authorization") != "Bearer test-token" {
-			t.Errorf("expected Authorization header 'Bearer test-token', got %q", r.Header.Get("Authorization"))
+		if r.Header.Get("Api-Token") != "test-token" {
+			t.Errorf("expected Api-Token header 'test-token', got %q", r.Header.Get("Api-Token"))
 		}
 
 		w.Header().Set("Content-Type", "application/json")
@@ -171,11 +171,11 @@ func TestDomainsCreate(t *testing.T) {
 		}
 
 		body, _ := io.ReadAll(r.Body)
-		var reqBody map[string]string
+		var reqBody map[string]map[string]string
 		json.Unmarshal(body, &reqBody)
 
-		if reqBody["domain"] != "example.com" {
-			t.Errorf("expected domain 'example.com' in request body, got %q", reqBody["domain"])
+		if reqBody["sending_domain"]["domain_name"] != "example.com" {
+			t.Errorf("expected domain_name 'example.com' in request body, got %q", reqBody["sending_domain"]["domain_name"])
 		}
 
 		w.Header().Set("Content-Type", "application/json")

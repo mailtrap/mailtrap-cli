@@ -12,7 +12,7 @@ import (
 
 func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	var name string
-	var fieldType string
+	var dataType string
 
 	cmd := &cobra.Command{
 		Use:   "create",
@@ -21,7 +21,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 			if err := cmdutil.RequireFlag("name", name); err != nil {
 				return err
 			}
-			if err := cmdutil.RequireFlag("field-type", fieldType); err != nil {
+			if err := cmdutil.RequireFlag("data-type", dataType); err != nil {
 				return err
 			}
 
@@ -38,10 +38,8 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 			path := cmdutil.AccountPath("contacts", "fields")
 
 			body := map[string]interface{}{
-				"contact_field": map[string]string{
-					"name":       name,
-					"field_type": fieldType,
-				},
+				"name":      name,
+				"data_type": dataType,
 			}
 
 			var field ContactField
@@ -54,8 +52,8 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&name, "name", "", "Contact field name")
-	cmd.Flags().StringVar(&fieldType, "field-type", "", "Contact field type")
+	cmd.Flags().StringVar(&name, "name", "", "Contact field name (required)")
+	cmd.Flags().StringVar(&dataType, "data-type", "", "Data type: text, integer, float, boolean, date (required)")
 
 	return cmd
 }

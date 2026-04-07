@@ -32,7 +32,11 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			path := cmdutil.AccountPath("sending_domains")
-			body := map[string]string{"domain": name}
+			body := map[string]interface{}{
+				"sending_domain": map[string]string{
+					"domain_name": name,
+				},
+			}
 
 			var domain Domain
 			if err := c.Post(context.Background(), client.BaseGeneral, path, body, &domain); err != nil {

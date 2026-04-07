@@ -36,9 +36,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 			path := cmdutil.AccountPath("contacts", "lists", fmt.Sprintf("%s", listID))
 
 			body := map[string]interface{}{
-				"contact_list": map[string]string{
-					"name": name,
-				},
+				"name": name,
 			}
 
 			var list ContactList

@@ -36,7 +36,7 @@ func NewCmdSource(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID), "messages", fmt.Sprintf("%s", messageID), "body.raw")
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID), "messages", fmt.Sprintf("%s", messageID), "body.htmlsource")
 
 			data, err := c.GetRaw(context.Background(), client.BaseGeneral, path, nil)
 			if err != nil {

@@ -54,10 +54,8 @@ Example:
 			path := cmdutil.AccountPath("api_tokens")
 
 			body := map[string]interface{}{
-				"api_token": map[string]interface{}{
-					"name":      name,
-					"resources": resources,
-				},
+				"name":      name,
+				"resources": resources,
 			}
 
 			var token APIToken

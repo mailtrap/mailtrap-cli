@@ -112,7 +112,7 @@ mailtrap templates create --name "Welcome" --subject "Hello {{name}}" --body-htm
 # Contacts
 mailtrap contacts create --email "user@example.com" --first-name "John"
 mailtrap contact-lists list
-mailtrap contact-fields create --name "Company" --data-type text
+mailtrap contact-fields create --name "Company" --data-type text --merge-tag "{{company}}"
 
 # Sandboxes & projects
 mailtrap projects list

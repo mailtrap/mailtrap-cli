@@ -13,6 +13,7 @@ import (
 func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	var name string
 	var dataType string
+	var mergeTag string
 
 	cmd := &cobra.Command{
 		Use:   "create",
@@ -22,6 +23,9 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 			if err := cmdutil.RequireFlag("data-type", dataType); err != nil {
+				return err
+			}
+			if err := cmdutil.RequireFlag("merge-tag", mergeTag); err != nil {
 				return err
 			}
 
@@ -40,6 +44,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 			body := map[string]interface{}{
 				"name":      name,
 				"data_type": dataType,
+				"merge_tag": mergeTag,
 			}
 
 			var field ContactField
@@ -54,6 +59,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 
 	cmd.Flags().StringVar(&name, "name", "", "Contact field name (required)")
 	cmd.Flags().StringVar(&dataType, "data-type", "", "Data type: text, integer, float, boolean, date (required)")
+	cmd.Flags().StringVar(&mergeTag, "merge-tag", "", "Merge tag for the field (required)")
 
 	return cmd
 }

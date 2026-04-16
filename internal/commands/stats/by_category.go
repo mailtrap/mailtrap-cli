@@ -45,7 +45,7 @@ func NewCmdByCategory(f *cmdutil.Factory) *cobra.Command {
 				params.Add("sending_domain_ids[]", d)
 			}
 			for _, s := range opts.Streams {
-				params.Add("streams[]", s)
+				params.Add("sending_streams[]", s)
 			}
 			for _, cat := range opts.Categories {
 				params.Add("categories[]", cat)
@@ -53,13 +53,13 @@ func NewCmdByCategory(f *cmdutil.Factory) *cobra.Command {
 
 			fullPath := fmt.Sprintf("%s?%s", path, params.Encode())
 
-			var result []Stats
+			var result []CategoryStats
 			if err := c.Get(context.Background(), client.BaseGeneral, fullPath, nil, &result); err != nil {
 				return err
 			}
 
 			format := cmdutil.GetOutputFormat()
-			output.Print(f.IOStreams.Out, format, result, statsColumns)
+			output.Print(f.IOStreams.Out, format, result, categoryStatsColumns)
 
 			return nil
 		},

@@ -57,6 +57,7 @@ Create a new API token.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | string | Yes | Token name |
+| `--permissions` | string | Yes | Permissions JSON array, e.g. `'[{"resource_type":"account","resource_id":123,"access_level":100}]'` |
 
 **Note:** The token value is shown only once in the response. Store it securely.
 

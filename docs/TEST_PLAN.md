@@ -180,7 +180,7 @@ Tests are organized by endpoint group. Each test specifies:
 |---|------|---------|----------|
 | 9.1 | List contact fields | `mailtrap contact-fields list` | Table with field entries |
 | 9.2 | Get contact field | `mailtrap contact-fields get --id <FIELD_ID>` | Single field details |
-| 9.3 | Create contact field | `mailtrap contact-fields create --name "test-field" --type "string"` | New field in output |
+| 9.3 | Create contact field | `mailtrap contact-fields create --name "test-field" --data-type text --merge-tag "{{test_field}}"` | New field in output |
 | 9.4 | Update contact field | `mailtrap contact-fields update --id <NEW_ID> --name "test-field-updated"` | Updated field |
 | 9.5 | Delete contact field | `mailtrap contact-fields delete --id <NEW_ID>` | Success message |
 | 9.6 | Get missing ID | `mailtrap contact-fields get` | Error: `--id is required` |
@@ -304,7 +304,7 @@ Prerequisite: Send an email with an attachment to the sandbox.
 |---|------|---------|----------|
 | 18.1 | List tokens | `mailtrap tokens list` | Table with tokens (may require admin token) |
 | 18.2 | Get token | `mailtrap tokens get --id <TOKEN_ID>` | Token details |
-| 18.3 | Create token | `mailtrap tokens create --name "test-token"` | New token |
+| 18.3 | Create token | `mailtrap tokens create --name "test-token" --permissions '[{"resource_type":"account","resource_id":<ACCOUNT_ID>,"access_level":100}]'` | New token |
 | 18.4 | Reset token | `mailtrap tokens reset --id <NEW_ID>` | New token value |
 | 18.5 | Delete token | `mailtrap tokens delete --id <NEW_ID>` | Success message |
 | 18.6 | Get missing ID | `mailtrap tokens get` | Error: `--id is required` |
@@ -346,6 +346,8 @@ Prerequisite: Send an email with an attachment to the sandbox.
 | B3 | **Medium** | NOT A BUG | `contacts list` returns 404 — the Mailtrap API has no `GET /contacts` endpoint. Contacts can only be managed individually (get/create/update/delete). No `list` subcommand exists in the CLI. |
 | B4 | **Low** | NOT A BUG | `tokens list` returns "Access forbidden" — this is an API permission issue requiring an admin-level token, not a CLI bug. The error message is surfaced correctly. |
 | B5 | **Low** | NOT A BUG | `stats get` requires `--start-date` — already enforced via `cobra.MarkFlagRequired("start-date")`. The CLI shows a clear error when omitted. |
+| B6 | **High** | FIXED | `tokens create` — request body was wrapped in an `api_token` key (`{"api_token": {"name": ..., "resources": [...]}}`), but the API expects a flat body (`{"name": ..., "resources": [...]}`). Removed the wrapper in `tokens/create.go`. |
+| B7 | **High** | FIXED | `contact-fields create` — the `--merge-tag` flag was missing entirely. The Mailtrap API requires `merge_tag` when creating a contact field, but the CLI only accepted `--name` and `--data-type`. Added `--merge-tag` flag, validation, and included `merge_tag` in the POST body. |
 
 ---
 

@@ -177,7 +177,8 @@ Create a custom contact field.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--name` | string | Yes | Field name |
-| `--field-type` | string | Yes | Field type (e.g. `string`, `number`, `date`) |
+| `--data-type` | string | Yes | Data type: `text`, `integer`, `float`, `boolean`, `date` |
+| `--merge-tag` | string | Yes | Merge tag for the field (e.g. `{{company}}`) |
 
 ---
 
@@ -189,7 +190,8 @@ Update a custom contact field.
 |------|------|----------|-------------|
 | `--id` | string | Yes | Contact field ID |
 | `--name` | string | No | New field name |
-| `--field-type` | string | No | New field type |
+| `--data-type` | string | No | New data type |
+| `--merge-tag` | string | No | New merge tag |
 
 ---
 

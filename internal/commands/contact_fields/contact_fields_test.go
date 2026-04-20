@@ -181,6 +181,9 @@ func TestContactFieldsCreate(t *testing.T) {
 		if payload["data_type"] != "text" {
 			t.Errorf("expected data_type 'text', got %v", payload["data_type"])
 		}
+		if payload["merge_tag"] != "{{company}}" {
+			t.Errorf("expected merge_tag '{{company}}', got %v", payload["merge_tag"])
+		}
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
@@ -190,7 +193,7 @@ func TestContactFieldsCreate(t *testing.T) {
 	defer cleanup()
 
 	cmd := contact_fields.NewCmdContactFields(f)
-	cmd.SetArgs([]string{"create", "--name", "Company", "--data-type", "text"})
+	cmd.SetArgs([]string{"create", "--name", "Company", "--data-type", "text", "--merge-tag", "{{company}}"})
 	cmd.SetOut(buf)
 
 	err := cmd.Execute()
@@ -233,6 +236,22 @@ func TestContactFieldsCreateMissingDataType(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "--data-type is required") {
 		t.Errorf("expected error to contain '--data-type is required', got: %v", err)
+	}
+}
+
+func TestContactFieldsCreateMissingMergeTag(t *testing.T) {
+	f, _, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {})
+	defer cleanup()
+
+	cmd := contact_fields.NewCmdContactFields(f)
+	cmd.SetArgs([]string{"create", "--name", "Company", "--data-type", "text"})
+
+	err := cmd.Execute()
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "--merge-tag is required") {
+		t.Errorf("expected error to contain '--merge-tag is required', got: %v", err)
 	}
 }
 

@@ -176,14 +176,10 @@ func TestTokensCreate(t *testing.T) {
 			t.Fatalf("failed to parse request body: %v", err)
 		}
 
-		apiToken, ok := payload["api_token"].(map[string]interface{})
-		if !ok {
-			t.Fatal("expected api_token wrapper in body")
+		if payload["name"] != "new-token" {
+			t.Errorf("expected name 'new-token', got %v", payload["name"])
 		}
-		if apiToken["name"] != "new-token" {
-			t.Errorf("expected name 'new-token', got %v", apiToken["name"])
-		}
-		resources, ok := apiToken["resources"].([]interface{})
+		resources, ok := payload["resources"].([]interface{})
 		if !ok {
 			t.Fatal("expected resources to be an array")
 		}

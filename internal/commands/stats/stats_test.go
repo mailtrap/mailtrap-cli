@@ -124,7 +124,16 @@ func TestStatsByDomain(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"delivery_count": 50, "delivery_rate": 0.9, "bounce_count": 2, "bounce_rate": 0.04, "open_count": 25, "open_rate": 0.5, "click_count": 10, "click_rate": 0.2, "spam_count": 0, "spam_rate": 0.0},
+			{
+				"sending_domain_id": 42,
+				"stats": map[string]interface{}{
+					"delivery_count": 50, "delivery_rate": 0.9,
+					"bounce_count": 2, "bounce_rate": 0.04,
+					"open_count": 25, "open_rate": 0.5,
+					"click_count": 10, "click_rate": 0.2,
+					"spam_count": 0, "spam_rate": 0.0,
+				},
+			},
 		})
 	})
 	defer cleanup()
@@ -139,6 +148,9 @@ func TestStatsByDomain(t *testing.T) {
 	}
 
 	output := buf.String()
+	if !strings.Contains(output, "42") {
+		t.Errorf("expected output to contain domain id '42', got:\n%s", output)
+	}
 	if !strings.Contains(output, "50") {
 		t.Errorf("expected output to contain '50', got:\n%s", output)
 	}
@@ -155,7 +167,16 @@ func TestStatsByCategory(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"delivery_count": 30, "delivery_rate": 0.85, "bounce_count": 3, "bounce_rate": 0.06, "open_count": 15, "open_rate": 0.5, "click_count": 8, "click_rate": 0.27, "spam_count": 0, "spam_rate": 0.0},
+			{
+				"category": "newsletter",
+				"stats": map[string]interface{}{
+					"delivery_count": 30, "delivery_rate": 0.85,
+					"bounce_count": 3, "bounce_rate": 0.06,
+					"open_count": 15, "open_rate": 0.5,
+					"click_count": 8, "click_rate": 0.27,
+					"spam_count": 0, "spam_rate": 0.0,
+				},
+			},
 		})
 	})
 	defer cleanup()
@@ -170,6 +191,9 @@ func TestStatsByCategory(t *testing.T) {
 	}
 
 	output := buf.String()
+	if !strings.Contains(output, "newsletter") {
+		t.Errorf("expected output to contain 'newsletter', got:\n%s", output)
+	}
 	if !strings.Contains(output, "30") {
 		t.Errorf("expected output to contain '30', got:\n%s", output)
 	}
@@ -186,7 +210,16 @@ func TestStatsByEsp(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"delivery_count": 40, "delivery_rate": 0.88, "bounce_count": 4, "bounce_rate": 0.08, "open_count": 20, "open_rate": 0.5, "click_count": 12, "click_rate": 0.3, "spam_count": 1, "spam_rate": 0.02},
+			{
+				"email_service_provider": "Gmail",
+				"stats": map[string]interface{}{
+					"delivery_count": 40, "delivery_rate": 0.88,
+					"bounce_count": 4, "bounce_rate": 0.08,
+					"open_count": 20, "open_rate": 0.5,
+					"click_count": 12, "click_rate": 0.3,
+					"spam_count": 1, "spam_rate": 0.02,
+				},
+			},
 		})
 	})
 	defer cleanup()
@@ -201,6 +234,9 @@ func TestStatsByEsp(t *testing.T) {
 	}
 
 	output := buf.String()
+	if !strings.Contains(output, "Gmail") {
+		t.Errorf("expected output to contain 'Gmail', got:\n%s", output)
+	}
 	if !strings.Contains(output, "40") {
 		t.Errorf("expected output to contain '40', got:\n%s", output)
 	}
@@ -217,7 +253,16 @@ func TestStatsByDate(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"delivery_count": 60, "delivery_rate": 0.92, "bounce_count": 6, "bounce_rate": 0.06, "open_count": 30, "open_rate": 0.5, "click_count": 15, "click_rate": 0.25, "spam_count": 2, "spam_rate": 0.03},
+			{
+				"date": "2024-01-15",
+				"stats": map[string]interface{}{
+					"delivery_count": 60, "delivery_rate": 0.92,
+					"bounce_count": 6, "bounce_rate": 0.06,
+					"open_count": 30, "open_rate": 0.5,
+					"click_count": 15, "click_rate": 0.25,
+					"spam_count": 2, "spam_rate": 0.03,
+				},
+			},
 		})
 	})
 	defer cleanup()
@@ -232,6 +277,9 @@ func TestStatsByDate(t *testing.T) {
 	}
 
 	output := buf.String()
+	if !strings.Contains(output, "2024-01-15") {
+		t.Errorf("expected output to contain '2024-01-15', got:\n%s", output)
+	}
 	if !strings.Contains(output, "60") {
 		t.Errorf("expected output to contain '60', got:\n%s", output)
 	}

@@ -67,8 +67,8 @@ mailtrap send transactional \
 mailtrap send transactional \
   --from "App <noreply@yourdomain.com>" \
   --to user@example.com \
-  --subject "Welcome!" \
-  --html "<h1>Welcome</h1>"
+  --subject 'Welcome!' \
+  --html '<h1>Welcome</h1>'
 
 # Bulk
 mailtrap send bulk \
@@ -107,7 +107,7 @@ mailtrap domains send-setup-instructions --id 123 --email "admin@yourdomain.com"
 
 # Templates
 mailtrap templates list
-mailtrap templates create --name "Welcome" --subject "Hello {{name}}" --body-html "<h1>Hi!</h1>"
+mailtrap templates create --name "Welcome" --subject "Hello {{name}}" --body-html '<h1>Hi!</h1>'
 
 # Contacts
 mailtrap contacts create --email "user@example.com" --first-name "John"

@@ -187,11 +187,12 @@ var dateStatsColumns = []output.Column{
 }
 
 type GetOptions struct {
-	StartDate string
-	EndDate   string
-	DomainIDs []string
-	Streams   []string
+	StartDate  string
+	EndDate    string
+	DomainIDs  []string
+	Streams    []string
 	Categories []string
+	ESPs       []string
 }
 
 func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
@@ -219,10 +220,13 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 				params.Add("sending_domain_ids[]", d)
 			}
 			for _, s := range opts.Streams {
-				params.Add("streams[]", s)
+				params.Add("sending_streams[]", s)
 			}
 			for _, cat := range opts.Categories {
 				params.Add("categories[]", cat)
+			}
+			for _, esp := range opts.ESPs {
+				params.Add("email_service_providers[]", esp)
 			}
 
 			fullPath := fmt.Sprintf("%s?%s", path, params.Encode())
@@ -242,8 +246,9 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().StringVar(&opts.StartDate, "start-date", "", "Start date (required)")
 	cmd.Flags().StringVar(&opts.EndDate, "end-date", "", "End date (required)")
 	cmd.Flags().StringSliceVar(&opts.DomainIDs, "domain-ids", nil, "Filter by domain IDs")
-	cmd.Flags().StringSliceVar(&opts.Streams, "streams", nil, "Filter by streams")
+	cmd.Flags().StringSliceVar(&opts.Streams, "streams", nil, "Filter by sending streams (e.g. transactional, bulk)")
 	cmd.Flags().StringSliceVar(&opts.Categories, "categories", nil, "Filter by categories")
+	cmd.Flags().StringSliceVar(&opts.ESPs, "esps", nil, "Filter by email service providers (e.g. Google, Yahoo)")
 
 	_ = cmd.MarkFlagRequired("start-date")
 	_ = cmd.MarkFlagRequired("end-date")

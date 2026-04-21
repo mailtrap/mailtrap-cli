@@ -18,6 +18,7 @@ type ByDomainOptions struct {
 	DomainIDs  []string
 	Streams    []string
 	Categories []string
+	ESPs       []string
 }
 
 func NewCmdByDomain(f *cmdutil.Factory) *cobra.Command {
@@ -50,6 +51,9 @@ func NewCmdByDomain(f *cmdutil.Factory) *cobra.Command {
 			for _, cat := range opts.Categories {
 				params.Add("categories[]", cat)
 			}
+			for _, esp := range opts.ESPs {
+				params.Add("email_service_providers[]", esp)
+			}
 
 			fullPath := fmt.Sprintf("%s?%s", path, params.Encode())
 
@@ -68,8 +72,9 @@ func NewCmdByDomain(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().StringVar(&opts.StartDate, "start-date", "", "Start date (required)")
 	cmd.Flags().StringVar(&opts.EndDate, "end-date", "", "End date (required)")
 	cmd.Flags().StringSliceVar(&opts.DomainIDs, "domain-ids", nil, "Filter by domain IDs")
-	cmd.Flags().StringSliceVar(&opts.Streams, "streams", nil, "Filter by streams")
+	cmd.Flags().StringSliceVar(&opts.Streams, "streams", nil, "Filter by sending streams (e.g. transactional, bulk)")
 	cmd.Flags().StringSliceVar(&opts.Categories, "categories", nil, "Filter by categories")
+	cmd.Flags().StringSliceVar(&opts.ESPs, "esps", nil, "Filter by email service providers (e.g. Google, Yahoo)")
 
 	_ = cmd.MarkFlagRequired("start-date")
 	_ = cmd.MarkFlagRequired("end-date")

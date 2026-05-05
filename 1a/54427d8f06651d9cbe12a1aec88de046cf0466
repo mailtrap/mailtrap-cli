@@ -1,0 +1,44 @@
+internal/commands/webhooks/get.go
+  d5869b8b886a439f 1-48
+internal/commands/webhooks/create.go
+  d5869b8b886a439f 1-98
+README.md
+  d5869b8b886a439f 112-118,151
+internal/commands/webhooks/list.go
+  d5869b8b886a439f 1-70
+internal/commands/webhooks/webhooks_test.go
+  d5869b8b886a439f 1-366
+cmd/root.go
+  d5869b8b886a439f 31,61
+internal/commands/webhooks/webhooks.go
+  d5869b8b886a439f 1-21
+internal/commands/webhooks/update.go
+  d5869b8b886a439f 1-74
+internal/commands/webhooks/delete.go
+  d5869b8b886a439f 1-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "1a54427d8f06651d9cbe12a1aec88de046cf0466",
+  "prompts": {
+    "d5869b8b886a439f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c8958df0-ffe2-4f6e-8ea5-cf8771711535",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Igor Dobryn",
+      "messages": [],
+      "total_additions": 734,
+      "total_deletions": 0,
+      "accepted_lines": 734,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_c133502bfb58a4": {
+      "author": "Igor Dobryn"
+    }
+  }
+}

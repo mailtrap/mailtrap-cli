@@ -109,6 +109,13 @@ mailtrap domains send-setup-instructions --id 123 --email "admin@yourdomain.com"
 mailtrap templates list
 mailtrap templates create --name "Welcome" --subject "Hello {{name}}" --body-html '<h1>Hi!</h1>'
 
+# Webhooks
+mailtrap webhooks list
+mailtrap webhooks get --id 1
+mailtrap webhooks create --url "https://example.com/hooks" --type email_sending --sending-stream transactional --event-types delivery,bounce
+mailtrap webhooks update --id 1 --active=false --event-types delivery,bounce,unsubscribe
+mailtrap webhooks delete --id 1
+
 # Contacts
 mailtrap contacts create --email "user@example.com" --first-name "John"
 mailtrap contact-lists list
@@ -141,6 +148,7 @@ mailtrap domains list --output text
 | **Domains** | `domains list`, `domains get`, `domains create`, `domains delete`, `domains send-setup-instructions` |
 | **Templates** | `templates list`, `templates get`, `templates create`, `templates update`, `templates delete` |
 | **Suppressions** | `suppressions list`, `suppressions delete` |
+| **Webhooks** | `webhooks list`, `webhooks get`, `webhooks create`, `webhooks update`, `webhooks delete` |
 | **Stats** | `stats get`, `stats by-domain`, `stats by-category`, `stats by-esp`, `stats by-date` |
 | **Email Logs** | `email-logs list`, `email-logs get` |
 | **Contacts** | `contacts get`, `contacts create`, `contacts update`, `contacts delete`, `contacts import`, `contacts export`, `contacts import-status`, `contacts export-status`, `contacts create-event` |

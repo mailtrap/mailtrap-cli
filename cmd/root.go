@@ -28,6 +28,7 @@ import (
 	"github.com/mailtrap/mailtrap-cli/internal/commands/suppressions"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/templates"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/tokens"
+	"github.com/mailtrap/mailtrap-cli/internal/commands/webhooks"
 )
 
 func NewRootCmd(f *cmdutil.Factory) *cobra.Command {
@@ -57,6 +58,7 @@ func NewRootCmd(f *cmdutil.Factory) *cobra.Command {
 	cmd.AddCommand(stats.NewCmdStats(f))
 	cmd.AddCommand(templates.NewCmdTemplates(f))
 	cmd.AddCommand(email_logs.NewCmdEmailLogs(f))
+	cmd.AddCommand(webhooks.NewCmdWebhooks(f))
 
 	// Sandbox
 	cmd.AddCommand(projects.NewCmdProjects(f))

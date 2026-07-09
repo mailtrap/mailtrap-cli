@@ -119,6 +119,7 @@ mailtrap webhooks delete --id 1
 # Contacts
 mailtrap contacts create --email "user@example.com" --first-name "John"
 mailtrap contact-lists list
+mailtrap contact-lists list --search news
 mailtrap contact-fields create --name "Company" --data-type text --merge-tag "{{company}}"
 
 # Sandboxes & projects
@@ -152,7 +153,7 @@ mailtrap domains list --output text
 | **Stats** | `stats get`, `stats by-domain`, `stats by-category`, `stats by-esp`, `stats by-date` |
 | **Email Logs** | `email-logs list`, `email-logs get` |
 | **Contacts** | `contacts get`, `contacts create`, `contacts update`, `contacts delete`, `contacts import`, `contacts export`, `contacts import-status`, `contacts export-status`, `contacts create-event` |
-| **Contact Lists** | `contact-lists list`, `contact-lists get`, `contact-lists create`, `contact-lists update`, `contact-lists delete` |
+| **Contact Lists** | `contact-lists list` (`--search` filters by name), `contact-lists get`, `contact-lists create`, `contact-lists update`, `contact-lists delete` |
 | **Contact Fields** | `contact-fields list`, `contact-fields get`, `contact-fields create`, `contact-fields update`, `contact-fields delete` |
 | **Projects** | `projects list`, `projects get`, `projects create`, `projects update`, `projects delete` |
 | **Sandboxes** | `sandboxes list`, `sandboxes get`, `sandboxes create`, `sandboxes update`, `sandboxes delete`, `sandboxes clean`, `sandboxes mark-read`, `sandboxes reset-credentials`, `sandboxes toggle-email`, `sandboxes reset-email` |

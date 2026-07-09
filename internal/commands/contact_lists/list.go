@@ -2,6 +2,7 @@ package contact_lists
 
 import (
 	"context"
+	"net/url"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
@@ -21,6 +22,8 @@ var contactListColumns = []output.Column{
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {
+	var search string
+
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "List all contact lists",
@@ -37,8 +40,13 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 
 			path := cmdutil.AccountPath("contacts", "lists")
 
+			query := url.Values{}
+			if search != "" {
+				query.Set("search", search)
+			}
+
 			var lists []ContactList
-			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &lists); err != nil {
+			if err := c.Get(context.Background(), client.BaseGeneral, path, query, &lists); err != nil {
 				return err
 			}
 
@@ -46,6 +54,8 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 			return output.Print(f.IOStreams.Out, format, lists, contactListColumns)
 		},
 	}
+
+	cmd.Flags().StringVar(&search, "search", "", "Filter by name (case-insensitive prefix match)")
 
 	return cmd
 }

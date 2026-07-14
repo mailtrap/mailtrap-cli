@@ -116,6 +116,39 @@ func TestContactListsListJSON(t *testing.T) {
 	}
 }
 
+func TestContactListsListWithSearch(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			t.Errorf("expected GET, got %s", r.Method)
+		}
+
+		searchParam := r.URL.Query().Get("search")
+		if searchParam != "news" {
+			t.Errorf("expected search query param 'news', got %q", searchParam)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode([]map[string]interface{}{
+			{"id": 1, "name": "Newsletter"},
+		})
+	})
+	defer cleanup()
+
+	cmd := contact_lists.NewCmdContactLists(f)
+	cmd.SetArgs([]string{"list", "--search", "news"})
+	cmd.SetOut(buf)
+
+	err := cmd.Execute()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	output := buf.String()
+	if !strings.Contains(output, "Newsletter") {
+		t.Errorf("expected output to contain 'Newsletter', got:\n%s", output)
+	}
+}
+
 func TestContactListsGet(t *testing.T) {
 	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {

@@ -119,6 +119,7 @@ mailtrap webhooks delete --id 1
 # Contacts
 mailtrap contacts create --email "user@example.com" --first-name "John"
 mailtrap contact-lists list
+mailtrap contact-lists list --search news
 mailtrap contact-fields create --name "Company" --data-type text --merge-tag "{{company}}"
 
 # Sandboxes & projects

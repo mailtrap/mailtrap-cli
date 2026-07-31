@@ -364,6 +364,61 @@ func TestEmailCampaignsUpdate(t *testing.T) {
 	}
 }
 
+func TestEmailCampaignsUpdateClearAudience(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		var reqBody map[string]interface{}
+		json.Unmarshal(body, &reqBody)
+
+		// An explicit empty array clears the audience; the API treats the ids
+		// as the full set of included lists.
+		lists, ok := reqBody["contact_list_ids"].([]interface{})
+		if !ok || len(lists) != 0 {
+			t.Errorf("expected contact_list_ids to be [], got %v", reqBody["contact_list_ids"])
+		}
+		if _, ok := reqBody["contact_segment_ids"]; ok {
+			t.Errorf("did not expect contact_segment_ids to be set, got %v", reqBody["contact_segment_ids"])
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{"data": sampleCampaign()})
+	})
+	defer cleanup()
+
+	cmd := emailcampaigns.NewCmdEmailCampaigns(f)
+	cmd.SetArgs([]string{
+		"update",
+		"--id", "4567",
+		"--clear-contact-lists",
+	})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestEmailCampaignsUpdateClearConflictsWithIDs(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		t.Error("request should not be sent when flags conflict")
+	})
+	defer cleanup()
+
+	cmd := emailcampaigns.NewCmdEmailCampaigns(f)
+	cmd.SetArgs([]string{
+		"update",
+		"--id", "4567",
+		"--contact-list-ids", "55,56",
+		"--clear-contact-lists",
+	})
+	cmd.SetOut(buf)
+	cmd.SetErr(buf)
+
+	if err := cmd.Execute(); err == nil {
+		t.Fatal("expected an error for mutually exclusive flags")
+	}
+}
+
 func TestEmailCampaignsUpdateNoAttributes(t *testing.T) {
 	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
 		t.Error("request should not be sent when no attribute flags are provided")

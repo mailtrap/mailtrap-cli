@@ -2,6 +2,7 @@ package emailcampaigns
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
@@ -27,6 +28,9 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			body := buildAttributesBody(cmd, attrs)
+			if len(body) == 0 {
+				return fmt.Errorf("at least one attribute flag is required")
+			}
 
 			var resp campaignResponse
 			if err := c.Patch(context.Background(), client.BaseGeneral, campaignPath(campaignID), body, &resp); err != nil {

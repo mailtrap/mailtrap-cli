@@ -117,7 +117,7 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().IntVar(&perPage, "per-page", 0, "Number of campaigns per page (default 50, max 100)")
+	cmd.Flags().IntVar(&perPage, "per-page", 50, "Number of campaigns per page (max 100)")
 	cmd.Flags().StringVar(&search, "search", "", "Filter campaigns by name")
 	cmd.Flags().IntVar(&token, "token", 0, "Page number to retrieve (page-token pagination)")
 

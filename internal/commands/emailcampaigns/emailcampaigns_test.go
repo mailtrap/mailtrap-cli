@@ -364,6 +364,26 @@ func TestEmailCampaignsUpdate(t *testing.T) {
 	}
 }
 
+func TestEmailCampaignsUpdateNoAttributes(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		t.Error("request should not be sent when no attribute flags are provided")
+	})
+	defer cleanup()
+
+	cmd := emailcampaigns.NewCmdEmailCampaigns(f)
+	cmd.SetArgs([]string{"update", "--id", "4567"})
+	cmd.SetOut(buf)
+	cmd.SetErr(buf)
+
+	err := cmd.Execute()
+	if err == nil {
+		t.Fatal("expected error when no attribute flags are provided")
+	}
+	if !strings.Contains(err.Error(), "at least one attribute flag is required") {
+		t.Errorf("expected 'at least one attribute flag is required' error, got: %v", err)
+	}
+}
+
 func TestEmailCampaignsDelete(t *testing.T) {
 	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodDelete {

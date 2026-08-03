@@ -37,7 +37,7 @@ For scripting and piping, always use `--output json`.
 - **Batch operations**: use `--file path/to/payload.json` with a JSON array of email objects
 - **Config priority**: CLI flags > environment variables > config file
 - **Exit codes**: 0 on success, 1 on error (with descriptive message)
-- **API base**: all requests go to `https://mailtrap.io/api/accounts/{account-id}/...`
+- **API base**: most requests go to `https://mailtrap.io/api/accounts/{account-id}/...`. The `inbound` group is the exception — it goes to `https://mailtrap.io/api/inbound/...` and takes no `--account-id`.
 
 ## Command Groups
 
@@ -48,6 +48,7 @@ For scripting and piping, always use `--output json`.
 | `templates` | Email template CRUD | [templates.md](references/templates.md) |
 | `stats` | Aggregated sending statistics | [email-logs.md](references/email-logs.md) |
 | `email-logs` | Individual email log lookup | [email-logs.md](references/email-logs.md) |
+| `inbound` | Inbound email folders, inboxes, messages & threads | [inbound.md](references/inbound.md) |
 | `contacts` | Contact management & import/export | [contacts.md](references/contacts.md) |
 | `contact-lists` | Contact list CRUD | [contacts.md](references/contacts.md) |
 | `contact-fields` | Custom contact fields | [contacts.md](references/contacts.md) |

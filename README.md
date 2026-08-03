@@ -116,6 +116,13 @@ mailtrap webhooks create --url "https://example.com/hooks" --type email_sending 
 mailtrap webhooks update --id 1 --active=false --event-types delivery,bounce,unsubscribe
 mailtrap webhooks delete --id 1
 
+# Inbound (folders, inboxes, messages, threads)
+mailtrap inbound folders list
+mailtrap inbound inboxes list --folder-id 90
+mailtrap inbound messages list --inbox-id 735
+mailtrap inbound messages reply --inbox-id 735 --id <MESSAGE_ID> --text "Thanks for reaching out!"
+mailtrap inbound threads list --inbox-id 735
+
 # Contacts
 mailtrap contacts create --email "user@example.com" --first-name "John"
 mailtrap contact-lists list
@@ -152,6 +159,7 @@ mailtrap domains list --output text
 | **Webhooks** | `webhooks list`, `webhooks get`, `webhooks create`, `webhooks update`, `webhooks delete` |
 | **Stats** | `stats get`, `stats by-domain`, `stats by-category`, `stats by-esp`, `stats by-date` |
 | **Email Logs** | `email-logs list`, `email-logs get` |
+| **Inbound** | `inbound folders list/get/create/update/delete`, `inbound inboxes list/get/create/update/delete`, `inbound messages list/get/delete/reply/reply-all/forward`, `inbound threads list/get/delete` |
 | **Contacts** | `contacts get`, `contacts create`, `contacts update`, `contacts delete`, `contacts import`, `contacts export`, `contacts import-status`, `contacts export-status`, `contacts create-event` |
 | **Contact Lists** | `contact-lists list`, `contact-lists get`, `contact-lists create`, `contact-lists update`, `contact-lists delete` |
 | **Contact Fields** | `contact-fields list`, `contact-fields get`, `contact-fields create`, `contact-fields update`, `contact-fields delete` |

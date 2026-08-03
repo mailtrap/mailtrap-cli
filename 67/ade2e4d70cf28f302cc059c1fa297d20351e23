@@ -1,0 +1,14 @@
+internal/commands/tokens/reset.go
+  h_68ae9308e52348 16,38-42,44,59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "67ade2e4d70cf28f302cc059c1fa297d20351e23",
+  "prompts": {},
+  "humans": {
+    "h_68ae9308e52348": {
+      "author": "Alex Shchyhol <oleksandr.shchyhol@railsware.com>"
+    }
+  }
+}

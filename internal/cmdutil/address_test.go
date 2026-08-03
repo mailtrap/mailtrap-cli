@@ -1,11 +1,13 @@
-package send
+package cmdutil_test
 
 import (
 	"testing"
+
+	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
 )
 
 func TestParseEmailAddrPlain(t *testing.T) {
-	addr, err := parseEmailAddr("email@test.com")
+	addr, err := cmdutil.ParseEmailAddr("email@test.com")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -18,7 +20,7 @@ func TestParseEmailAddrPlain(t *testing.T) {
 }
 
 func TestParseEmailAddrWithName(t *testing.T) {
-	addr, err := parseEmailAddr("Name <email@test.com>")
+	addr, err := cmdutil.ParseEmailAddr("Name <email@test.com>")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -31,7 +33,7 @@ func TestParseEmailAddrWithName(t *testing.T) {
 }
 
 func TestParseEmailAddrWithFullName(t *testing.T) {
-	addr, err := parseEmailAddr("John Doe <john@example.com>")
+	addr, err := cmdutil.ParseEmailAddr("John Doe <john@example.com>")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -44,14 +46,14 @@ func TestParseEmailAddrWithFullName(t *testing.T) {
 }
 
 func TestParseEmailAddrEmpty(t *testing.T) {
-	_, err := parseEmailAddr("")
+	_, err := cmdutil.ParseEmailAddr("")
 	if err == nil {
 		t.Fatal("expected error for empty address")
 	}
 }
 
 func TestParseEmailAddrWhitespace(t *testing.T) {
-	addr, err := parseEmailAddr("  email@test.com  ")
+	addr, err := cmdutil.ParseEmailAddr("  email@test.com  ")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -61,7 +63,7 @@ func TestParseEmailAddrWhitespace(t *testing.T) {
 }
 
 func TestParseEmailAddrs(t *testing.T) {
-	addrs, err := parseEmailAddrs([]string{"a@test.com", "Name <b@test.com>"})
+	addrs, err := cmdutil.ParseEmailAddrs([]string{"a@test.com", "Name <b@test.com>"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

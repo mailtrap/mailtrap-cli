@@ -11,16 +11,16 @@ import (
 )
 
 type sendRequest struct {
-	From         emailAddr   `json:"from"`
-	To           []emailAddr `json:"to"`
-	Subject      string      `json:"subject"`
-	Text         string      `json:"text,omitempty"`
-	HTML         string      `json:"html,omitempty"`
-	CC           []emailAddr `json:"cc,omitempty"`
-	BCC          []emailAddr `json:"bcc,omitempty"`
-	Category     string      `json:"category,omitempty"`
-	TemplateUUID string      `json:"template_uuid,omitempty"`
-	ReplyTo      *emailAddr  `json:"reply_to,omitempty"`
+	From         cmdutil.EmailAddr   `json:"from"`
+	To           []cmdutil.EmailAddr `json:"to"`
+	Subject      string              `json:"subject"`
+	Text         string              `json:"text,omitempty"`
+	HTML         string              `json:"html,omitempty"`
+	CC           []cmdutil.EmailAddr `json:"cc,omitempty"`
+	BCC          []cmdutil.EmailAddr `json:"bcc,omitempty"`
+	Category     string              `json:"category,omitempty"`
+	TemplateUUID string              `json:"template_uuid,omitempty"`
+	ReplyTo      *cmdutil.EmailAddr  `json:"reply_to,omitempty"`
 }
 
 type sendResponse struct {
@@ -55,12 +55,12 @@ func newSendCmd(f *cmdutil.Factory, name, short string, base client.BaseURL) *co
 				return err
 			}
 
-			fromAddr, err := parseEmailAddr(from)
+			fromAddr, err := cmdutil.ParseEmailAddr(from)
 			if err != nil {
 				return fmt.Errorf("invalid --from address: %w", err)
 			}
 
-			toAddrs, err := parseEmailAddrs(to)
+			toAddrs, err := cmdutil.ParseEmailAddrs(to)
 			if err != nil {
 				return fmt.Errorf("invalid --to address: %w", err)
 			}
@@ -76,7 +76,7 @@ func newSendCmd(f *cmdutil.Factory, name, short string, base client.BaseURL) *co
 			}
 
 			if len(cc) > 0 {
-				ccAddrs, err := parseEmailAddrs(cc)
+				ccAddrs, err := cmdutil.ParseEmailAddrs(cc)
 				if err != nil {
 					return fmt.Errorf("invalid --cc address: %w", err)
 				}
@@ -84,7 +84,7 @@ func newSendCmd(f *cmdutil.Factory, name, short string, base client.BaseURL) *co
 			}
 
 			if len(bcc) > 0 {
-				bccAddrs, err := parseEmailAddrs(bcc)
+				bccAddrs, err := cmdutil.ParseEmailAddrs(bcc)
 				if err != nil {
 					return fmt.Errorf("invalid --bcc address: %w", err)
 				}
@@ -92,7 +92,7 @@ func newSendCmd(f *cmdutil.Factory, name, short string, base client.BaseURL) *co
 			}
 
 			if replyTo != "" {
-				addr, err := parseEmailAddr(replyTo)
+				addr, err := cmdutil.ParseEmailAddr(replyTo)
 				if err != nil {
 					return fmt.Errorf("invalid --reply-to address: %w", err)
 				}

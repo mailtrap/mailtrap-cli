@@ -2,6 +2,7 @@ package emaillogs
 
 import (
 	"context"
+	"fmt"
 	"net/url"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
@@ -115,7 +116,13 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, resp.Messages, emailLogColumns)
+			if err := output.Print(f.IOStreams.Out, format, resp.Messages, emailLogColumns); err != nil {
+				return err
+			}
+			if format != output.FormatJSON && resp.NextPageCursor != "" {
+				fmt.Fprintf(f.IOStreams.Out, "\nNext page: --cursor %s\n", resp.NextPageCursor)
+			}
+			return nil
 		},
 	}
 

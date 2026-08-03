@@ -79,7 +79,14 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			return output.Print(f.IOStreams.Out, cmdutil.GetOutputFormat(), resp.Data, threadColumns)
+			format := cmdutil.GetOutputFormat()
+			if err := output.Print(f.IOStreams.Out, format, resp.Data, threadColumns); err != nil {
+				return err
+			}
+			if format != output.FormatJSON && resp.LastID != "" {
+				fmt.Fprintf(f.IOStreams.Out, "\nNext page: --last-id %s\n", resp.LastID)
+			}
+			return nil
 		},
 	}
 

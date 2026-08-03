@@ -79,6 +79,9 @@ func TestEmailLogsList(t *testing.T) {
 	if !strings.Contains(output, "delivered") {
 		t.Errorf("expected output to contain 'delivered', got:\n%s", output)
 	}
+	if !strings.Contains(output, "--cursor cursor-abc") {
+		t.Errorf("expected output to surface the next-page cursor, got:\n%s", output)
+	}
 }
 
 func TestEmailLogsListJSON(t *testing.T) {

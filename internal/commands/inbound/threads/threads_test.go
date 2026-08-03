@@ -70,6 +70,9 @@ func TestThreadsList(t *testing.T) {
 	if !strings.Contains(buf.String(), "Support request") {
 		t.Errorf("expected output to contain subject, got:\n%s", buf.String())
 	}
+	if !strings.Contains(buf.String(), "--last-id thr_1") {
+		t.Errorf("expected output to surface the next-page cursor, got:\n%s", buf.String())
+	}
 }
 
 func TestThreadsGet(t *testing.T) {

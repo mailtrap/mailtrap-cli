@@ -1,0 +1,25 @@
+internal/commands/inbound/folders/folders_test.go
+  s_576b7c7847dbe9::t_d370c45ad8fbd7 1-180
+internal/commands/inbound/messages/messages_test.go
+  s_576b7c7847dbe9::t_2bbae7759d564d 1-235
+internal/commands/inbound/threads/threads_test.go
+  s_576b7c7847dbe9::t_cfb407b51b7000 1-127
+internal/commands/inbound/inboxes/inboxes_test.go
+  s_576b7c7847dbe9::t_5da8a473a948c5 1-181
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "6e7132029802086b136672496f8ecdc1aa5431bb",
+  "prompts": {},
+  "sessions": {
+    "s_576b7c7847dbe9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d8b14b-0d1c-434e-b1b9-68d02404448f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

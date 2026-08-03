@@ -15,6 +15,7 @@ import (
 func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	var name string
 	var permissions string
+	var expiresAt string
 
 	cmd := &cobra.Command{
 		Use:   "create",
@@ -57,6 +58,9 @@ Example:
 				"name":      name,
 				"resources": resources,
 			}
+			if cmd.Flags().Changed("expires-at") {
+				body["expires_at"] = expiresAtValue(expiresAt)
+			}
 
 			var token APIToken
 			if err := c.Post(context.Background(), client.BaseGeneral, path, body, &token); err != nil {
@@ -70,6 +74,7 @@ Example:
 
 	cmd.Flags().StringVar(&name, "name", "", "API token name (required)")
 	cmd.Flags().StringVar(&permissions, "permissions", "", `Permissions JSON array (required), e.g. '[{"resource_type":"account","resource_id":123,"access_level":100}]'`)
+	cmd.Flags().StringVar(&expiresAt, "expires-at", "", expiresAtUsage)
 
 	return cmd
 }

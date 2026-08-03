@@ -15,6 +15,8 @@ type Domain struct {
 	DomainName       string `json:"domain_name"`
 	DNSVerified      bool   `json:"dns_verified"`
 	ComplianceStatus string `json:"compliance_status"`
+	InboundEnabled   bool   `json:"inbound_enabled"`
+	InboundVerified  bool   `json:"inbound_verified"`
 }
 
 type domainListResponse struct {
@@ -26,6 +28,8 @@ var domainColumns = []output.Column{
 	{Header: "DOMAIN", Field: "domain_name"},
 	{Header: "DNS VERIFIED", Field: "dns_verified"},
 	{Header: "COMPLIANCE", Field: "compliance_status"},
+	{Header: "INBOUND ENABLED", Field: "inbound_enabled"},
+	{Header: "INBOUND VERIFIED", Field: "inbound_verified"},
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {

@@ -11,14 +11,15 @@ import (
 )
 
 type Webhook struct {
-	ID            int      `json:"id"`
-	URL           string   `json:"url"`
-	Active        bool     `json:"active"`
-	WebhookType   string   `json:"webhook_type"`
-	PayloadFormat string   `json:"payload_format"`
-	SendingStream *string  `json:"sending_stream,omitempty"`
-	DomainID      *int     `json:"domain_id,omitempty"`
-	EventTypes    []string `json:"event_types,omitempty"`
+	ID             int      `json:"id"`
+	URL            string   `json:"url"`
+	Active         bool     `json:"active"`
+	WebhookType    string   `json:"webhook_type"`
+	PayloadFormat  string   `json:"payload_format"`
+	SendingStream  *string  `json:"sending_stream,omitempty"`
+	DomainID       *int     `json:"domain_id,omitempty"`
+	InboundInboxID *int     `json:"inbound_inbox_id,omitempty"`
+	EventTypes     []string `json:"event_types,omitempty"`
 }
 
 type webhookListResponse struct {
@@ -37,6 +38,7 @@ var webhookColumns = []output.Column{
 	{Header: "FORMAT", Field: "payload_format"},
 	{Header: "STREAM", Field: "sending_stream"},
 	{Header: "DOMAIN ID", Field: "domain_id"},
+	{Header: "INBOUND INBOX ID", Field: "inbound_inbox_id"},
 	{Header: "EVENTS", Field: "event_types"},
 }
 

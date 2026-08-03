@@ -23,13 +23,14 @@ var webhookCreateColumns = append(append([]output.Column{}, webhookColumns...), 
 
 func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	var (
-		webhookURL    string
-		webhookType   string
-		active        bool
-		payloadFormat string
-		sendingStream string
-		eventTypes    []string
-		domainID      int
+		webhookURL     string
+		webhookType    string
+		active         bool
+		payloadFormat  string
+		sendingStream  string
+		eventTypes     []string
+		domainID       int
+		inboundInboxID int
 	)
 
 	cmd := &cobra.Command{
@@ -73,6 +74,9 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 			if cmd.Flags().Changed("domain-id") {
 				webhookFields["domain_id"] = domainID
 			}
+			if cmd.Flags().Changed("inbound-inbox-id") {
+				webhookFields["inbound_inbox_id"] = inboundInboxID
+			}
 
 			body := map[string]interface{}{"webhook": webhookFields}
 
@@ -87,12 +91,13 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&webhookURL, "url", "", "Webhook URL (required)")
-	cmd.Flags().StringVar(&webhookType, "type", "", "Webhook type: email_sending, audit_log (required)")
+	cmd.Flags().StringVar(&webhookType, "type", "", "Webhook type: email_sending, audit_log, inbound_receiving (required)")
 	cmd.Flags().BoolVar(&active, "active", true, "Whether the webhook is active")
 	cmd.Flags().StringVar(&payloadFormat, "payload-format", "", "Payload format: json, jsonlines")
 	cmd.Flags().StringVar(&sendingStream, "sending-stream", "", "Sending stream: transactional, bulk")
 	cmd.Flags().StringSliceVar(&eventTypes, "event-types", nil, "Event types (comma-separated): delivery, soft_bounce, bounce, suspension, unsubscribe, open, spam_complaint, click, reject")
-	cmd.Flags().IntVar(&domainID, "domain-id", 0, "Domain ID to scope the webhook to")
+	cmd.Flags().IntVar(&domainID, "domain-id", 0, "Domain ID to scope the webhook to (email_sending only)")
+	cmd.Flags().IntVar(&inboundInboxID, "inbound-inbox-id", 0, "Inbox ID to scope the webhook to (inbound_receiving only; omit to apply to all inboxes)")
 
 	return cmd
 }

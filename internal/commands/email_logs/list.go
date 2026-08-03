@@ -12,12 +12,16 @@ import (
 )
 
 type EmailLog struct {
-	MessageID string `json:"message_id"`
-	Subject   string `json:"subject"`
-	From      string `json:"from"`
-	To        string `json:"to"`
-	Status    string `json:"status"`
-	SentAt    string `json:"sent_at"`
+	MessageID    string   `json:"message_id"`
+	Subject      string   `json:"subject"`
+	From         string   `json:"from"`
+	To           string   `json:"to"`
+	Status       string   `json:"status"`
+	SentAt       string   `json:"sent_at"`
+	RFCMessageID string   `json:"rfc_message_id,omitempty"`
+	InReplyTo    string   `json:"in_reply_to,omitempty"`
+	References   []string `json:"references,omitempty"`
+	ThreadID     string   `json:"thread_id,omitempty"`
 }
 
 type emailLogListResponse struct {
@@ -33,6 +37,7 @@ var emailLogColumns = []output.Column{
 	{Header: "TO", Field: "to"},
 	{Header: "STATUS", Field: "status"},
 	{Header: "SENT AT", Field: "sent_at"},
+	{Header: "THREAD ID", Field: "thread_id"},
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {

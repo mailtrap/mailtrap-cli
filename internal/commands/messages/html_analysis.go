@@ -44,8 +44,7 @@ func NewCmdHTMLAnalysis(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, result, nil)
+			return output.Print(f.IOStreams.Out, output.FormatJSON, result, nil)
 		},
 	}
 

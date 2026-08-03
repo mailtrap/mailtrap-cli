@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/mailtrap/mailtrap-cli/internal/commands/messages"
-	"github.com/spf13/viper"
 )
 
 func TestMessagesUpdate(t *testing.T) {
@@ -151,9 +150,6 @@ func TestMessagesHTMLAnalysis(t *testing.T) {
 		w.Write([]byte(`{"status":"ok"}`))
 	})
 	defer cleanup()
-
-	// html-analysis uses GetOutputFormat, so set output to json to ensure clean output
-	viper.Set("output", "json")
 
 	cmd := messages.NewCmdMessages(f)
 	cmd.SetArgs([]string{"html-analysis", "--sandbox-id", "1", "--id", "1"})

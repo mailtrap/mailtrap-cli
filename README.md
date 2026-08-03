@@ -130,6 +130,10 @@ mailtrap inbound messages list --inbox-id 735
 mailtrap inbound messages reply --inbox-id 735 --id <MESSAGE_ID> --text "Thanks for reaching out!"
 mailtrap inbound threads list --inbox-id 735
 
+# API tokens (--expires-at takes an ISO 8601 date-time or 'never'; omit it for the server default)
+mailtrap tokens create --name "ci-token" --permissions '[{"resource_type":"account","resource_id":123,"access_level":100}]' --expires-at 2027-06-01T00:00:00Z
+mailtrap tokens reset --id 42 --expires-at never
+
 # Contacts
 mailtrap contacts create --email "user@example.com" --first-name "John"
 mailtrap contact-lists list
@@ -187,7 +191,7 @@ mailtrap domains list --output text
 | **Accounts** | `accounts list` |
 | **Account Access** | `account-access list`, `account-access remove` |
 | **Permissions** | `permissions resources`, `permissions bulk-update` |
-| **Tokens** | `tokens list`, `tokens get`, `tokens create`, `tokens delete`, `tokens reset` |
+| **Tokens** | `tokens list`, `tokens get`, `tokens create [--expires-at]`, `tokens delete`, `tokens reset [--expires-at]` |
 | **Billing** | `billing usage` |
 | **Organizations** | `organizations list-sub-accounts`, `organizations create-sub-account` |
 | **Config** | `configure`, `completion [bash\|zsh\|fish\|powershell]` |

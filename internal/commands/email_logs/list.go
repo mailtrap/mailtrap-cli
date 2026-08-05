@@ -2,6 +2,7 @@ package emaillogs
 
 import (
 	"context"
+	"fmt"
 	"net/url"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
@@ -12,12 +13,16 @@ import (
 )
 
 type EmailLog struct {
-	MessageID string `json:"message_id"`
-	Subject   string `json:"subject"`
-	From      string `json:"from"`
-	To        string `json:"to"`
-	Status    string `json:"status"`
-	SentAt    string `json:"sent_at"`
+	MessageID    string   `json:"message_id"`
+	Subject      string   `json:"subject"`
+	From         string   `json:"from"`
+	To           string   `json:"to"`
+	Status       string   `json:"status"`
+	SentAt       string   `json:"sent_at"`
+	RFCMessageID string   `json:"rfc_message_id,omitempty"`
+	InReplyTo    string   `json:"in_reply_to,omitempty"`
+	References   []string `json:"references,omitempty"`
+	ThreadID     string   `json:"thread_id,omitempty"`
 }
 
 type emailLogListResponse struct {
@@ -33,6 +38,7 @@ var emailLogColumns = []output.Column{
 	{Header: "TO", Field: "to"},
 	{Header: "STATUS", Field: "status"},
 	{Header: "SENT AT", Field: "sent_at"},
+	{Header: "THREAD ID", Field: "thread_id"},
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {
@@ -110,7 +116,13 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, resp.Messages, emailLogColumns)
+			if err := output.Print(f.IOStreams.Out, format, resp.Messages, emailLogColumns); err != nil {
+				return err
+			}
+			if format != output.FormatJSON && resp.NextPageCursor != "" {
+				fmt.Fprintf(f.IOStreams.Out, "\nNext page: --cursor %s\n", resp.NextPageCursor)
+			}
+			return nil
 		},
 	}
 

@@ -12,11 +12,12 @@ import (
 
 func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 	var (
-		webhookID     string
-		webhookURL    string
-		active        bool
-		payloadFormat string
-		eventTypes    []string
+		webhookID      string
+		webhookURL     string
+		active         bool
+		payloadFormat  string
+		eventTypes     []string
+		inboundInboxID int
 	)
 
 	cmd := &cobra.Command{
@@ -51,6 +52,9 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 			if cmd.Flags().Changed("event-types") {
 				webhookFields["event_types"] = eventTypes
 			}
+			if cmd.Flags().Changed("inbound-inbox-id") {
+				webhookFields["inbound_inbox_id"] = inboundInboxID
+			}
 
 			body := map[string]interface{}{"webhook": webhookFields}
 
@@ -69,6 +73,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().BoolVar(&active, "active", true, "Whether the webhook is active")
 	cmd.Flags().StringVar(&payloadFormat, "payload-format", "", "Payload format: json, jsonlines")
 	cmd.Flags().StringSliceVar(&eventTypes, "event-types", nil, "Event types (comma-separated): delivery, soft_bounce, bounce, suspension, unsubscribe, open, spam_complaint, click, reject")
+	cmd.Flags().IntVar(&inboundInboxID, "inbound-inbox-id", 0, "Inbox ID to scope the webhook to (inbound_receiving only)")
 
 	return cmd
 }

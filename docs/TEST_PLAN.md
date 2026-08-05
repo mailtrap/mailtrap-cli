@@ -335,6 +335,33 @@ Prerequisite: Send an email with an attachment to the sandbox.
 | 21.1 | Configure with token | `mailtrap configure --api-token test-token-123` | Config saved message |
 | 21.2 | Configure without token | `mailtrap configure` | Error or prompts for token |
 
+## 22. Inbound
+
+**Note:** `inbound` commands take no `--account-id` (requests go to `/api/inbound/...`). Folder/inbox lists are bare arrays; message/thread lists return `{"data": [...], "total_count": N, "last_id": "..."}`; reply/forward return `{"message_ids": [...]}`. Reply/reply-all/forward send real email.
+
+| # | Test | Command | Expected |
+|---|------|---------|----------|
+| 22.1 | List folders | `mailtrap inbound folders list` | Table with folder entries |
+| 22.2 | Create folder | `mailtrap inbound folders create --name "Support"` | New folder in output |
+| 22.3 | Get folder | `mailtrap inbound folders get --id <FOLDER_ID>` | Single folder details |
+| 22.4 | Update folder | `mailtrap inbound folders update --id <FOLDER_ID> --name "Renamed"` | Updated folder |
+| 22.5 | Folder missing ID | `mailtrap inbound folders get` | Error: `--id is required` |
+| 22.6 | List inboxes | `mailtrap inbound inboxes list --folder-id <FOLDER_ID>` | Table with inbox entries |
+| 22.7 | Create inbox | `mailtrap inbound inboxes create --folder-id <FOLDER_ID> --name "Support inbox"` | New inbox in output |
+| 22.8 | Get inbox | `mailtrap inbound inboxes get --folder-id <FOLDER_ID> --id <INBOX_ID>` | Single inbox details |
+| 22.9 | Inbox missing folder-id | `mailtrap inbound inboxes list` | Error: `--folder-id is required` |
+| 22.10 | List messages | `mailtrap inbound messages list --inbox-id <INBOX_ID>` | Table with message entries |
+| 22.11 | List messages (page) | `mailtrap inbound messages list --inbox-id <INBOX_ID> --last-id <LAST_ID>` | Next page |
+| 22.12 | Get message | `mailtrap inbound messages get --inbox-id <INBOX_ID> --id <MESSAGE_ID>` | Message with body |
+| 22.13 | Reply | `mailtrap inbound messages reply --inbox-id <INBOX_ID> --id <MESSAGE_ID> --text "Thanks"` | Message IDs of the sent reply |
+| 22.14 | Forward | `mailtrap inbound messages forward --inbox-id <INBOX_ID> --id <MESSAGE_ID> --to a@b.com` | Message IDs of the forward |
+| 22.15 | Forward missing to | `mailtrap inbound messages forward --inbox-id <INBOX_ID> --id <MESSAGE_ID>` | Error: `--to is required` |
+| 22.16 | List threads | `mailtrap inbound threads list --inbox-id <INBOX_ID>` | Table with thread entries |
+| 22.17 | Get thread | `mailtrap inbound threads get --inbox-id <INBOX_ID> --id <THREAD_ID>` | Thread with messages |
+| 22.18 | Delete message | `mailtrap inbound messages delete --inbox-id <INBOX_ID> --id <MESSAGE_ID>` | Success message |
+
+**Cleanup:** Delete created inbox and folder (`inbound inboxes delete`, `inbound folders delete`).
+
 ---
 
 ## Discovered Bugs / Issues
@@ -376,6 +403,7 @@ Run tests in dependency order so earlier tests create resources needed by later 
 19. **Billing** (read-only)
 20. **Organizations** (read-only, skip create unless safe)
 21. **Configure** (local config only)
+22. **Inbound** (CRUD for folders/inboxes; messages/threads need received mail)
 
 ---
 

@@ -1,0 +1,19 @@
+internal/commands/messages/html_analysis.go
+  s_e5ecd1d1403e19::t_ec89bc1ceefff8 47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "e69623de04468aeb9f064b68fae7757fe2d2e235",
+  "prompts": {},
+  "sessions": {
+    "s_e5ecd1d1403e19": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "09041e82-b22f-4cc7-94f1-a40aa367e0c7",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

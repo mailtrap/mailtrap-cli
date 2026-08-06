@@ -1,0 +1,38 @@
+internal/commands/email_logs/list.go
+  s_576b7c7847dbe9::t_bd5732ce32bd3b 15-24
+  s_576b7c7847dbe9::t_6ee38ee2d422e3 40
+internal/commands/domains/list.go
+  s_576b7c7847dbe9::t_1336af01e83094 31-32
+  s_576b7c7847dbe9::t_07fef322d3ce3a 18-19
+internal/commands/webhooks/update.go
+  s_576b7c7847dbe9::t_aac194dccdfd32 76
+  s_576b7c7847dbe9::t_329346107b04d4 79
+  s_576b7c7847dbe9::t_7d63cdc67df4fb 55-57
+  s_576b7c7847dbe9::t_5d7bc84fafa6ce 15-20
+internal/commands/webhooks/create.go
+  s_576b7c7847dbe9::t_d2073e9239a91c 94
+  s_576b7c7847dbe9::t_532eaa32c3e634 99-100
+  s_576b7c7847dbe9::t_436617759d05f8 30-33
+  s_576b7c7847dbe9::t_329346107b04d4 26-29
+  s_576b7c7847dbe9::t_5b679a1da2cbfb 77-79
+internal/commands/webhooks/list.go
+  s_576b7c7847dbe9::t_eb5890d11a67f2 41
+  s_576b7c7847dbe9::t_329346107b04d4 14-18
+  s_576b7c7847dbe9::t_681da146381df2 19-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "98e2cc737ea7f1ebb98dc402bcdab38d5bacfd32",
+  "prompts": {},
+  "sessions": {
+    "s_576b7c7847dbe9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d8b14b-0d1c-434e-b1b9-68d02404448f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

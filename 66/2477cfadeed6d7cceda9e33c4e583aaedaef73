@@ -1,0 +1,37 @@
+internal/commands/emailcampaigns/create.go
+  s_8b9eb1b74fa672::t_9abdf3f7980552 23-24
+  s_8b9eb1b74fa672::t_0cbc68ba067e81 52
+  s_8b9eb1b74fa672::t_687651c20b3ec1 5
+internal/commands/emailcampaigns/emailcampaigns_test.go
+  s_8b9eb1b74fa672::t_dc464e14040b58 262
+  s_8b9eb1b74fa672::t_e0d60c12a1e669 337-338
+  s_8b9eb1b74fa672::t_10cae6391265bf 145-146
+  s_8b9eb1b74fa672::t_f5f0c7f2d84adc 221-222
+  s_8b9eb1b74fa672::t_5b9964dc2b38fd 298
+  s_8b9eb1b74fa672::t_075033b2503150 50-51
+internal/commands/emailcampaigns/list.go
+  s_8b9eb1b74fa672::t_53dff0fa1211e5 78
+  s_8b9eb1b74fa672::t_c6a3b90141b7e3 46-47
+README.md
+  s_8b9eb1b74fa672::t_1774cd4ee8f9d3 127
+internal/commands/emailcampaigns/attributes.go
+  s_8b9eb1b74fa672::t_1c2990da0f6688 52-53
+  s_8b9eb1b74fa672::t_1fe88737a91e5f 28
+  s_8b9eb1b74fa672::t_75edd99e87097b 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "662477cfadeed6d7cceda9e33c4e583aaedaef73",
+  "prompts": {},
+  "sessions": {
+    "s_8b9eb1b74fa672": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95754cb3-701a-4fef-bc0a-347aa8fd1362",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

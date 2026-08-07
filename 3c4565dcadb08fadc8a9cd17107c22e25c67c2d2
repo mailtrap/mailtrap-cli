@@ -1,0 +1,30 @@
+README.md
+  s_576b7c7847dbe9::t_f262555ff9838c 162
+  s_576b7c7847dbe9::t_7707810e95675d 119-125
+docs/TEST_PLAN.md
+  s_576b7c7847dbe9::t_4d5afe655eb14a 406
+  s_576b7c7847dbe9::t_bed4637c9af8bc 338-339,341-364
+  s_576b7c7847dbe9::t_f916a23c838f00 340
+skills/mailtrap-cli/SKILL.md
+  s_576b7c7847dbe9::t_8209f3f02c4c62 51
+  s_576b7c7847dbe9::t_ca6d238306beb7 40
+skills/mailtrap-cli/references/inbound.md
+  s_576b7c7847dbe9::t_82be5f5059f0b0 1-4,6-185
+  s_576b7c7847dbe9::t_e9c98fa948b215 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "3c4565dcadb08fadc8a9cd17107c22e25c67c2d2",
+  "prompts": {},
+  "sessions": {
+    "s_576b7c7847dbe9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d8b14b-0d1c-434e-b1b9-68d02404448f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}

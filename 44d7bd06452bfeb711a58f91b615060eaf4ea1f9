@@ -1,0 +1,47 @@
+internal/commands/inbound/inboxes/get.go
+  s_576b7c7847dbe9::t_7e63b30f9c07a5 1-50
+internal/commands/inbound/folders/delete.go
+  s_576b7c7847dbe9::t_b1e87a339afa7a 1-42
+cmd/root.go
+  s_576b7c7847dbe9::t_a04437eecb07cb 20
+  s_576b7c7847dbe9::t_680770fb508ca9 64-66
+internal/commands/inbound/folders/get.go
+  s_576b7c7847dbe9::t_d724034f32273f 1-43
+internal/commands/inbound/folders/folders.go
+  s_576b7c7847dbe9::t_c7841ea17fcb90 1-22
+internal/commands/inbound/folders/list.go
+  s_576b7c7847dbe9::t_f198e58ea2d427 1-42
+internal/commands/inbound/inbound.go
+  s_576b7c7847dbe9::t_b49521059dd33f 1-9,11-21
+  s_576b7c7847dbe9::t_aef4f19ea11b23 10
+internal/commands/inbound/inboxes/create.go
+  s_576b7c7847dbe9::t_aca5b32fff1086 1-58
+internal/commands/inbound/folders/update.go
+  s_576b7c7847dbe9::t_df84376e507535 1-52
+internal/commands/inbound/inboxes/list.go
+  s_576b7c7847dbe9::t_82ed77eae9bad3 1-58
+internal/commands/inbound/inboxes/update.go
+  s_576b7c7847dbe9::t_016d61e99f1d20 1-57
+internal/commands/inbound/inboxes/delete.go
+  s_576b7c7847dbe9::t_11ed5766b25d2d 1-49
+internal/commands/inbound/inboxes/inboxes.go
+  s_576b7c7847dbe9::t_d541699d8115a2 1-22
+internal/commands/inbound/folders/create.go
+  s_576b7c7847dbe9::t_98f0988930bdde 1-42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "44d7bd06452bfeb711a58f91b615060eaf4ea1f9",
+  "prompts": {},
+  "sessions": {
+    "s_576b7c7847dbe9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d8b14b-0d1c-434e-b1b9-68d02404448f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

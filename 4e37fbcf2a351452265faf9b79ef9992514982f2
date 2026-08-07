@@ -1,0 +1,54 @@
+internal/commands/emailcampaigns/terminate.go
+  s_1d139e47a09853::t_2eec72609ae550 1-10
+internal/commands/emailcampaigns/attributes.go
+  s_1d139e47a09853::t_dedd73fc687232 1-9,11-27,29-51,54-107
+internal/commands/emailcampaigns/get.go
+  s_1d139e47a09853::t_42ddff30b80cbb 1-41
+README.md
+  s_1d139e47a09853::t_9d4103f2db3a22 173
+  s_1d139e47a09853::t_4c58381a122cd2 132-133,135,137-138
+  s_1d139e47a09853::t_f345cabdefc02d 136
+internal/commands/emailcampaigns/delete.go
+  s_1d139e47a09853::t_e26d091176974d 1-41
+internal/commands/emailcampaigns/stats.go
+  s_1d139e47a09853::t_b3299166981eb6 1-20,21-40,41-92
+internal/commands/emailcampaigns/start.go
+  s_1d139e47a09853::t_f89df1acdbdcb0 1-47
+internal/commands/emailcampaigns/schedule.go
+  s_1d139e47a09853::t_309947186efc4f 1-50
+internal/commands/emailcampaigns/reset.go
+  s_1d139e47a09853::t_f96c1a9b0fda79 1-10
+internal/commands/emailcampaigns/create.go
+  s_1d139e47a09853::t_5b976b3150b756 1-4,6-22,25-50,55-57
+  s_1d139e47a09853::t_b00b715a91c000 51,53-54
+internal/commands/emailcampaigns/list.go
+  s_1d139e47a09853::t_99832c0632ad9b 1-45,48-77,79-119,121-125
+  s_1d139e47a09853::t_0f449adb6512cf 120
+internal/commands/emailcampaigns/emailcampaigns.go
+  s_1d139e47a09853::t_afb436e294aca6 1-39
+internal/commands/emailcampaigns/cancel.go
+  s_1d139e47a09853::t_41ee6052a67554 1-10
+internal/commands/emailcampaigns/emailcampaigns_test.go
+  s_1d139e47a09853::t_fd44928434e479 1-49,52-144,147-220,223-261,263-297,299-336,339-519,520-546
+internal/commands/emailcampaigns/update.go
+  s_1d139e47a09853::t_14b42feed2bce8 1-45
+cmd/root.go
+  s_1d139e47a09853::t_89343c35fd6965 78
+  s_1d139e47a09853::t_0aee2eddb169bf 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "4e37fbcf2a351452265faf9b79ef9992514982f2",
+  "prompts": {},
+  "sessions": {
+    "s_1d139e47a09853": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3943c4ee-a6f3-493c-aa4d-bc291df8727e",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

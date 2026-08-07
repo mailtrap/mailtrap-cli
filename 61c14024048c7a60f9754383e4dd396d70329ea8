@@ -1,0 +1,20 @@
+internal/commands/webhooks/create.go
+  s_576b7c7847dbe9::t_9be6ee68a8f7b9 94
+  s_576b7c7847dbe9::t_879dcda7e94aa5 99
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "61c14024048c7a60f9754383e4dd396d70329ea8",
+  "prompts": {},
+  "sessions": {
+    "s_576b7c7847dbe9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d8b14b-0d1c-434e-b1b9-68d02404448f",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

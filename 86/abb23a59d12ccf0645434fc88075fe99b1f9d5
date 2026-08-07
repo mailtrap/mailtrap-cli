@@ -1,0 +1,22 @@
+internal/commands/emailcampaigns/update.go
+  s_8b9eb1b74fa672::t_4bf5b55d7f6c33 5
+  s_8b9eb1b74fa672::t_5e4b179aa4b18d 41-43
+internal/commands/emailcampaigns/emailcampaigns_test.go
+  s_8b9eb1b74fa672::t_3575a38bc22c5b 422-441
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "86abb23a59d12ccf0645434fc88075fe99b1f9d5",
+  "prompts": {},
+  "sessions": {
+    "s_8b9eb1b74fa672": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95754cb3-701a-4fef-bc0a-347aa8fd1362",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

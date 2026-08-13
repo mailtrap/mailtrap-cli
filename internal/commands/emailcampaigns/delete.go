@@ -15,6 +15,7 @@ func NewCmdDelete(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delete",
 		Short: "Delete an email campaign",
+		Long:  "Delete an email campaign. Only a campaign in the draft state can be deleted.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := cmdutil.RequireFlag("id", campaignID); err != nil {
 				return err

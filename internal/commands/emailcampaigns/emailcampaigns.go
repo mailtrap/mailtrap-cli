@@ -5,8 +5,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Email campaigns are token-scoped: the API path is /api/email_campaigns with no
-// account_id segment, so commands in this package do not call config.RequireAccountID().
+// Email campaigns are token-scoped: the account is resolved from the API token, so
+// commands in this package do not call config.RequireAccountID().
 const basePath = "/api/email_campaigns"
 
 func campaignPath(segments ...string) string {

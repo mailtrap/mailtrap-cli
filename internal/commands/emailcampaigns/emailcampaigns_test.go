@@ -70,7 +70,6 @@ func TestEmailCampaignsList(t *testing.T) {
 		if r.Method != http.MethodGet {
 			t.Errorf("expected GET, got %s", r.Method)
 		}
-		// Token-scoped endpoint: no /api/accounts/{id} prefix.
 		if r.URL.Path != "/api/email_campaigns" {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}

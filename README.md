@@ -129,6 +129,14 @@ mailtrap contact-lists list
 mailtrap contact-lists list --search news
 mailtrap contact-fields create --name "Company" --data-type text --merge-tag "{{company}}"
 
+# Email campaigns
+mailtrap email-campaigns list --search spring
+mailtrap email-campaigns create --name "Spring Sale" --domain-id 4321 --from-local-part news --subject "Spring is here"
+mailtrap email-campaigns update --id 4567 --body-html '<h1>Hi {{first_name}}!</h1><a href="__unsubscribe_url__">Unsubscribe</a>' --contact-list-ids 55,56
+mailtrap email-campaigns update --id 4567 --clear-contact-lists
+mailtrap email-campaigns schedule --id 4567 --datetime "2030-01-01T09:00:00Z"
+mailtrap email-campaigns stats --id 4567 --start-date 2026-05-01 --end-date 2026-05-31
+
 # Sandboxes & projects
 mailtrap projects list
 mailtrap sandboxes list
@@ -163,6 +171,7 @@ mailtrap domains list --output text
 | **Contacts** | `contacts get`, `contacts create`, `contacts update`, `contacts delete`, `contacts import`, `contacts export`, `contacts import-status`, `contacts export-status`, `contacts create-event` |
 | **Contact Lists** | `contact-lists list`, `contact-lists get`, `contact-lists create`, `contact-lists update`, `contact-lists delete` |
 | **Contact Fields** | `contact-fields list`, `contact-fields get`, `contact-fields create`, `contact-fields update`, `contact-fields delete` |
+| **Email Campaigns** | `email-campaigns list`, `email-campaigns get`, `email-campaigns create`, `email-campaigns update`, `email-campaigns delete`, `email-campaigns start`, `email-campaigns schedule`, `email-campaigns cancel`, `email-campaigns terminate`, `email-campaigns reset`, `email-campaigns stats` |
 | **Projects** | `projects list`, `projects get`, `projects create`, `projects update`, `projects delete` |
 | **Sandboxes** | `sandboxes list`, `sandboxes get`, `sandboxes create`, `sandboxes update`, `sandboxes delete`, `sandboxes clean`, `sandboxes mark-read`, `sandboxes reset-credentials`, `sandboxes toggle-email`, `sandboxes reset-email` |
 | **Messages** | `messages list`, `messages get`, `messages update`, `messages delete`, `messages forward`, `messages spam-score`, `messages html-analysis`, `messages headers`, `messages html`, `messages text`, `messages source`, `messages raw`, `messages eml` |

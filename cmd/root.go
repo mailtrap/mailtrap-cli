@@ -17,6 +17,7 @@ import (
 	"github.com/mailtrap/mailtrap-cli/internal/commands/contacts"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/domains"
 	email_logs "github.com/mailtrap/mailtrap-cli/internal/commands/email_logs"
+	"github.com/mailtrap/mailtrap-cli/internal/commands/emailcampaigns"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/inbound"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/sandboxes"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/messages"
@@ -74,6 +75,7 @@ func NewRootCmd(f *cmdutil.Factory) *cobra.Command {
 	cmd.AddCommand(contacts.NewCmdContacts(f))
 	cmd.AddCommand(contact_lists.NewCmdContactLists(f))
 	cmd.AddCommand(contact_fields.NewCmdContactFields(f))
+	cmd.AddCommand(emailcampaigns.NewCmdEmailCampaigns(f))
 
 	// Account Management
 	cmd.AddCommand(accounts.NewCmdAccounts(f))

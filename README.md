@@ -103,7 +103,14 @@ mailtrap messages spam-score --sandbox-id 12345 --id 67890
 # Domains
 mailtrap domains list
 mailtrap domains create --name "yourdomain.com"
+mailtrap domains update --id 123 --open-tracking --click-tracking --tracking-opt-out
 mailtrap domains send-setup-instructions --id 123 --email "admin@yourdomain.com"
+
+# Company info (required for domain compliance verification)
+mailtrap company-info get --domain-id 123
+mailtrap company-info create --domain-id 123 --name "Your Company" --address "123 Main St" \
+  --city "San Francisco" --country US --zip-code 94105 --website-url "https://yourdomain.com"
+mailtrap company-info update --domain-id 123 --city "New York" --zip-code 10001
 
 # Templates
 mailtrap templates list
@@ -161,7 +168,8 @@ mailtrap domains list --output text
 |-------|----------|
 | **Sending** | `send transactional`, `send bulk`, `send batch-transactional`, `send batch-bulk` |
 | **Sandbox Send** | `sandbox-send single`, `sandbox-send batch` |
-| **Domains** | `domains list`, `domains get`, `domains create`, `domains delete`, `domains send-setup-instructions` |
+| **Domains** | `domains list`, `domains get`, `domains create`, `domains update`, `domains delete`, `domains send-setup-instructions` |
+| **Company Info** | `company-info get`, `company-info create`, `company-info update` |
 | **Templates** | `templates list`, `templates get`, `templates create`, `templates update`, `templates delete` |
 | **Suppressions** | `suppressions list`, `suppressions delete` |
 | **Webhooks** | `webhooks list`, `webhooks get`, `webhooks create`, `webhooks update`, `webhooks delete` |

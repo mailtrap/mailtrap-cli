@@ -11,12 +11,16 @@ import (
 )
 
 type Domain struct {
-	ID               int    `json:"id"`
-	DomainName       string `json:"domain_name"`
-	DNSVerified      bool   `json:"dns_verified"`
-	ComplianceStatus string `json:"compliance_status"`
-	InboundEnabled   bool   `json:"inbound_enabled"`
-	InboundVerified  bool   `json:"inbound_verified"`
+	ID                         int    `json:"id"`
+	DomainName                 string `json:"domain_name"`
+	DNSVerified                bool   `json:"dns_verified"`
+	ComplianceStatus           string `json:"compliance_status"`
+	InboundEnabled             bool   `json:"inbound_enabled"`
+	InboundVerified            bool   `json:"inbound_verified"`
+	OpenTrackingEnabled        bool   `json:"open_tracking_enabled"`
+	ClickTrackingEnabled       bool   `json:"click_tracking_enabled"`
+	TrackingOptOutEnabled      bool   `json:"tracking_opt_out_enabled"`
+	AutoUnsubscribeLinkEnabled bool   `json:"auto_unsubscribe_link_enabled"`
 }
 
 type domainListResponse struct {
@@ -31,6 +35,14 @@ var domainColumns = []output.Column{
 	{Header: "INBOUND ENABLED", Field: "inbound_enabled"},
 	{Header: "INBOUND VERIFIED", Field: "inbound_verified"},
 }
+
+var domainSettingsColumns = append(
+	append([]output.Column{}, domainColumns...),
+	output.Column{Header: "OPEN TRACKING", Field: "open_tracking_enabled"},
+	output.Column{Header: "CLICK TRACKING", Field: "click_tracking_enabled"},
+	output.Column{Header: "TRACKING OPT OUT", Field: "tracking_opt_out_enabled"},
+	output.Column{Header: "AUTO UNSUBSCRIBE", Field: "auto_unsubscribe_link_enabled"},
+)
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{

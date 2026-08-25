@@ -14,6 +14,7 @@ func NewCmdDomains(f *cmdutil.Factory) *cobra.Command {
 	cmd.AddCommand(NewCmdList(f))
 	cmd.AddCommand(NewCmdGet(f))
 	cmd.AddCommand(NewCmdCreate(f))
+	cmd.AddCommand(NewCmdUpdate(f))
 	cmd.AddCommand(NewCmdDelete(f))
 	cmd.AddCommand(NewCmdSendSetupInstructions(f))
 

@@ -1,0 +1,55 @@
+internal/commands/companyinfo/companyinfo_test.go
+  s_a416a2bbf03afd::t_bd0c682d4de8be 1-249,252-255,257,259,261-262,264,266-268
+  s_a416a2bbf03afd::t_d7c6e5e959e8eb 250-251,256,258,260,263,265
+internal/commands/companyinfo/create.go
+  s_a416a2bbf03afd::t_4030b33c034497 31-44
+  s_a416a2bbf03afd::t_873e946d3f0fe2 1-30,45-100
+internal/commands/domains/update.go
+  s_a416a2bbf03afd::t_e3a4bb67215f36 60-63
+  s_a416a2bbf03afd::t_74cacd69400d73 5
+  s_a416a2bbf03afd::t_d80b1af53ed520 1-4,6-15,22-58,64-84
+  s_a416a2bbf03afd::t_f10b107dbc2df9 16-21
+  s_a416a2bbf03afd::t_973590c430f6cc 59
+internal/commands/domains/domains_extended_test.go
+  s_a416a2bbf03afd::t_8598ea3943ee97 69-136,139-142,144,146,148-149,151,153-155
+  s_a416a2bbf03afd::t_cc8afea46a7adc 137-138,143,145,147,150,152
+internal/commands/domains/domains.go
+  s_a416a2bbf03afd::t_5fbad500b42c50 17
+internal/commands/companyinfo/get.go
+  s_a416a2bbf03afd::t_a4ad66b7bdb210 1-41
+internal/commands/companyinfo/update.go
+  s_a416a2bbf03afd::t_863f92c3e805d5 1-4,6-61,67-92
+  s_a416a2bbf03afd::t_ff1668569a61fc 5
+  s_a416a2bbf03afd::t_89fc18238ec946 63-66
+  s_a416a2bbf03afd::t_e1850df7905df9 62
+internal/commands/domains/list.go
+  s_a416a2bbf03afd::t_6f93bb8eb26b04 14-23
+  s_a416a2bbf03afd::t_26ba1d1eadad83 39-46
+README.md
+  s_a416a2bbf03afd::t_484594625dbe02 106,109-113
+  s_a416a2bbf03afd::t_f0a65a721b7ab3 114
+  s_a416a2bbf03afd::t_19b9f1aaeccf82 171-172
+cmd/root.go
+  s_a416a2bbf03afd::t_12d57595632bce 60
+  s_a416a2bbf03afd::t_25ed8748741230 14
+  s_a416a2bbf03afd::t_f10b107dbc2df9 15,28,39-41,101-103
+internal/commands/companyinfo/companyinfo.go
+  s_a416a2bbf03afd::t_231d9032c4ce6a 34-35
+  s_a416a2bbf03afd::t_c3fe9b91aa60f7 1-33,36-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "9f2e68d1a4d128bc7e48c350f08f0eaa04beb57c",
+  "prompts": {},
+  "sessions": {
+    "s_a416a2bbf03afd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73aab1cf-cfd1-42b8-b656-f26905d319ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}

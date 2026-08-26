@@ -1,0 +1,19 @@
+internal/client/client_test.go
+  s_a04cddf7f5a845::t_c8d268da40c738 310,328-329
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "5efc3ddca602b9d9bcb4c8f4e6388dce60fe8979",
+  "prompts": {},
+  "sessions": {
+    "s_a04cddf7f5a845": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9f776e36-4023-47f4-b3bb-0ccb03052443",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Alex Shchyhol <oleksandr.shchyhol@railsware.com>"
+    }
+  }
+}

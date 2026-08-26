@@ -1,0 +1,84 @@
+internal/commands/emailcampaigns/terminate.go
+  s_1d139e47a09853::t_2eec72609ae550 1-10
+internal/commands/emailcampaigns/attributes.go
+  s_1d139e47a09853::t_dedd73fc687232 1-9,11-27,29-51,54-107
+  s_8b9eb1b74fa672::t_1c2990da0f6688 52-53
+  s_8b9eb1b74fa672::t_1fe88737a91e5f 28
+  s_8b9eb1b74fa672::t_75edd99e87097b 10
+internal/commands/emailcampaigns/get.go
+  s_1d139e47a09853::t_42ddff30b80cbb 1-41
+README.md
+  s_1d139e47a09853::t_9d4103f2db3a22 174
+  s_1d139e47a09853::t_4c58381a122cd2 132-133,135,138-139
+  s_1d139e47a09853::t_f345cabdefc02d 137
+  s_1d139e47a09853::t_2d25b9f4b478e8 136
+  s_8b9eb1b74fa672::t_1774cd4ee8f9d3 134
+internal/commands/emailcampaigns/delete.go
+  s_1d139e47a09853::t_e26d091176974d 1-41
+internal/commands/emailcampaigns/stats.go
+  s_1d139e47a09853::t_b3299166981eb6 1-20,21-40,41-92
+internal/commands/emailcampaigns/start.go
+  s_1d139e47a09853::t_f89df1acdbdcb0 1-47
+internal/commands/emailcampaigns/schedule.go
+  s_1d139e47a09853::t_309947186efc4f 1-50
+internal/commands/emailcampaigns/reset.go
+  s_1d139e47a09853::t_f96c1a9b0fda79 1-10
+internal/commands/emailcampaigns/create.go
+  s_1d139e47a09853::t_5b976b3150b756 1-4,6-22,25-50,55-57
+  s_1d139e47a09853::t_b00b715a91c000 51,53-54
+  s_8b9eb1b74fa672::t_9abdf3f7980552 23-24
+  s_8b9eb1b74fa672::t_0cbc68ba067e81 52
+  s_8b9eb1b74fa672::t_687651c20b3ec1 5
+internal/commands/emailcampaigns/list.go
+  s_1d139e47a09853::t_99832c0632ad9b 1-45,48-77,79-119,121-125
+  s_1d139e47a09853::t_0f449adb6512cf 120
+  s_8b9eb1b74fa672::t_53dff0fa1211e5 78
+  s_8b9eb1b74fa672::t_c6a3b90141b7e3 46-47
+internal/commands/emailcampaigns/emailcampaigns.go
+  s_1d139e47a09853::t_afb436e294aca6 1-39
+internal/commands/emailcampaigns/cancel.go
+  s_1d139e47a09853::t_41ee6052a67554 1-10
+internal/commands/emailcampaigns/emailcampaigns_test.go
+  s_1d139e47a09853::t_fd44928434e479 1-49,52-144,147-220,223-261,263-297,299-336,339-366,441-593,594-620
+  s_1d139e47a09853::t_e30157d2d68e3e 372-389,391-394,407-436,438-440
+  s_8b9eb1b74fa672::t_dc464e14040b58 262
+  s_8b9eb1b74fa672::t_e0d60c12a1e669 337-338
+  s_8b9eb1b74fa672::t_10cae6391265bf 145-146
+  s_8b9eb1b74fa672::t_f5f0c7f2d84adc 221-222
+  s_8b9eb1b74fa672::t_5b9964dc2b38fd 298
+  s_8b9eb1b74fa672::t_075033b2503150 50-51
+  s_8b9eb1b74fa672::t_3575a38bc22c5b 438-440
+internal/commands/emailcampaigns/update.go
+  s_1d139e47a09853::t_14b42feed2bce8 1-4,6-14,16-31,44-56,61-63
+  s_1d139e47a09853::t_55e78d8ec39640 57-60
+  s_1d139e47a09853::t_95f93404c0aee3 15,32-40
+  s_8b9eb1b74fa672::t_4bf5b55d7f6c33 5
+  s_8b9eb1b74fa672::t_5e4b179aa4b18d 41-43
+cmd/root.go
+  s_1d139e47a09853::t_89343c35fd6965 78
+  s_1d139e47a09853::t_0aee2eddb169bf 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "67f5678aadf0b2cf1fb9289f906efeacb5b628ee",
+  "prompts": {},
+  "sessions": {
+    "s_1d139e47a09853": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3943c4ee-a6f3-493c-aa4d-bc291df8727e",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    },
+    "s_8b9eb1b74fa672": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95754cb3-701a-4fef-bc0a-347aa8fd1362",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

@@ -279,7 +279,7 @@ func TestTokensCreateExpiresAtRejected(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"error": "expires_at must be in the future",
+			"errors": map[string][]string{"base": {"Expiration date must be in the future"}},
 		})
 	})
 	defer cleanup()
@@ -295,7 +295,7 @@ func TestTokensCreateExpiresAtRejected(t *testing.T) {
 	if !strings.Contains(err.Error(), "API error 422") {
 		t.Errorf("expected error to contain 'API error 422', got: %v", err)
 	}
-	if !strings.Contains(err.Error(), "expires_at must be in the future") {
+	if !strings.Contains(err.Error(), "Expiration date must be in the future") {
 		t.Errorf("expected error to contain the server message, got: %v", err)
 	}
 }

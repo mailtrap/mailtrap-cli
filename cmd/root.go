@@ -11,20 +11,21 @@ import (
 	"github.com/mailtrap/mailtrap-cli/internal/commands/accounts"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/attachments"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/billing"
+	"github.com/mailtrap/mailtrap-cli/internal/commands/companyinfo"
+	"github.com/mailtrap/mailtrap-cli/internal/commands/configure"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/contact_fields"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/contact_lists"
-	"github.com/mailtrap/mailtrap-cli/internal/commands/configure"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/contacts"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/domains"
 	email_logs "github.com/mailtrap/mailtrap-cli/internal/commands/email_logs"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/emailcampaigns"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/inbound"
-	"github.com/mailtrap/mailtrap-cli/internal/commands/sandboxes"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/messages"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/organizations"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/permissions"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/projects"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/sandbox_send"
+	"github.com/mailtrap/mailtrap-cli/internal/commands/sandboxes"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/send"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/stats"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/suppressions"
@@ -35,9 +36,9 @@ import (
 
 func NewRootCmd(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mailtrap",
-		Short: "CLI for the Mailtrap email platform",
-		Long:  "A command-line interface for managing Mailtrap email sending, sandbox testing, contacts, and account settings.",
+		Use:           "mailtrap",
+		Short:         "CLI for the Mailtrap email platform",
+		Long:          "A command-line interface for managing Mailtrap email sending, sandbox testing, contacts, and account settings.",
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}
@@ -56,6 +57,7 @@ func NewRootCmd(f *cmdutil.Factory) *cobra.Command {
 
 	// Sending Management
 	cmd.AddCommand(domains.NewCmdDomains(f))
+	cmd.AddCommand(companyinfo.NewCmdCompanyInfo(f))
 	cmd.AddCommand(suppressions.NewCmdSuppressions(f))
 	cmd.AddCommand(stats.NewCmdStats(f))
 	cmd.AddCommand(templates.NewCmdTemplates(f))
@@ -96,9 +98,9 @@ func NewRootCmd(f *cmdutil.Factory) *cobra.Command {
 
 func newCompletionCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "completion [bash|zsh|fish|powershell]",
-		Short: "Generate shell completion scripts",
-		Args:  cobra.ExactArgs(1),
+		Use:       "completion [bash|zsh|fish|powershell]",
+		Short:     "Generate shell completion scripts",
+		Args:      cobra.ExactArgs(1),
 		ValidArgs: []string{"bash", "zsh", "fish", "powershell"},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			switch args[0] {

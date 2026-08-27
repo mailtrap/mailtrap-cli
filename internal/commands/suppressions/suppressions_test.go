@@ -57,7 +57,7 @@ func TestSuppressionsList(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"id": "uuid-1", "email": "test@example.com", "reason": "hard_bounce", "created_at": "2024-01-01"},
+			{"id": "uuid-1", "email": "test@example.com", "type": "hard bounce", "sending_stream": "transactional", "domain_name": "example.com", "created_at": "2024-01-01"},
 		})
 	})
 	defer cleanup()
@@ -75,8 +75,8 @@ func TestSuppressionsList(t *testing.T) {
 	if !strings.Contains(output, "test@example.com") {
 		t.Errorf("expected output to contain 'test@example.com', got:\n%s", output)
 	}
-	if !strings.Contains(output, "hard_bounce") {
-		t.Errorf("expected output to contain 'hard_bounce', got:\n%s", output)
+	if !strings.Contains(output, "hard bounce") {
+		t.Errorf("expected output to contain 'hard bounce', got:\n%s", output)
 	}
 }
 
@@ -84,7 +84,7 @@ func TestSuppressionsListJSON(t *testing.T) {
 	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"id": "uuid-1", "email": "test@example.com", "reason": "hard_bounce", "created_at": "2024-01-01"},
+			{"id": "uuid-1", "email": "test@example.com", "type": "hard bounce", "sending_stream": "transactional", "domain_name": "example.com", "created_at": "2024-01-01"},
 		})
 	})
 	defer cleanup()
@@ -126,7 +126,7 @@ func TestSuppressionsListWithFilters(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"id": "uuid-1", "email": "test@example.com", "reason": "hard_bounce", "created_at": "2024-01-01"},
+			{"id": "uuid-1", "email": "test@example.com", "type": "hard bounce", "sending_stream": "transactional", "domain_name": "example.com", "created_at": "2024-01-01"},
 		})
 	})
 	defer cleanup()
@@ -187,5 +187,43 @@ func TestSuppressionsDeleteMissingID(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "--id is required") {
 		t.Errorf("expected error to contain '--id is required', got: %v", err)
+	}
+}
+
+func TestSuppressionsListPagination(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		query := r.URL.Query()
+		if got := query.Get("start_time"); got != "2024-01-01" {
+			t.Errorf("expected start_time '2024-01-01', got %q", got)
+		}
+		if got := query.Get("end_time"); got != "2024-01-31" {
+			t.Errorf("expected end_time '2024-01-31', got %q", got)
+		}
+		if got := query.Get("last_id"); got != "uuid-1" {
+			t.Errorf("expected last_id 'uuid-1', got %q", got)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode([]map[string]interface{}{
+			{"id": "uuid-2", "email": "next@example.com"},
+		})
+	})
+	defer cleanup()
+
+	cmd := suppressions.NewCmdSuppressions(f)
+	cmd.SetArgs([]string{
+		"list",
+		"--start-time", "2024-01-01",
+		"--end-time", "2024-01-31",
+		"--last-id", "uuid-1",
+	})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if !strings.Contains(buf.String(), "next@example.com") {
+		t.Errorf("expected output to contain 'next@example.com', got:\n%s", buf.String())
 	}
 }

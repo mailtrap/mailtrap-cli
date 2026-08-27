@@ -64,6 +64,7 @@ For scripting and piping, always use `--output json`.
 | `billing` | Usage information | [accounts.md](references/accounts.md) |
 | `organizations` | Sub-account management | [accounts.md](references/accounts.md) |
 | `suppressions` | Suppression list management | [domains.md](references/domains.md) |
+| `tracking-opt-outs` | Open and click tracking opt-outs | [domains.md](references/domains.md) |
 
 ## Gotchas
 

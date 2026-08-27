@@ -37,7 +37,7 @@ For scripting and piping, always use `--output json`.
 - **Batch operations**: use `--file path/to/payload.json` with a JSON array of email objects
 - **Config priority**: CLI flags > environment variables > config file
 - **Exit codes**: 0 on success, 1 on error (with descriptive message)
-- **API base**: most requests go to `https://mailtrap.io/api/accounts/{account-id}/...`. The `inbound` group is the exception — it goes to `https://mailtrap.io/api/inbound/...` and takes no `--account-id`.
+- **API base**: most requests go to `https://mailtrap.io/api/accounts/{account-id}/...`. Several groups do not and take no `--account-id`: `inbound` (`/api/inbound/...`), `company-info` (`/api/domains/{domain-id}/company_info`), `tracking-opt-outs` (`/api/tracking_opt_outs`), `email-campaigns` (`/api/email_campaigns`) and `organizations` (`/api/organizations/...`). `send` and `sandbox-send` go to their own hosts entirely.
 
 ## Command Groups
 
@@ -45,6 +45,7 @@ For scripting and piping, always use `--output json`.
 |-------|---------|-----------|
 | `send` | Transactional & bulk email sending | [sending.md](references/sending.md) |
 | `domains` | Sending domain management | [domains.md](references/domains.md) |
+| `company-info` | Sending domain company info for compliance verification | [domains.md](references/domains.md) |
 | `templates` | Email template CRUD | [templates.md](references/templates.md) |
 | `stats` | Aggregated sending statistics | [email-logs.md](references/email-logs.md) |
 | `email-logs` | Individual email log lookup | [email-logs.md](references/email-logs.md) |

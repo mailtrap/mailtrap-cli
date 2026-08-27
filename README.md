@@ -112,6 +112,16 @@ mailtrap company-info create --domain-id 123 --name "Your Company" --address "12
   --city "San Francisco" --country US --zip-code 94105 --website-url "https://yourdomain.com"
 mailtrap company-info update --domain-id 123 --city "New York" --zip-code 10001
 
+# Suppressions
+mailtrap suppressions list --email "bounced@example.com"
+mailtrap suppressions create --email "bounced@example.com" --domain-id 123 --sending-stream transactional
+mailtrap suppressions delete --id "2fe148b8-b019-431f-ab3f-107663fdf868"
+
+# Tracking opt-outs
+mailtrap tracking-opt-outs list
+mailtrap tracking-opt-outs create --email "no-tracking@example.com" --domain-id 123
+mailtrap tracking-opt-outs delete --id "0198f1c4-0c0f-7a1c-8b0e-3f5d2a1b4c6d"
+
 # Templates
 mailtrap templates list
 mailtrap templates create --name "Welcome" --subject "Hello {{name}}" --body-html '<h1>Hi!</h1>'
@@ -171,7 +181,8 @@ mailtrap domains list --output text
 | **Domains** | `domains list`, `domains get`, `domains create`, `domains update`, `domains delete`, `domains send-setup-instructions` |
 | **Company Info** | `company-info get`, `company-info create`, `company-info update` |
 | **Templates** | `templates list`, `templates get`, `templates create`, `templates update`, `templates delete` |
-| **Suppressions** | `suppressions list`, `suppressions delete` |
+| **Suppressions** | `suppressions list`, `suppressions create`, `suppressions delete` |
+| **Tracking Opt-outs** | `tracking-opt-outs list`, `tracking-opt-outs create`, `tracking-opt-outs delete` |
 | **Webhooks** | `webhooks list`, `webhooks get`, `webhooks create`, `webhooks update`, `webhooks delete` |
 | **Stats** | `stats get`, `stats by-domain`, `stats by-category`, `stats by-esp`, `stats by-date` |
 | **Email Logs** | `email-logs list`, `email-logs get` |

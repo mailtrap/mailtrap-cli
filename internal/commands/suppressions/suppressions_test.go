@@ -190,6 +190,146 @@ func TestSuppressionsDeleteMissingID(t *testing.T) {
 	}
 }
 
+func TestSuppressionsCreate(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			t.Errorf("expected POST, got %s", r.Method)
+		}
+		if r.URL.Path != "/api/accounts/123/suppressions" {
+			t.Errorf("unexpected path: %s", r.URL.Path)
+		}
+
+		var body map[string]interface{}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			t.Fatalf("could not decode request body: %v", err)
+		}
+		if body["email"] != "test@example.com" {
+			t.Errorf("expected email 'test@example.com', got %v", body["email"])
+		}
+		if body["domain_id"] != float64(4321) {
+			t.Errorf("expected domain_id 4321, got %v", body["domain_id"])
+		}
+		if body["sending_stream"] != "transactional" {
+			t.Errorf("expected sending_stream 'transactional', got %v", body["sending_stream"])
+		}
+		if _, ok := body["type"]; ok {
+			t.Errorf("expected type to be omitted, got %v", body["type"])
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"data": map[string]interface{}{
+				"id":             "uuid-1",
+				"email":          "test@example.com",
+				"type":           "manual import",
+				"sending_stream": "transactional",
+				"domain_name":    "example.com",
+				"created_at":     "2024-01-01",
+			},
+		})
+	})
+	defer cleanup()
+
+	cmd := suppressions.NewCmdSuppressions(f)
+	cmd.SetArgs([]string{
+		"create",
+		"--email", "test@example.com",
+		"--domain-id", "4321",
+		"--sending-stream", "transactional",
+	})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	output := buf.String()
+	if !strings.Contains(output, "manual import") {
+		t.Errorf("expected output to contain 'manual import', got:\n%s", output)
+	}
+}
+
+func TestSuppressionsCreateSendsType(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		var body map[string]interface{}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			t.Fatalf("could not decode request body: %v", err)
+		}
+		if body["type"] != "manual import" {
+			t.Errorf("expected type 'manual import', got %v", body["type"])
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"data": map[string]interface{}{"id": "uuid-1", "email": "test@example.com"},
+		})
+	})
+	defer cleanup()
+
+	cmd := suppressions.NewCmdSuppressions(f)
+	cmd.SetArgs([]string{
+		"create",
+		"--email", "test@example.com",
+		"--domain-id", "4321",
+		"--sending-stream", "transactional",
+		"--type", "manual import",
+	})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestSuppressionsCreateMissingFlags(t *testing.T) {
+	cases := []struct {
+		name string
+		args []string
+		want string
+	}{
+		{
+			name: "missing email",
+			args: []string{"create", "--domain-id", "4321", "--sending-stream", "transactional"},
+			want: "--email is required",
+		},
+		{
+			name: "missing domain id",
+			args: []string{"create", "--email", "test@example.com", "--sending-stream", "transactional"},
+			want: "--domain-id is required",
+		},
+		{
+			name: "missing sending stream",
+			args: []string{"create", "--email", "test@example.com", "--domain-id", "4321"},
+			want: "--sending-stream is required",
+		},
+		{
+			name: "non-positive domain id",
+			args: []string{"create", "--email", "test@example.com", "--domain-id", "0", "--sending-stream", "transactional"},
+			want: "--domain-id must be greater than 0",
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			f, _, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+				t.Error("expected no request to be sent")
+			})
+			defer cleanup()
+
+			cmd := suppressions.NewCmdSuppressions(f)
+			cmd.SetArgs(tc.args)
+
+			err := cmd.Execute()
+			if err == nil {
+				t.Fatal("expected error, got nil")
+			}
+			if !strings.Contains(err.Error(), tc.want) {
+				t.Errorf("expected error to contain %q, got: %v", tc.want, err)
+			}
+		})
+	}
+}
+
 func TestSuppressionsListPagination(t *testing.T) {
 	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()

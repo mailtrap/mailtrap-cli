@@ -186,6 +186,9 @@ func TestTokensCreate(t *testing.T) {
 		if len(resources) != 1 {
 			t.Errorf("expected 1 resource, got %d", len(resources))
 		}
+		if _, ok := payload["expires_at"]; ok {
+			t.Errorf("expected no expires_at key, got %v", payload["expires_at"])
+		}
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
@@ -206,6 +209,94 @@ func TestTokensCreate(t *testing.T) {
 	output := buf.String()
 	if !strings.Contains(output, "new-token") {
 		t.Errorf("expected output to contain 'new-token', got:\n%s", output)
+	}
+}
+
+func TestTokensCreateWithExpiresAt(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		var payload map[string]interface{}
+		if err := json.Unmarshal(body, &payload); err != nil {
+			t.Fatalf("failed to parse request body: %v", err)
+		}
+
+		if payload["expires_at"] != "2027-06-01T00:00:00Z" {
+			t.Errorf("expected expires_at '2027-06-01T00:00:00Z', got %v", payload["expires_at"])
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"id": 2, "name": "new-token", "last_4_digits": "efgh", "created_by": "", "expires_at": "2027-06-01T00:00:00Z", "token": "full-token-value",
+		})
+	})
+	defer cleanup()
+
+	cmd := tokens.NewCmdTokens(f)
+	cmd.SetArgs([]string{"create", "--name", "new-token", "--permissions", `[{"resource_type":"account","resource_id":123,"access_level":100}]`, "--expires-at", "2027-06-01T00:00:00Z"})
+	cmd.SetOut(buf)
+
+	err := cmd.Execute()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestTokensCreateExpiresAtNever(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		var payload map[string]interface{}
+		if err := json.Unmarshal(body, &payload); err != nil {
+			t.Fatalf("failed to parse request body: %v", err)
+		}
+
+		value, ok := payload["expires_at"]
+		if !ok {
+			t.Error("expected expires_at key to be present")
+		}
+		if value != nil {
+			t.Errorf("expected expires_at to be null, got %v", value)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"id": 2, "name": "new-token", "last_4_digits": "efgh", "created_by": "", "expires_at": nil, "token": "full-token-value",
+		})
+	})
+	defer cleanup()
+
+	cmd := tokens.NewCmdTokens(f)
+	cmd.SetArgs([]string{"create", "--name", "new-token", "--permissions", `[{"resource_type":"account","resource_id":123,"access_level":100}]`, "--expires-at", "never"})
+	cmd.SetOut(buf)
+
+	err := cmd.Execute()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestTokensCreateExpiresAtRejected(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"errors": map[string][]string{"base": {"Expiration date must be in the future"}},
+		})
+	})
+	defer cleanup()
+
+	cmd := tokens.NewCmdTokens(f)
+	cmd.SetArgs([]string{"create", "--name", "new-token", "--permissions", `[{"resource_type":"account","resource_id":123,"access_level":100}]`, "--expires-at", "2020-01-01T00:00:00Z"})
+	cmd.SetOut(buf)
+
+	err := cmd.Execute()
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "API error 422") {
+		t.Errorf("expected error to contain 'API error 422', got: %v", err)
+	}
+	if !strings.Contains(err.Error(), "Expiration date must be in the future") {
+		t.Errorf("expected error to contain the server message, got: %v", err)
 	}
 }
 
@@ -294,6 +385,11 @@ func TestTokensReset(t *testing.T) {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 
+		body, _ := io.ReadAll(r.Body)
+		if len(body) != 0 {
+			t.Errorf("expected empty request body, got %s", body)
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"token": "new-token-value",
@@ -313,5 +409,67 @@ func TestTokensReset(t *testing.T) {
 	output := buf.String()
 	if !strings.Contains(output, "new-token-value") {
 		t.Errorf("expected output to contain 'new-token-value', got:\n%s", output)
+	}
+}
+
+func TestTokensResetWithExpiresAt(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		var payload map[string]interface{}
+		if err := json.Unmarshal(body, &payload); err != nil {
+			t.Fatalf("failed to parse request body: %v", err)
+		}
+
+		if payload["expires_at"] != "2027-06-01T00:00:00Z" {
+			t.Errorf("expected expires_at '2027-06-01T00:00:00Z', got %v", payload["expires_at"])
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"token": "new-token-value",
+		})
+	})
+	defer cleanup()
+
+	cmd := tokens.NewCmdTokens(f)
+	cmd.SetArgs([]string{"reset", "--id", "1", "--expires-at", "2027-06-01T00:00:00Z"})
+	cmd.SetOut(buf)
+
+	err := cmd.Execute()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestTokensResetExpiresAtNeverCaseInsensitive(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		var payload map[string]interface{}
+		if err := json.Unmarshal(body, &payload); err != nil {
+			t.Fatalf("failed to parse request body: %v", err)
+		}
+
+		value, ok := payload["expires_at"]
+		if !ok {
+			t.Error("expected expires_at key to be present")
+		}
+		if value != nil {
+			t.Errorf("expected expires_at to be null, got %v", value)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"token": "new-token-value",
+		})
+	})
+	defer cleanup()
+
+	cmd := tokens.NewCmdTokens(f)
+	cmd.SetArgs([]string{"reset", "--id", "1", "--expires-at", "NEVER"})
+	cmd.SetOut(buf)
+
+	err := cmd.Execute()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
 	}
 }

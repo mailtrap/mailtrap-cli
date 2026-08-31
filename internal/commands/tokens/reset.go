@@ -13,6 +13,7 @@ import (
 
 func NewCmdReset(f *cmdutil.Factory) *cobra.Command {
 	var tokenID string
+	var expiresAt string
 
 	cmd := &cobra.Command{
 		Use:   "reset",
@@ -34,8 +35,13 @@ func NewCmdReset(f *cmdutil.Factory) *cobra.Command {
 
 			path := cmdutil.AccountPath("api_tokens", fmt.Sprintf("%s", tokenID), "reset")
 
+			var body interface{}
+			if cmd.Flags().Changed("expires-at") {
+				body = map[string]interface{}{"expires_at": expiresAtValue(expiresAt)}
+			}
+
 			var resp interface{}
-			if err := c.Post(context.Background(), client.BaseGeneral, path, nil, &resp); err != nil {
+			if err := c.Post(context.Background(), client.BaseGeneral, path, body, &resp); err != nil {
 				return err
 			}
 
@@ -50,6 +56,7 @@ func NewCmdReset(f *cmdutil.Factory) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&tokenID, "id", "", "API token ID")
+	cmd.Flags().StringVar(&expiresAt, "expires-at", "", expiresAtUsage)
 
 	return cmd
 }

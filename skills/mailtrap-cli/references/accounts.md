@@ -58,6 +58,7 @@ Create a new API token.
 |------|------|----------|-------------|
 | `--name` | string | Yes | Token name |
 | `--permissions` | string | Yes | Permissions JSON array, e.g. `'[{"resource_type":"account","resource_id":123,"access_level":100}]'` |
+| `--expires-at` | string | No | Token expiration as an ISO 8601 date-time, e.g. `2027-06-01T00:00:00Z`. Pass `never` for a token that never expires. Omit for the server default (a 1-year default is being rolled out) |
 
 **Note:** The token value is shown only once in the response. Store it securely.
 
@@ -80,6 +81,7 @@ Reset (regenerate) an API token.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--id` | string | Yes | Token ID |
+| `--expires-at` | string | No | New token expiration as an ISO 8601 date-time, e.g. `2027-06-01T00:00:00Z`. Pass `never` for a token that never expires. Omit for the server default (a 1-year default is being rolled out) |
 
 **Note:** The new token value is shown only once. The old token stops working immediately.
 

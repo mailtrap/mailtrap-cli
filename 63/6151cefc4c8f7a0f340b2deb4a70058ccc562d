@@ -1,0 +1,23 @@
+internal/commands/organizations/delete_sub_account.go
+  s_84c25ad63d8c76::t_8f9ac5328f8910 1-54
+internal/commands/organizations/organizations.go
+  s_84c25ad63d8c76::t_da31eb4d1f5762 16
+internal/commands/organizations/organizations_test.go
+  s_84c25ad63d8c76::t_a49b6b91da3b5e 153-200
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "636151cefc4c8f7a0f340b2deb4a70058ccc562d",
+  "prompts": {},
+  "sessions": {
+    "s_84c25ad63d8c76": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1fbe9c4a-85b3-45c0-922e-f12aed1c5674",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Alex Shchyhol <oleksandr.shchyhol@railsware.com>"
+    }
+  }
+}

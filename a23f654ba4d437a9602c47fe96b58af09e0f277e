@@ -1,0 +1,25 @@
+internal/commands/suppressions/suppressions_test.go
+  s_a416a2bbf03afd::t_87567123a893f6 305-309
+internal/commands/trackingoptouts/trackingoptouts_test.go
+  s_a416a2bbf03afd::t_87567123a893f6 229-233
+internal/commands/suppressions/create.go
+  s_a416a2bbf03afd::t_41777a648903d1 36-38
+internal/commands/trackingoptouts/create.go
+  s_a416a2bbf03afd::t_0bb4a5f9d2f136 33-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "a23f654ba4d437a9602c47fe96b58af09e0f277e",
+  "prompts": {},
+  "sessions": {
+    "s_a416a2bbf03afd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73aab1cf-cfd1-42b8-b656-f26905d319ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

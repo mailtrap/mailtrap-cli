@@ -1,0 +1,19 @@
+skills/mailtrap-cli/references/email-logs.md
+  s_a416a2bbf03afd::t_70f1d83543cb24 11-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "a22c9caae1fcb0e7d37fb1541eb01d5932a0faaa",
+  "prompts": {},
+  "sessions": {
+    "s_a416a2bbf03afd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73aab1cf-cfd1-42b8-b656-f26905d319ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

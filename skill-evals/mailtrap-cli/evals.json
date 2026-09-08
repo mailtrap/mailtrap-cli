@@ -171,6 +171,15 @@
     }
   },
   {
+    "name": "delete_sub_account",
+    "prompt": "Remove sub-account 12347 from organization 2000002",
+    "expected": {
+      "command": "organizations delete-sub-account",
+      "flags": ["--org-id", "--sub-account-id"],
+      "must_not_contain": ["accounts delete", "account-access remove", "list-sub-accounts"]
+    }
+  },
+  {
     "name": "send_with_cc_bcc",
     "prompt": "Send a transactional email from boss@acme.com to team@acme.com, CC manager@acme.com, BCC hr@acme.com with subject 'Update'",
     "expected": {

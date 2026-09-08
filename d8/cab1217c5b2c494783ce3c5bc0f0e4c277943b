@@ -1,0 +1,25 @@
+README.md
+  s_84c25ad63d8c76::t_d1b6a505c78164 207
+docs/TEST_PLAN.md
+  s_84c25ad63d8c76::t_dbc26b01e56823 328,330,405,434,436
+skill-evals/mailtrap-cli/evals.json
+  s_84c25ad63d8c76::t_2422bd2952bea8 173-181
+skills/mailtrap-cli/references/accounts.md
+  s_84c25ad63d8c76::t_492d38ca08a806 135-147
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "d8cab1217c5b2c494783ce3c5bc0f0e4c277943b",
+  "prompts": {},
+  "sessions": {
+    "s_84c25ad63d8c76": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1fbe9c4a-85b3-45c0-922e-f12aed1c5674",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Alex Shchyhol <oleksandr.shchyhol@railsware.com>"
+    }
+  }
+}

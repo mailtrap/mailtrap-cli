@@ -325,8 +325,9 @@ Prerequisite: Send an email with an attachment to the sandbox.
 | 20.1 | List sub-accounts | `mailtrap organizations list-sub-accounts` | Table with sub-accounts |
 | 20.2 | Create sub-account | `mailtrap organizations create-sub-account --name "test-sub"` | New sub-account |
 | 20.3 | Missing name | `mailtrap organizations create-sub-account` | Error: `--name is required` |
+| 20.4 | Delete sub-account | `mailtrap organizations delete-sub-account --org-id <ORG_ID> --sub-account-id <NEW_ID>` | Success message; repeated call returns 404 |
 
-**Caution:** Creating sub-accounts may have billing implications.
+**Caution:** Creating sub-accounts may have billing implications. Deleting a sub-account is permanent and removes all of its data; deleting the organization's last sub-account also deletes the organization. Only delete the sub-account created in 20.2.
 
 ## 21. Configure
 
@@ -401,7 +402,7 @@ Run tests in dependency order so earlier tests create resources needed by later 
 17. **Permissions** (read/update)
 18. **Tokens** (CRUD — may need admin token)
 19. **Billing** (read-only)
-20. **Organizations** (read-only, skip create unless safe)
+20. **Organizations** (read-only, skip create/delete unless safe – delete only the sub-account created in 20.2)
 21. **Configure** (local config only)
 22. **Inbound** (CRUD for folders/inboxes; messages/threads need received mail)
 
@@ -430,6 +431,6 @@ Run tests in dependency order so earlier tests create resources needed by later 
 | Permissions | 2 | 3 |
 | Tokens | 5 | 6 |
 | Billing | 1 | 2 |
-| Organizations | 2 | 3 |
+| Organizations | 3 | 4 |
 | Configure | 1 | 2 |
-| **Total** | **~90** | **~107** |
+| **Total** | **~91** | **~108** |

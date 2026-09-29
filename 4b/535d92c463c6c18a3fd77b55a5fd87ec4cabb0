@@ -1,0 +1,21 @@
+internal/output/page_test.go
+  s_9b6c91d8748263::t_b8ed06a590c1da 1-83
+internal/output/page.go
+  s_9b6c91d8748263::t_ea05da28e0757a 1-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4b535d92c463c6c18a3fd77b55a5fd87ec4cabb0",
+  "prompts": {},
+  "sessions": {
+    "s_9b6c91d8748263": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "167f51ad-c991-4710-9d53-fd1593350402",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}

@@ -23,7 +23,7 @@ If a required flag is missing, the command exits with an error listing the missi
 
 ## Output Formats
 
-Use `-o` / `--output` to control output format:
+Use `-o` / `--output` (or the `MAILTRAP_OUTPUT` environment variable) to control output format:
 - `table` (default) — human-readable table
 - `json` — machine-readable JSON
 - `text` — plain text

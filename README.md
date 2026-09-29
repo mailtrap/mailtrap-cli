@@ -46,6 +46,8 @@ You can also use environment variables:
 
 ```bash
 export MAILTRAP_API_TOKEN=your-token
+export MAILTRAP_ACCOUNT_ID=your-account-id
+export MAILTRAP_OUTPUT=json  # table (default), json or text
 ```
 
 ### 2. Send an email
@@ -174,6 +176,9 @@ mailtrap domains list --output json
 
 # Text
 mailtrap domains list --output text
+
+# Set the default format for every command
+export MAILTRAP_OUTPUT=json
 ```
 
 ## Commands

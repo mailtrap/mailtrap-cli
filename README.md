@@ -181,6 +181,12 @@ mailtrap domains list --output text
 export MAILTRAP_OUTPUT=json
 ```
 
+With `--output json`, commands print the API response as returned. Paginated lists (`inbound messages list`, `inbound threads list`, `email-logs list`, `email-campaigns list`, `tracking-opt-outs list`) print the full response object, so the next-page cursor and total count are available to scripts:
+
+```bash
+mailtrap inbound messages list --inbox-id 735 -o json | jq -r '.last_id // empty'
+```
+
 ## Commands
 
 | Group | Commands |

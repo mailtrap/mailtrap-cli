@@ -28,7 +28,19 @@ Use `-o` / `--output` (or the `MAILTRAP_OUTPUT` environment variable) to control
 - `json` — machine-readable JSON
 - `text` — plain text
 
-For scripting and piping, always use `--output json`.
+For scripting and piping, always use `--output json`. JSON output is the API response as returned: every field is kept, and empty values stay as `[]` / `null` rather than being dropped.
+
+Table and text output show a summary and, for paginated lists, a `Next page: --<flag> <cursor>` footer. In JSON, paginated lists print the full response object instead of a bare array:
+
+| Command | Items | Total | Next-page cursor → flag |
+|---------|-------|-------|-------------------------|
+| `inbound messages list` | `.data` | `.total_count` | `.last_id` → `--last-id` |
+| `inbound threads list` | `.data` | `.total_count` | `.last_id` → `--last-id` |
+| `email-logs list` | `.messages` | `.total_count` | `.next_page_cursor` → `--cursor` |
+| `email-campaigns list` | `.data` | — | `.pagination.next_token` → `--token` |
+| `tracking-opt-outs list` | `.data` | — | `.last_id` → `--last-id` |
+
+A `null` cursor means there are no more pages. `suppressions list` and `messages list` return a bare array; pass the last item's `id` as `--last-id` for the next page.
 
 ## Key Conventions
 

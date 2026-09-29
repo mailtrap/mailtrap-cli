@@ -2,6 +2,7 @@ package emailcampaigns
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/url"
 
@@ -63,10 +64,6 @@ type EmailCampaign struct {
 	Template             *Template        `json:"template,omitempty"`
 }
 
-type campaignListResponse struct {
-	Data []EmailCampaign `json:"data"`
-}
-
 type campaignResponse struct {
 	Data EmailCampaign `json:"data"`
 }
@@ -78,6 +75,12 @@ var campaignColumns = []output.Column{
 	{Header: "DOMAIN", Field: "domain_name"},
 	{Header: "RECIPIENTS", Field: "recipient_total_count"},
 	{Header: "CREATED", Field: "created_at"},
+}
+
+var campaignsPage = output.Page{
+	Items:      "data",
+	Cursor:     []string{"pagination", "next_token"},
+	CursorFlag: "token",
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {
@@ -107,13 +110,12 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 				query.Set("token", fmt.Sprintf("%d", token))
 			}
 
-			var resp campaignListResponse
+			var resp json.RawMessage
 			if err := c.Get(context.Background(), client.BaseGeneral, basePath, query, &resp); err != nil {
 				return err
 			}
 
-			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, resp.Data, campaignColumns)
+			return output.PrintPage(f.IOStreams.Out, cmdutil.GetOutputFormat(), resp, campaignsPage, campaignColumns)
 		},
 	}
 

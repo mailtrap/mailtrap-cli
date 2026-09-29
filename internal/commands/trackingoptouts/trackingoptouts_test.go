@@ -104,15 +104,21 @@ func TestTrackingOptOutsListJSON(t *testing.T) {
 	}
 
 	output := buf.String()
-	var result []map[string]interface{}
+	var result struct {
+		Data   []map[string]interface{} `json:"data"`
+		LastID string                   `json:"last_id"`
+	}
 	if err := json.Unmarshal([]byte(output), &result); err != nil {
 		t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, output)
 	}
-	if len(result) != 1 {
-		t.Fatalf("expected 1 tracking opt-out, got %d", len(result))
+	if len(result.Data) != 1 {
+		t.Fatalf("expected 1 tracking opt-out, got %d", len(result.Data))
 	}
-	if result[0]["id"] != "uuid-1" {
-		t.Errorf("expected id 'uuid-1', got %v", result[0]["id"])
+	if result.Data[0]["id"] != "uuid-1" {
+		t.Errorf("expected id 'uuid-1', got %v", result.Data[0]["id"])
+	}
+	if result.LastID != "uuid-1" {
+		t.Errorf("expected last_id 'uuid-1', got %q", result.LastID)
 	}
 }
 

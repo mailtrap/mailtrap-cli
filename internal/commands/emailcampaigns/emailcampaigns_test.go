@@ -115,7 +115,8 @@ func TestEmailCampaignsListJSON(t *testing.T) {
 	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"data": []map[string]interface{}{sampleCampaign()},
+			"data":       []map[string]interface{}{sampleCampaign()},
+			"pagination": map[string]interface{}{"token": 1, "next_token": 2},
 		})
 	})
 	defer cleanup()
@@ -130,19 +131,48 @@ func TestEmailCampaignsListJSON(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	var result []map[string]interface{}
+	var result struct {
+		Data       []map[string]interface{} `json:"data"`
+		Pagination map[string]interface{}   `json:"pagination"`
+	}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
 		t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, buf.String())
 	}
 
-	if len(result) != 1 {
-		t.Fatalf("expected 1 campaign, got %d", len(result))
+	if len(result.Data) != 1 {
+		t.Fatalf("expected 1 campaign, got %d", len(result.Data))
 	}
-	if result[0]["name"] != "Spring Sale" {
-		t.Errorf("expected name 'Spring Sale', got %v", result[0]["name"])
+	if result.Data[0]["name"] != "Spring Sale" {
+		t.Errorf("expected name 'Spring Sale', got %v", result.Data[0]["name"])
 	}
-	if result[0]["domain_id"] != float64(4321) {
-		t.Errorf("expected domain_id 4321, got %v", result[0]["domain_id"])
+	if result.Data[0]["domain_id"] != float64(4321) {
+		t.Errorf("expected domain_id 4321, got %v", result.Data[0]["domain_id"])
+	}
+	if result.Pagination["next_token"] != float64(2) {
+		t.Errorf("expected pagination.next_token 2, got %v", result.Pagination["next_token"])
+	}
+}
+
+func TestEmailCampaignsListNextPage(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"data":       []map[string]interface{}{sampleCampaign()},
+			"pagination": map[string]interface{}{"token": 1, "next_token": 2},
+		})
+	})
+	defer cleanup()
+
+	cmd := emailcampaigns.NewCmdEmailCampaigns(f)
+	cmd.SetArgs([]string{"list"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if !strings.Contains(buf.String(), "Next page: --token 2") {
+		t.Errorf("expected output to surface the next-page token, got:\n%s", buf.String())
 	}
 }
 

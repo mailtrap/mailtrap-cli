@@ -2,7 +2,7 @@ package trackingoptouts
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"net/url"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
@@ -11,9 +11,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type trackingOptOutsListResponse struct {
-	Data   []TrackingOptOut `json:"data"`
-	LastID string           `json:"last_id"`
+var trackingOptOutsPage = output.Page{
+	Items:      "data",
+	Cursor:     []string{"last_id"},
+	CursorFlag: "last-id",
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {
@@ -47,19 +48,12 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 				query.Set("last_id", lastID)
 			}
 
-			var resp trackingOptOutsListResponse
+			var resp json.RawMessage
 			if err := c.Get(context.Background(), client.BaseGeneral, trackingOptOutsPath, query, &resp); err != nil {
 				return err
 			}
 
-			format := cmdutil.GetOutputFormat()
-			if err := output.Print(f.IOStreams.Out, format, resp.Data, trackingOptOutColumns); err != nil {
-				return err
-			}
-			if format != output.FormatJSON && resp.LastID != "" {
-				fmt.Fprintf(f.IOStreams.Out, "\nNext page: --last-id %s\n", resp.LastID)
-			}
-			return nil
+			return output.PrintPage(f.IOStreams.Out, cmdutil.GetOutputFormat(), resp, trackingOptOutsPage, trackingOptOutColumns)
 		},
 	}
 

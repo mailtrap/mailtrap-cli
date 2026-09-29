@@ -2,6 +2,7 @@ package messages
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
@@ -38,7 +39,7 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 
 			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID), "messages", fmt.Sprintf("%s", messageID))
 
-			var message Message
+			var message json.RawMessage
 			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &message); err != nil {
 				return err
 			}

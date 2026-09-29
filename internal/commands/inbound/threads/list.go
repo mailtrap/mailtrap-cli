@@ -2,6 +2,7 @@ package threads
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/url"
 
@@ -11,40 +12,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// InboundThreadMessage represents a message inside a thread. Populated on get-by-id.
-type InboundThreadMessage struct {
-	ID               string `json:"id,omitempty"`
-	VisibilityStatus string `json:"visibility_status,omitempty"`
-	Direction        string `json:"direction,omitempty"`
-	Subject          string `json:"subject,omitempty"`
-	From             string `json:"from,omitempty"`
-	CreatedAt        string `json:"created_at,omitempty"`
-	DeliveryStatus   string `json:"delivery_status,omitempty"`
-}
-
-// InboundThread represents a conversation thread. Messages are populated on get-by-id.
-type InboundThread struct {
-	ID             string                 `json:"id"`
-	Subject        string                 `json:"subject,omitempty"`
-	MessageCount   *int                   `json:"message_count,omitempty"`
-	Size           *int                   `json:"size,omitempty"`
-	LastActivityAt string                 `json:"last_activity_at,omitempty"`
-	Senders        []string               `json:"senders,omitempty"`
-	Recipients     []string               `json:"recipients,omitempty"`
-	Messages       []InboundThreadMessage `json:"messages,omitempty"`
-}
-
-type threadsListResponse struct {
-	Data       []InboundThread `json:"data"`
-	TotalCount int             `json:"total_count"`
-	LastID     string          `json:"last_id"`
-}
-
 var threadColumns = []output.Column{
 	{Header: "ID", Field: "id"},
 	{Header: "SUBJECT", Field: "subject"},
 	{Header: "MESSAGES", Field: "message_count"},
 	{Header: "LAST ACTIVITY", Field: "last_activity_at"},
+}
+
+var threadsPage = output.Page{
+	Items:      "data",
+	Total:      "total_count",
+	Cursor:     []string{"last_id"},
+	CursorFlag: "last-id",
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {
@@ -74,19 +53,12 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 				params.Set("last_id", lastID)
 			}
 
-			var resp threadsListResponse
+			var resp json.RawMessage
 			if err := c.Get(context.Background(), client.BaseGeneral, path, params, &resp); err != nil {
 				return err
 			}
 
-			format := cmdutil.GetOutputFormat()
-			if err := output.Print(f.IOStreams.Out, format, resp.Data, threadColumns); err != nil {
-				return err
-			}
-			if format != output.FormatJSON && resp.LastID != "" {
-				fmt.Fprintf(f.IOStreams.Out, "\nNext page: --last-id %s\n", resp.LastID)
-			}
-			return nil
+			return output.PrintPage(f.IOStreams.Out, cmdutil.GetOutputFormat(), resp, threadsPage, threadColumns)
 		},
 	}
 

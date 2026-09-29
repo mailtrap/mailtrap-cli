@@ -2,6 +2,7 @@ package messages
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
@@ -9,6 +10,17 @@ import (
 	"github.com/mailtrap/mailtrap-cli/internal/output"
 	"github.com/spf13/cobra"
 )
+
+var messageDetailColumns = []output.Column{
+	{Header: "ID", Field: "id"},
+	{Header: "FROM", Field: "from"},
+	{Header: "TO", Field: "to"},
+	{Header: "CC", Field: "cc"},
+	{Header: "SUBJECT", Field: "subject"},
+	{Header: "SIZE", Field: "size"},
+	{Header: "RECEIVED AT", Field: "received_at"},
+	{Header: "THREAD ID", Field: "thread_id"},
+}
 
 func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 	var (
@@ -34,12 +46,12 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 
 			path := fmt.Sprintf("/api/inbound/inboxes/%s/messages/%s", inboxID, messageID)
 
-			var resp InboundMessage
+			var resp json.RawMessage
 			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &resp); err != nil {
 				return err
 			}
 
-			return output.Print(f.IOStreams.Out, cmdutil.GetOutputFormat(), resp, messageColumns)
+			return output.Print(f.IOStreams.Out, cmdutil.GetOutputFormat(), resp, messageDetailColumns)
 		},
 	}
 

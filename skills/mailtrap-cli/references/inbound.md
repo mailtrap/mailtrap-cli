@@ -104,11 +104,13 @@ Messages and threads are accessed via the top-level inbox route (`/api/inbound/i
 | `--inbox-id` | string | Yes | Inbox ID |
 | `--last-id` | string | No | Pagination cursor (`last_id` from the previous response) |
 
+**Output:** In JSON, the full response: `{"data": [...], "total_count": N, "last_id": "..."}`. Pass `last_id` as `--last-id` for the next page; it is `null` on the last page. Table and text print the total and a `Next page: --last-id <value>` footer.
+
 ---
 
 ## inbound messages get
 
-Returns the message with its body and attachment download URLs.
+Returns the message with its body and attachment download URLs. JSON output is the API response as returned, including `attachments` (with `download_url`), `headers`, `references`, `bcc`, `reply_to`, `raw_message_url` and body sizes.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -161,6 +163,8 @@ Each sends a **real email** and returns the sent message IDs.
 |------|------|----------|-------------|
 | `--inbox-id` | string | Yes | Inbox ID |
 | `--last-id` | string | No | Pagination cursor (`last_id` from the previous response) |
+
+**Output:** Same shape as `inbound messages list`: `{"data": [...], "total_count": N, "last_id": "..."}` in JSON.
 
 ---
 

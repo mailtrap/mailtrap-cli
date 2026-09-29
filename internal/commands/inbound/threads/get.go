@@ -2,6 +2,7 @@ package threads
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
@@ -34,7 +35,7 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 
 			path := fmt.Sprintf("/api/inbound/inboxes/%s/threads/%s", inboxID, threadID)
 
-			var resp InboundThread
+			var resp json.RawMessage
 			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &resp); err != nil {
 				return err
 			}

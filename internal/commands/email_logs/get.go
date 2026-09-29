@@ -2,6 +2,7 @@ package emaillogs
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
@@ -32,7 +33,7 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 
 			path := cmdutil.AccountPath("email_logs", opts.ID)
 
-			var result EmailLog
+			var result json.RawMessage
 			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &result); err != nil {
 				return err
 			}

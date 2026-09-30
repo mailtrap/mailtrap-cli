@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -204,6 +205,36 @@ func TestEmailCampaignsGet(t *testing.T) {
 	}
 	if !strings.Contains(output, "1500") {
 		t.Errorf("expected output to contain recipient count, got:\n%s", output)
+	}
+}
+
+func TestEmailCampaignsGetJSONKeepsCampaignAsIs(t *testing.T) {
+	campaign := `{"id":4567,"name":"Spring Sale","reply_to":null,"contact_list_ids":[],` +
+		`"contact_segment_ids":[],"current_state_metadata":{"reason":null},"archived":false}`
+
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		io.WriteString(w, `{"data":`+campaign+`}`)
+	})
+	defer cleanup()
+
+	viper.Set("output", "json")
+
+	cmd := emailcampaigns.NewCmdEmailCampaigns(f)
+	cmd.SetArgs([]string{"get", "--id", "4567"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var got, want map[string]interface{}
+	if err := json.Unmarshal(buf.Bytes(), &got); err != nil {
+		t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, buf.String())
+	}
+	json.Unmarshal([]byte(campaign), &want)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("expected the campaign unchanged\nwant: %v\ngot:  %v", want, got)
 	}
 }
 

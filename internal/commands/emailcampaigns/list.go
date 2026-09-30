@@ -12,60 +12,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type ReplyTo struct {
-	DisplayName string `json:"display_name,omitempty"`
-	LocalPart   string `json:"local_part,omitempty"`
-	Domain      string `json:"domain,omitempty"`
-}
-
-type RecipientError struct {
-	Message   string `json:"message"`
-	RcptIndex int    `json:"rcpt_index"`
-}
-
-type StateMetadata struct {
-	Reason      *string          `json:"reason,omitempty"`
-	Error       *string          `json:"error,omitempty"`
-	Errors      []RecipientError `json:"errors,omitempty"`
-	ScheduledAt *string          `json:"scheduled_at,omitempty"`
-}
-
-type DeliveryOptions struct {
-	EmailsPerHour *int64 `json:"emails_per_hour,omitempty"`
-}
-
-type Template struct {
-	ID        int64    `json:"id"`
-	Subject   string   `json:"subject"`
-	MergeTags []string `json:"merge_tags,omitempty"`
-	BodyHTML  *string  `json:"body_html,omitempty"`
-	BodyText  *string  `json:"body_text,omitempty"`
-}
-
-type EmailCampaign struct {
-	ID                   int64            `json:"id"`
-	DomainID             int64            `json:"domain_id"`
-	DomainName           string           `json:"domain_name"`
-	Name                 string           `json:"name"`
-	FromLocalPart        string           `json:"from_local_part"`
-	FromDisplayName      string           `json:"from_display_name"`
-	ReplyTo              *ReplyTo         `json:"reply_to,omitempty"`
-	CurrentState         string           `json:"current_state"`
-	CurrentStateMetadata *StateMetadata   `json:"current_state_metadata,omitempty"`
-	CreatedAt            string           `json:"created_at"`
-	UpdatedAt            string           `json:"updated_at"`
-	LastStartedAt        *string          `json:"last_started_at,omitempty"`
-	LastStartedAtDate    *string          `json:"last_started_at_date,omitempty"`
-	RecipientTotalCount  *int64           `json:"recipient_total_count,omitempty"`
-	ContactListIDs       []int64          `json:"contact_list_ids,omitempty"`
-	ContactSegmentIDs    []int64          `json:"contact_segment_ids,omitempty"`
-	DeliveryMode         string           `json:"delivery_mode"`
-	DeliveryOptions      *DeliveryOptions `json:"delivery_options,omitempty"`
-	Template             *Template        `json:"template,omitempty"`
-}
-
+// campaignResponse unwraps the data envelope of a single-campaign response and
+// keeps the campaign as the API returned it.
 type campaignResponse struct {
-	Data EmailCampaign `json:"data"`
+	Data json.RawMessage `json:"data"`
 }
 
 var campaignColumns = []output.Column{

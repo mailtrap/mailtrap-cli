@@ -32,10 +32,8 @@ func PrintPage(w io.Writer, format Format, body json.RawMessage, page Page, colu
 	}
 
 	var footer []string
-	if page.Total != "" {
-		if total := lookup(body, page.Total); total != "" {
-			footer = append(footer, "Total: "+total)
-		}
+	if total := lookup(body, page.Total); total != "" {
+		footer = append(footer, "Total: "+total)
 	}
 	if cursor := lookup(body, page.Cursor...); cursor != "" {
 		footer = append(footer, fmt.Sprintf("Next page: --%s %s", page.CursorFlag, cursor))
@@ -49,7 +47,12 @@ func PrintPage(w io.Writer, format Format, body json.RawMessage, page Page, colu
 	return nil
 }
 
+// lookup returns the scalar at path in body, or "" when the path is empty,
+// unset or missing from the response.
 func lookup(body json.RawMessage, path ...string) string {
+	if len(path) == 0 || path[0] == "" {
+		return ""
+	}
 	var v interface{}
 	if json.Unmarshal(body, &v) != nil {
 		return ""

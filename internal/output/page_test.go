@@ -73,6 +73,21 @@ func TestPrintPage_NoFooterOnLastPage(t *testing.T) {
 	}
 }
 
+func TestPrintPage_NoFooterWithoutCursorOrTotal(t *testing.T) {
+	var buf bytes.Buffer
+	body := json.RawMessage(`{"data":[{"id":"a"}],"total_count":7,"last_id":"a"}`)
+	page := Page{Items: "data"}
+
+	if err := PrintPage(&buf, FormatTable, body, page, pageCols); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	out := buf.String()
+	if strings.Contains(out, "Next page") || strings.Contains(out, "Total") {
+		t.Errorf("expected no footer for a page without Cursor or Total, got:\n%s", out)
+	}
+}
+
 func mustMarshal(t *testing.T, v interface{}) string {
 	t.Helper()
 	b, err := json.Marshal(v)

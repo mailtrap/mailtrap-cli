@@ -2,7 +2,10 @@ package messages
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"net/url"
+	"strconv"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
@@ -10,15 +13,6 @@ import (
 	"github.com/mailtrap/mailtrap-cli/internal/output"
 	"github.com/spf13/cobra"
 )
-
-type Message struct {
-	ID        int    `json:"id"`
-	Subject   string `json:"subject"`
-	FromEmail string `json:"from_email"`
-	ToEmail   string `json:"to_email"`
-	IsRead    bool   `json:"is_read"`
-	CreatedAt string `json:"created_at"`
-}
 
 var messageColumns = []output.Column{
 	{Header: "ID", Field: "id"},
@@ -30,7 +24,11 @@ var messageColumns = []output.Column{
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {
-	var sandboxID string
+	var (
+		sandboxID string
+		lastID    string
+		page      int
+	)
 
 	cmd := &cobra.Command{
 		Use:   "list",
@@ -52,17 +50,26 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 
 			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID), "messages")
 
-			var messages []Message
-			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &messages); err != nil {
+			query := url.Values{}
+			if lastID != "" {
+				query.Set("last_id", lastID)
+			}
+			if cmd.Flags().Changed("page") {
+				query.Set("page", strconv.Itoa(page))
+			}
+
+			var messages json.RawMessage
+			if err := c.Get(context.Background(), client.BaseGeneral, path, query, &messages); err != nil {
 				return err
 			}
 
-			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, messages, messageColumns)
+			return output.Print(f.IOStreams.Out, cmdutil.GetOutputFormat(), messages, messageColumns)
 		},
 	}
 
 	cmd.Flags().StringVar(&sandboxID, "sandbox-id", "", "Sandbox ID")
+	cmd.Flags().StringVar(&lastID, "last-id", "", "Pagination cursor (id of the last message from the previous response)")
+	cmd.Flags().IntVar(&page, "page", 1, "Page number to retrieve (ignored when --last-id is set)")
 
 	return cmd
 }

@@ -46,7 +46,7 @@ func NewRootCmd(f *cmdutil.Factory) *cobra.Command {
 
 	cmd.PersistentFlags().String("api-token", "", "Mailtrap API token (env: MAILTRAP_API_TOKEN)")
 	cmd.PersistentFlags().String("account-id", "", "Mailtrap account ID (env: MAILTRAP_ACCOUNT_ID)")
-	cmd.PersistentFlags().StringP("output", "o", "table", "Output format: json, table, text")
+	cmd.PersistentFlags().StringP("output", "o", "table", "Output format: json, table, text (env: MAILTRAP_OUTPUT)")
 
 	viper.BindPFlag("api-token", cmd.PersistentFlags().Lookup("api-token"))
 	viper.BindPFlag("account-id", cmd.PersistentFlags().Lookup("account-id"))

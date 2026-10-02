@@ -190,17 +190,19 @@ Reset the email username of a sandbox.
 
 ## messages list
 
-List all messages in a sandbox.
+List messages in a sandbox, up to 30 per page.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--sandbox-id` | string | Yes | Sandbox ID |
+| `--last-id` | string | No | Pagination cursor: `id` of the last message from the previous response; returns older messages |
+| `--page` | int | No | Page number to retrieve (ignored when `--last-id` is set) |
 
 ---
 
 ## messages get
 
-Get a specific sandbox message.
+Get a specific sandbox message. JSON output is the API response as returned, including sender/recipient names, sizes, template fields and body paths.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|

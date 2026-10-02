@@ -152,6 +152,8 @@ List addresses excluded from open and click tracking.
 | `--end-time` | string | No | Filter by end time |
 | `--last-id` | string | No | Pagination cursor: `last_id` from the previous response |
 
+**Output:** In JSON, the full response: `{"data": [...], "last_id": "..."}`. `last_id` is `null` when there are no more pages.
+
 **Note:** Uses the API token's account; `--account-id` is not needed.
 
 ---

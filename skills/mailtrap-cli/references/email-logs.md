@@ -23,7 +23,7 @@ List email logs (sent email history).
 | `--event` | string | No | Filter by event: `delivery`, `open`, `click`, `bounce`, `spam`, `unsubscribe` |
 | `--category` | string | No | Filter by category |
 
-**Output:** Table/JSON of email logs with ID, to, subject, status, and timestamp. In table and text output the next-page cursor is printed as `--cursor <value>` when more logs are available.
+**Output:** Table of email logs with ID, to, subject, status, and timestamp. Table and text print the total and a `Next page: --cursor <value>` footer when more logs are available. JSON prints the full response: `{"messages": [...], "total_count": N, "next_page_cursor": "..."}`; pass `next_page_cursor` as `--cursor` for the next page.
 
 **Example:**
 ```bash
@@ -37,7 +37,7 @@ mailtrap email-logs list \
 
 ## email-logs get
 
-Get a specific email log entry.
+Get a specific email log entry. JSON output is the API response as returned, including `category`, `custom_variables`, `sending_stream`, template fields and open/click counts.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|

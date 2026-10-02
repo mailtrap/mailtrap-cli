@@ -2,6 +2,7 @@ package messages
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/url"
 
@@ -11,34 +12,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// InboundMessage represents a received inbound message. Body fields
-// (html_body, text_body) are populated only on get-by-id.
-type InboundMessage struct {
-	ID         string   `json:"id"`
-	InboxID    *int     `json:"inbox_id,omitempty"`
-	From       string   `json:"from,omitempty"`
-	To         []string `json:"to,omitempty"`
-	Cc         []string `json:"cc,omitempty"`
-	Subject    string   `json:"subject,omitempty"`
-	Size       *int     `json:"size,omitempty"`
-	ReceivedAt string   `json:"received_at,omitempty"`
-	ThreadID   string   `json:"thread_id,omitempty"`
-	HTMLBody   string   `json:"html_body,omitempty"`
-	TextBody   string   `json:"text_body,omitempty"`
-}
-
-type messagesListResponse struct {
-	Data       []InboundMessage `json:"data"`
-	TotalCount int              `json:"total_count"`
-	LastID     string           `json:"last_id"`
-}
-
 var messageColumns = []output.Column{
 	{Header: "ID", Field: "id"},
 	{Header: "FROM", Field: "from"},
 	{Header: "SUBJECT", Field: "subject"},
 	{Header: "RECEIVED AT", Field: "received_at"},
 	{Header: "THREAD ID", Field: "thread_id"},
+}
+
+var messagesPage = output.Page{
+	Items:      "data",
+	Total:      "total_count",
+	Cursor:     []string{"last_id"},
+	CursorFlag: "last-id",
 }
 
 func NewCmdList(f *cmdutil.Factory) *cobra.Command {
@@ -68,19 +54,12 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 				params.Set("last_id", lastID)
 			}
 
-			var resp messagesListResponse
+			var resp json.RawMessage
 			if err := c.Get(context.Background(), client.BaseGeneral, path, params, &resp); err != nil {
 				return err
 			}
 
-			format := cmdutil.GetOutputFormat()
-			if err := output.Print(f.IOStreams.Out, format, resp.Data, messageColumns); err != nil {
-				return err
-			}
-			if format != output.FormatJSON && resp.LastID != "" {
-				fmt.Fprintf(f.IOStreams.Out, "\nNext page: --last-id %s\n", resp.LastID)
-			}
-			return nil
+			return output.PrintPage(f.IOStreams.Out, cmdutil.GetOutputFormat(), resp, messagesPage, messageColumns)
 		},
 	}
 

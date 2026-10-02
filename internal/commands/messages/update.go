@@ -2,6 +2,7 @@ package messages
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
@@ -42,7 +43,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 				"message": map[string]interface{}{"is_read": isRead},
 			}
 
-			var message Message
+			var message json.RawMessage
 			if err := c.Patch(context.Background(), client.BaseGeneral, path, body, &message); err != nil {
 				return err
 			}

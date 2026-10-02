@@ -46,6 +46,8 @@ You can also use environment variables:
 
 ```bash
 export MAILTRAP_API_TOKEN=your-token
+export MAILTRAP_ACCOUNT_ID=your-account-id
+export MAILTRAP_OUTPUT=json  # table (default), json or text
 ```
 
 ### 2. Send an email
@@ -174,6 +176,15 @@ mailtrap domains list --output json
 
 # Text
 mailtrap domains list --output text
+
+# Set the default format for every command
+export MAILTRAP_OUTPUT=json
+```
+
+With `--output json`, commands print the API response as returned. Paginated lists (`inbound messages list`, `inbound threads list`, `email-logs list`, `email-campaigns list`, `tracking-opt-outs list`) print the full response object, so the next-page cursor and total count are available to scripts:
+
+```bash
+mailtrap inbound messages list --inbox-id 735 -o json | jq -r '.last_id // empty'
 ```
 
 ## Commands

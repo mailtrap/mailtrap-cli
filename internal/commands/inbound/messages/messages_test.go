@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -73,6 +74,9 @@ func TestMessagesList(t *testing.T) {
 	}
 	if !strings.Contains(buf.String(), "--last-id msg_1") {
 		t.Errorf("expected output to surface the next-page cursor, got:\n%s", buf.String())
+	}
+	if !strings.Contains(buf.String(), "Total: 1") {
+		t.Errorf("expected output to surface the total count, got:\n%s", buf.String())
 	}
 }
 
@@ -258,11 +262,52 @@ func TestMessagesListJSON(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	var result []map[string]interface{}
+	var result struct {
+		Data       []map[string]interface{} `json:"data"`
+		TotalCount int                      `json:"total_count"`
+		LastID     string                   `json:"last_id"`
+	}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
 		t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, buf.String())
 	}
-	if len(result) != 1 || result[0]["id"] != "msg_1" {
-		t.Errorf("unexpected JSON result: %v", result)
+	if len(result.Data) != 1 || result.Data[0]["id"] != "msg_1" {
+		t.Errorf("unexpected JSON data: %v", result.Data)
+	}
+	if result.TotalCount != 1 {
+		t.Errorf("expected total_count 1, got %d", result.TotalCount)
+	}
+	if result.LastID != "msg_1" {
+		t.Errorf("expected last_id 'msg_1', got %q", result.LastID)
+	}
+}
+
+func TestMessagesGetJSONKeepsResponseAsIs(t *testing.T) {
+	body := `{"id":"msg_1","cc":[],"reply_to":null,"headers":{"mime-version":"1.0"},` +
+		`"attachments":[{"attachment_id":"att-1","download_url":"https://example.com/att-1"}],` +
+		`"raw_message_url":"https://example.com/raw.eml"}`
+
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		io.WriteString(w, body)
+	})
+	defer cleanup()
+
+	viper.Set("output", "json")
+
+	cmd := messages.NewCmdMessages(f)
+	cmd.SetArgs([]string{"get", "--inbox-id", "201", "--id", "msg_1"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var got, want map[string]interface{}
+	if err := json.Unmarshal(buf.Bytes(), &got); err != nil {
+		t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, buf.String())
+	}
+	json.Unmarshal([]byte(body), &want)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("expected the API response unchanged\nwant: %v\ngot:  %v", want, got)
 	}
 }

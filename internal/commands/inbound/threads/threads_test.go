@@ -150,11 +150,21 @@ func TestThreadsListJSON(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	var result []map[string]interface{}
+	var result struct {
+		Data       []map[string]interface{} `json:"data"`
+		TotalCount int                      `json:"total_count"`
+		LastID     string                   `json:"last_id"`
+	}
 	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
 		t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, buf.String())
 	}
-	if len(result) != 1 || result[0]["id"] != "thr_1" {
-		t.Errorf("unexpected JSON result: %v", result)
+	if len(result.Data) != 1 || result.Data[0]["id"] != "thr_1" {
+		t.Errorf("unexpected JSON data: %v", result.Data)
+	}
+	if result.TotalCount != 1 {
+		t.Errorf("expected total_count 1, got %d", result.TotalCount)
+	}
+	if result.LastID != "thr_1" {
+		t.Errorf("expected last_id 'thr_1', got %q", result.LastID)
 	}
 }

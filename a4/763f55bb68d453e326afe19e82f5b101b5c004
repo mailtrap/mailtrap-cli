@@ -1,0 +1,60 @@
+skills/mailtrap-cli/SKILL.md
+  s_ea02f2a89792e1::t_453ad886c79a90 64
+internal/commands/inbound/forwardrules/forwardrules_test.go
+  s_ea02f2a89792e1::t_453ad886c79a90 1-449
+internal/commands/inbound/forwardrules/delete.go
+  s_ea02f2a89792e1::t_453ad886c79a90 1-49
+internal/commands/inbound/forwardrules/update.go
+  s_ea02f2a89792e1::t_453ad886c79a90 1-71
+internal/commands/inbound/forwardrules/create.go
+  s_ea02f2a89792e1::t_453ad886c79a90 8-50
+  s_ea02f2a89792e1::t_12d2c8830bc7ad 1-7,51-119
+internal/commands/inbound/threads/list.go
+  s_ea02f2a89792e1::t_419c9592d1cb2b 55,57,64-69
+  s_ea02f2a89792e1::t_b8e3c8450016ae 56
+  s_ea02f2a89792e1::t_322ac98bb47030 33,51,75
+internal/commands/inbound/inbound.go
+  s_ea02f2a89792e1::t_453ad886c79a90 6,17,24
+internal/commands/inbound/forwardrules/forwardrules.go
+  s_ea02f2a89792e1::t_453ad886c79a90 1-22
+internal/commands/inbound/messages/messages_test.go
+  s_ea02f2a89792e1::t_b8f47418a60d0a 338,340-349,352,355,359,362,365
+  s_ea02f2a89792e1::t_4d3031742af51c 314-337,339,350-351,353-354,356-358,360-361,363-364,366
+internal/commands/inbound/forwardrules/get.go
+  s_ea02f2a89792e1::t_453ad886c79a90 1-50
+README.md
+  s_ea02f2a89792e1::t_453ad886c79a90 138,144-150,211
+skills/mailtrap-cli/references/inbound.md
+  s_ea02f2a89792e1::t_32aa867d2fbe72 115
+  s_ea02f2a89792e1::t_13106243910ee1 116
+  s_ea02f2a89792e1::t_f943c0617b4650 3,168,176,193-250
+internal/output/page_test.go
+  s_ea02f2a89792e1::t_f9ac6b41b843ca 48-61
+internal/commands/inbound/forwardrules/list.go
+  s_ea02f2a89792e1::t_453ad886c79a90 1-82
+internal/commands/inbound/threads/threads_test.go
+  s_ea02f2a89792e1::t_c5d4494b701f29 264
+  s_ea02f2a89792e1::t_c587596b4bfe8a 196,201,221,260,262-263,265-275,278,281,286,291,294,299,302,305,308
+  s_ea02f2a89792e1::t_8f675b885a75e3 171-195,197-200,202-220,222-259,261,276-277,279-280,282-285,287-290,292-293,295-298,300-301,303-304,306-307,309
+docs/TEST_PLAN.md
+  s_ea02f2a89792e1::t_453ad886c79a90 340,362-375,418,447-448
+internal/output/page.go
+  s_ea02f2a89792e1::t_5fec883a9f8e6d 16
+  s_ea02f2a89792e1::t_474211d4a7e0d2 40-44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a4763f55bb68d453e326afe19e82f5b101b5c004",
+  "prompts": {},
+  "sessions": {
+    "s_ea02f2a89792e1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "87ceb478-60a1-47fe-84f9-1458c02d71bf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

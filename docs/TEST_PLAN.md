@@ -337,7 +337,7 @@ Prerequisite: Send an email with an attachment to the sandbox.
 
 ## 22. Inbound
 
-**Note:** `inbound` commands take no `--account-id` (requests go to `/api/inbound/...`). Folder/inbox lists are bare arrays; message/thread lists return `{"data": [...], "total_count": N, "last_id": "..."}`; reply/forward return `{"message_ids": [...]}`. Reply/reply-all/forward send real email.
+**Note:** `inbound` commands take no `--account-id` (requests go to `/api/inbound/...`). Folder/inbox lists are bare arrays; message/thread lists return `{"data": [...], "total_count": N, "last_id": "..."}`; forward-rule responses are wrapped in `{"data": ...}`; reply/forward return `{"message_ids": [...]}`. Reply/reply-all/forward send real email.
 
 | # | Test | Command | Expected |
 |---|------|---------|----------|
@@ -359,8 +359,20 @@ Prerequisite: Send an email with an attachment to the sandbox.
 | 22.16 | List threads | `mailtrap inbound threads list --inbox-id <INBOX_ID>` | Table with thread entries |
 | 22.17 | Get thread | `mailtrap inbound threads get --inbox-id <INBOX_ID> --id <THREAD_ID>` | Thread with messages |
 | 22.18 | Delete message | `mailtrap inbound messages delete --inbox-id <INBOX_ID> --id <MESSAGE_ID>` | Success message |
+| 22.19 | Search threads | `mailtrap inbound threads list --inbox-id <INBOX_ID> --search acme` | Only matching threads |
+| 22.20 | Search threads (page) | `mailtrap inbound threads list --inbox-id <INBOX_ID> --search acme --last-id <LAST_ID>` | Next page of the filtered list |
+| 22.21 | Create forward rule | `mailtrap inbound forward-rules create --inbox-id <INBOX_ID> --name "Copy to team" --destinations team@example.com` | New rule |
+| 22.22 | Create rule with conditions | `mailtrap inbound forward-rules create --inbox-id <INBOX_ID> --name "Billing" --conditions '[{"match_type":"sender","operator":"ends_with","value":"@billing.example.com"}]' --destinations finance@example.com` | Rule with the condition |
+| 22.23 | Invalid condition | `mailtrap inbound forward-rules create --inbox-id <INBOX_ID> --name "Bad" --conditions '[{"match_type":"subject","operator":"equal","value":"x"}]'` | Validation error |
+| 22.24 | List forward rules | `mailtrap inbound forward-rules list --inbox-id <INBOX_ID>` | Table with ID, NAME, CONDITIONS, DESTINATIONS, UPDATED AT |
+| 22.25 | Get forward rule | `mailtrap inbound forward-rules get --inbox-id <INBOX_ID> --id <RULE_ID>` | Single rule details |
+| 22.26 | Update rule destinations | `mailtrap inbound forward-rules update --inbox-id <INBOX_ID> --id <RULE_ID> --destinations a@example.com,b@example.com` | Destinations replaced |
+| 22.27 | Forward outcomes | Send mail to the inbox, then `mailtrap inbound messages get --inbox-id <INBOX_ID> --id <MESSAGE_ID> --output json` | `forwards` populated |
+| 22.28 | Thread delivery | `mailtrap inbound threads get --inbox-id <INBOX_ID> --id <THREAD_ID> --output json` after a reply | Sent messages carry `delivery`; received messages carry `forwards` |
+| 22.29 | Delete forward rule | `mailtrap inbound forward-rules delete --inbox-id <INBOX_ID> --id <RULE_ID>` | Success message |
+| 22.30 | Forward rule missing ID | `mailtrap inbound forward-rules get --inbox-id <INBOX_ID>` | Error: `--id is required` |
 
-**Cleanup:** Delete created inbox and folder (`inbound inboxes delete`, `inbound folders delete`).
+**Cleanup:** Delete created forward rules, inbox and folder (`inbound forward-rules delete`, `inbound inboxes delete`, `inbound folders delete`).
 
 ---
 
@@ -403,7 +415,7 @@ Run tests in dependency order so earlier tests create resources needed by later 
 19. **Billing** (read-only)
 20. **Organizations** (read-only, skip create unless safe)
 21. **Configure** (local config only)
-22. **Inbound** (CRUD for folders/inboxes; messages/threads need received mail)
+22. **Inbound** (CRUD for folders/inboxes/forward rules; messages/threads need received mail)
 
 ---
 
@@ -432,4 +444,5 @@ Run tests in dependency order so earlier tests create resources needed by later 
 | Billing | 1 | 2 |
 | Organizations | 2 | 3 |
 | Configure | 1 | 2 |
-| **Total** | **~90** | **~107** |
+| Inbound | 24 | 30 |
+| **Total** | **~114** | **~137** |

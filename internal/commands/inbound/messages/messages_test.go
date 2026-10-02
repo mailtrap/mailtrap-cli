@@ -311,3 +311,56 @@ func TestMessagesGetJSONKeepsResponseAsIs(t *testing.T) {
 		t.Errorf("expected the API response unchanged\nwant: %v\ngot:  %v", want, got)
 	}
 }
+
+func TestMessagesGetForwardsJSON(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"id": "msg_1", "subject": "Invoice",
+			"forwards": []map[string]interface{}{
+				{
+					"rule_id": 7, "rule_name": nil, "destination": "loop@example.com",
+					"status": "rejected", "reason": "loop_prevention", "message_id": nil,
+				},
+			},
+		})
+	})
+	defer cleanup()
+
+	viper.Set("output", "json")
+
+	cmd := messages.NewCmdMessages(f)
+	cmd.SetArgs([]string{"get", "--inbox-id", "201", "--id", "msg_1"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var result struct {
+		Forwards []struct {
+			RuleID      int     `json:"rule_id"`
+			RuleName    *string `json:"rule_name"`
+			Destination string  `json:"destination"`
+			Status      string  `json:"status"`
+			Reason      *string `json:"reason"`
+			MessageID   *string `json:"message_id"`
+		} `json:"forwards"`
+	}
+	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
+		t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, buf.String())
+	}
+	if len(result.Forwards) != 1 {
+		t.Fatalf("expected 1 forward, got %+v", result.Forwards)
+	}
+	fwd := result.Forwards[0]
+	if fwd.RuleID != 7 || fwd.Destination != "loop@example.com" || fwd.Status != "rejected" {
+		t.Errorf("unexpected forward: %+v", fwd)
+	}
+	if fwd.Reason == nil || *fwd.Reason != "loop_prevention" {
+		t.Errorf("expected reason loop_prevention, got %v", fwd.Reason)
+	}
+	if fwd.RuleName != nil || fwd.MessageID != nil {
+		t.Errorf("expected nil rule_name and message_id, got %v / %v", fwd.RuleName, fwd.MessageID)
+	}
+}

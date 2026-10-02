@@ -3,6 +3,7 @@ package inbound
 import (
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/inbound/folders"
+	"github.com/mailtrap/mailtrap-cli/internal/commands/inbound/forwardrules"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/inbound/inboxes"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/inbound/messages"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/inbound/threads"
@@ -13,13 +14,14 @@ import (
 func NewCmdInbound(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "inbound",
-		Short: "Manage inbound email folders, inboxes, messages, and threads",
+		Short: "Manage inbound email folders, inboxes, messages, threads, and forward rules",
 	}
 
 	cmd.AddCommand(folders.NewCmdFolders(f))
 	cmd.AddCommand(inboxes.NewCmdInboxes(f))
 	cmd.AddCommand(messages.NewCmdMessages(f))
 	cmd.AddCommand(threads.NewCmdThreads(f))
+	cmd.AddCommand(forwardrules.NewCmdForwardRules(f))
 
 	return cmd
 }

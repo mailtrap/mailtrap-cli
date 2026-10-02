@@ -135,12 +135,19 @@ mailtrap webhooks create --url "https://example.com/hooks" --type email_sending 
 mailtrap webhooks update --id 1 --active=false --event-types delivery,bounce,unsubscribe
 mailtrap webhooks delete --id 1
 
-# Inbound (folders, inboxes, messages, threads)
+# Inbound (folders, inboxes, messages, threads, forward rules)
 mailtrap inbound folders list
 mailtrap inbound inboxes list --folder-id 90
 mailtrap inbound messages list --inbox-id 735
 mailtrap inbound messages reply --inbox-id 735 --id <MESSAGE_ID> --text "Thanks for reaching out!"
 mailtrap inbound threads list --inbox-id 735
+mailtrap inbound threads list --inbox-id 735 --search acme
+mailtrap inbound forward-rules list --inbox-id 735
+mailtrap inbound forward-rules create --inbox-id 735 --name "Copy billing mail to finance" \
+  --conditions '[{"match_type":"sender","operator":"ends_with","value":"@billing.example.com"}]' \
+  --destinations finance@example.com
+mailtrap inbound forward-rules update --inbox-id 735 --id 7 --destinations finance@example.com,accounting@example.com
+mailtrap inbound forward-rules delete --inbox-id 735 --id 7
 
 # API tokens (--expires-at takes an ISO 8601 date-time or 'never'; omit it for the server default)
 mailtrap tokens create --name "ci-token" --permissions '[{"resource_type":"account","resource_id":123,"access_level":100}]' --expires-at 2027-06-01T00:00:00Z
@@ -201,7 +208,7 @@ mailtrap inbound messages list --inbox-id 735 -o json | jq -r '.last_id // empty
 | **Webhooks** | `webhooks list`, `webhooks get`, `webhooks create`, `webhooks update`, `webhooks delete` |
 | **Stats** | `stats get`, `stats by-domain`, `stats by-category`, `stats by-esp`, `stats by-date` |
 | **Email Logs** | `email-logs list`, `email-logs get` |
-| **Inbound** | `inbound folders list/get/create/update/delete`, `inbound inboxes list/get/create/update/delete`, `inbound messages list/get/delete/reply/reply-all/forward`, `inbound threads list/get/delete` |
+| **Inbound** | `inbound folders list/get/create/update/delete`, `inbound inboxes list/get/create/update/delete`, `inbound messages list/get/delete/reply/reply-all/forward`, `inbound threads list/get/delete`, `inbound forward-rules list/get/create/update/delete` |
 | **Contacts** | `contacts get`, `contacts create`, `contacts update`, `contacts delete`, `contacts import`, `contacts export`, `contacts import-status`, `contacts export-status`, `contacts create-event` |
 | **Contact Lists** | `contact-lists list`, `contact-lists get`, `contact-lists create`, `contact-lists update`, `contact-lists delete` |
 | **Contact Fields** | `contact-fields list`, `contact-fields get`, `contact-fields create`, `contact-fields update`, `contact-fields delete` |

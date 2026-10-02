@@ -61,7 +61,7 @@ A `null` cursor means there are no more pages. `suppressions list` and `messages
 | `templates` | Email template CRUD | [templates.md](references/templates.md) |
 | `stats` | Aggregated sending statistics | [email-logs.md](references/email-logs.md) |
 | `email-logs` | Individual email log lookup | [email-logs.md](references/email-logs.md) |
-| `inbound` | Inbound email folders, inboxes, messages & threads | [inbound.md](references/inbound.md) |
+| `inbound` | Inbound email folders, inboxes, messages, threads & forward rules | [inbound.md](references/inbound.md) |
 | `contacts` | Contact management & import/export | [contacts.md](references/contacts.md) |
 | `contact-lists` | Contact list CRUD | [contacts.md](references/contacts.md) |
 | `contact-fields` | Custom contact fields | [contacts.md](references/contacts.md) |

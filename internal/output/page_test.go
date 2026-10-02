@@ -45,6 +45,20 @@ func TestPrintPage_TableShowsTotalAndCursor(t *testing.T) {
 	}
 }
 
+func TestPrintPage_NextArgsFollowCursor(t *testing.T) {
+	var buf bytes.Buffer
+	body := json.RawMessage(`{"data":[{"id":"a"}],"last_id":"a"}`)
+	page := Page{Items: "data", Cursor: []string{"last_id"}, CursorFlag: "last-id", NextArgs: `--search "acme"`}
+
+	if err := PrintPage(&buf, FormatTable, body, page, pageCols); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if !strings.Contains(buf.String(), `Next page: --last-id a --search "acme"`) {
+		t.Errorf("expected next-page hint to repeat NextArgs, got:\n%s", buf.String())
+	}
+}
+
 func TestPrintPage_NestedNumericCursor(t *testing.T) {
 	var buf bytes.Buffer
 	body := json.RawMessage(`{"data":[{"id":1}],"pagination":{"token":1,"next_token":2}}`)

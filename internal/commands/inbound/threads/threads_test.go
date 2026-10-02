@@ -168,3 +168,142 @@ func TestThreadsListJSON(t *testing.T) {
 		t.Errorf("expected last_id 'thr_1', got %q", result.LastID)
 	}
 }
+
+func TestThreadsListWithSearch(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		if got := r.URL.Query().Get("search"); got != "acme corp" {
+			t.Errorf("expected search=acme corp, got %q", got)
+		}
+		if got := r.URL.Query().Get("last_id"); got != "WzE3NzgyNDE5MDAwMDAsIjE3MDAwMDAwMDAwMDAxMjMiXQ==" {
+			t.Errorf("expected opaque last_id cursor, got %q", got)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"data":        []map[string]interface{}{{"id": "thr_2", "subject": "ACME order"}},
+			"total_count": 2,
+			"last_id":     "WzE3NzgyNDE5MDAwMDAsIjE3MDAwMDAwMDAwMDAxMjQiXQ==",
+		})
+	})
+	defer cleanup()
+
+	cmd := threads.NewCmdThreads(f)
+	cmd.SetArgs([]string{"list", "--inbox-id", "201", "--search", "acme corp", "--last-id", "WzE3NzgyNDE5MDAwMDAsIjE3MDAwMDAwMDAwMDAxMjMiXQ=="})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	want := `--last-id WzE3NzgyNDE5MDAwMDAsIjE3MDAwMDAwMDAwMDAxMjQiXQ== --search "acme corp"`
+	if !strings.Contains(buf.String(), want) {
+		t.Errorf("expected next-page hint to carry the search, got:\n%s", buf.String())
+	}
+}
+
+func TestThreadsListWithoutSearchSendsNoQuery(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.RawQuery != "" {
+			t.Errorf("expected no query string, got %q", r.URL.RawQuery)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{"data": []interface{}{}, "total_count": 0, "last_id": nil})
+	})
+	defer cleanup()
+
+	cmd := threads.NewCmdThreads(f)
+	cmd.SetArgs([]string{"list", "--inbox-id", "201"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestThreadsGetDeliveryAndForwardsJSON(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"id": "thr_1", "subject": "Support request",
+			"messages": []map[string]interface{}{
+				{"visibility_status": "placeholder", "direction": "inbound"},
+				{
+					"id": "msg_1", "direction": "inbound", "visibility_status": "available",
+					"forwards": []map[string]interface{}{
+						{
+							"rule_id": 7, "rule_name": "Copy to support team", "destination": "team@example.com",
+							"status": "forwarded", "reason": nil, "message_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+						},
+					},
+				},
+				{
+					"id": "1a2b3c4d", "direction": "outbound", "visibility_status": "available",
+					"delivery": map[string]interface{}{
+						"to": "customer@example.com", "status": "delivered",
+						"delivered_at": "2026-05-08T11:40:05.000Z", "bounced_at": nil,
+					},
+				},
+			},
+		})
+	})
+	defer cleanup()
+
+	viper.Set("output", "json")
+
+	cmd := threads.NewCmdThreads(f)
+	cmd.SetArgs([]string{"get", "--inbox-id", "201", "--id", "thr_1"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var result struct {
+		Messages []struct {
+			Delivery *struct {
+				To          string  `json:"to"`
+				Status      string  `json:"status"`
+				DeliveredAt *string `json:"delivered_at"`
+				BouncedAt   *string `json:"bounced_at"`
+			} `json:"delivery"`
+			Forwards []struct {
+				Destination string `json:"destination"`
+				Status      string `json:"status"`
+			} `json:"forwards"`
+		} `json:"messages"`
+	}
+	if err := json.Unmarshal(buf.Bytes(), &result); err != nil {
+		t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, buf.String())
+	}
+	if len(result.Messages) != 3 {
+		t.Fatalf("expected 3 messages, got %d", len(result.Messages))
+	}
+
+	placeholder := result.Messages[0]
+	if placeholder.Delivery != nil || placeholder.Forwards != nil {
+		t.Errorf("placeholder must carry neither delivery nor forwards: %+v", placeholder)
+	}
+
+	inbound := result.Messages[1]
+	if inbound.Delivery != nil {
+		t.Errorf("inbound message must not carry delivery: %+v", inbound.Delivery)
+	}
+	if len(inbound.Forwards) != 1 || inbound.Forwards[0].Destination != "team@example.com" || inbound.Forwards[0].Status != "forwarded" {
+		t.Errorf("unexpected forwards: %+v", inbound.Forwards)
+	}
+
+	outbound := result.Messages[2]
+	if outbound.Delivery == nil {
+		t.Fatal("expected delivery on the outbound message")
+	}
+	if outbound.Delivery.To != "customer@example.com" || outbound.Delivery.Status != "delivered" {
+		t.Errorf("unexpected delivery: %+v", outbound.Delivery)
+	}
+	if outbound.Delivery.DeliveredAt == nil || *outbound.Delivery.DeliveredAt != "2026-05-08T11:40:05.000Z" {
+		t.Errorf("unexpected delivered_at: %v", outbound.Delivery.DeliveredAt)
+	}
+	if outbound.Delivery.BouncedAt != nil {
+		t.Errorf("expected nil bounced_at, got %v", *outbound.Delivery.BouncedAt)
+	}
+}

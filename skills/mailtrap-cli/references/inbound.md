@@ -1,6 +1,6 @@
 # inbound
 
-Detailed flag specifications for `mailtrap inbound` commands (folders, inboxes, messages, threads).
+Detailed flag specifications for `mailtrap inbound` commands (folders, inboxes, messages, threads, forward rules).
 
 `inbound` commands go to `https://mailtrap.io/api/inbound/...` and do **not** use `--account-id`.
 
@@ -112,6 +112,8 @@ Messages and threads are accessed via the top-level inbox route (`/api/inbound/i
 
 Returns the message with its body and attachment download URLs. JSON output is the API response as returned, including `attachments` (with `download_url`), `headers`, `references`, `bcc`, `reply_to`, `raw_message_url` and body sizes.
 
+Messages from `list` and `get` include `forwards` in JSON output.
+
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--inbox-id` | string | Yes | Inbox ID |
@@ -163,6 +165,7 @@ Each sends a **real email** and returns the sent message IDs.
 |------|------|----------|-------------|
 | `--inbox-id` | string | Yes | Inbox ID |
 | `--last-id` | string | No | Pagination cursor (`last_id` from the previous response) |
+| `--search` | string | No | Search threads by subject or address |
 
 **Output:** Same shape as `inbound messages list`: `{"data": [...], "total_count": N, "last_id": "..."}` in JSON.
 
@@ -170,7 +173,7 @@ Each sends a **real email** and returns the sent message IDs.
 
 ## inbound threads get
 
-Returns the thread with its messages embedded (oldest first).
+Returns the thread with its messages embedded (oldest first). Sent messages carry `delivery`; received messages carry `forwards`.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -187,3 +190,61 @@ Inbound messages in the thread are removed; sent messages are preserved.
 |------|------|----------|-------------|
 | `--inbox-id` | string | Yes | Inbox ID |
 | `--id` | string | Yes | Thread ID |
+
+---
+
+## inbound forward-rules list
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--inbox-id` | string | Yes | Inbox ID |
+
+---
+
+## inbound forward-rules get
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--inbox-id` | string | Yes | Inbox ID |
+| `--id` | string | Yes | Forward rule ID |
+
+---
+
+## inbound forward-rules create
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--inbox-id` | string | Yes | Inbox ID |
+| `--name` | string | Yes | Rule name |
+| `--conditions` | string | No | Conditions as a JSON array (see below) |
+| `--destinations` | string | No | Destination email addresses (comma-separated) |
+
+**Condition entries** (`--conditions`):
+
+| Key | Required | Values |
+|-----|----------|--------|
+| `match_type` | Yes | `sender`, `recipient`, `header` |
+| `operator` | Yes | `equal`, `not_equal`, `contains`, `starts_with`, `ends_with`, `empty`, `not_empty` |
+| `value` | No | Text to compare against |
+| `header_key` | No | Header name |
+
+---
+
+## inbound forward-rules update
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--inbox-id` | string | Yes | Inbox ID |
+| `--id` | string | Yes | Forward rule ID |
+| `--name` | string | No | New rule name |
+| `--conditions` | string | No | Conditions as a JSON array |
+| `--destinations` | string | No | Destination email addresses (comma-separated) |
+
+---
+
+## inbound forward-rules delete
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--inbox-id` | string | Yes | Inbox ID |
+| `--id` | string | Yes | Forward rule ID |

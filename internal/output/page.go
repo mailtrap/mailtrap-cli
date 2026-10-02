@@ -13,6 +13,7 @@ type Page struct {
 	Total      string   // key of the total count; empty when the API returns none
 	Cursor     []string // path to the next-page cursor
 	CursorFlag string   // flag that takes the cursor on the next request
+	NextArgs   string   // extra flags the next request repeats
 }
 
 // PrintPage prints a paginated list response. JSON output is the body as the
@@ -36,7 +37,11 @@ func PrintPage(w io.Writer, format Format, body json.RawMessage, page Page, colu
 		footer = append(footer, "Total: "+total)
 	}
 	if cursor := lookup(body, page.Cursor...); cursor != "" {
-		footer = append(footer, fmt.Sprintf("Next page: --%s %s", page.CursorFlag, cursor))
+		next := fmt.Sprintf("Next page: --%s %s", page.CursorFlag, cursor)
+		if page.NextArgs != "" {
+			next += " " + page.NextArgs
+		}
+		footer = append(footer, next)
 	}
 	if len(footer) > 0 {
 		fmt.Fprintln(w)

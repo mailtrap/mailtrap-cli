@@ -150,3 +150,51 @@ func TestCreateSubAccountMissingFlags(t *testing.T) {
 		t.Fatal("expected error when required flags are missing")
 	}
 }
+
+func TestDeleteSubAccount(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodDelete {
+			t.Errorf("expected DELETE, got %s", r.Method)
+		}
+		if !strings.HasSuffix(r.URL.Path, "/api/organizations/456/sub_accounts/789") {
+			t.Errorf("unexpected path: %s", r.URL.Path)
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	})
+	defer cleanup()
+
+	cmd := organizations.NewCmdOrganizations(f)
+	cmd.SetArgs([]string{"delete-sub-account", "--org-id", "456", "--sub-account-id", "789"})
+	cmd.SetOut(buf)
+
+	err := cmd.Execute()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	output := buf.String()
+	if !strings.Contains(output, "Sub-account 789 deleted successfully") {
+		t.Errorf("expected output to contain 'Sub-account 789 deleted successfully', got:\n%s", output)
+	}
+}
+
+func TestDeleteSubAccountMissingFlags(t *testing.T) {
+	f, _, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {})
+	defer cleanup()
+
+	buf := &bytes.Buffer{}
+	f.IOStreams.Out = buf
+
+	cmd := organizations.NewCmdOrganizations(f)
+	cmd.SetArgs([]string{"delete-sub-account", "--org-id", "456"})
+	cmd.SetOut(buf)
+
+	err := cmd.Execute()
+	if err == nil {
+		t.Fatal("expected error when --sub-account-id is missing")
+	}
+	if !strings.Contains(err.Error(), "--sub-account-id is required") {
+		t.Errorf("expected '--sub-account-id is required' error, got: %v", err)
+	}
+}

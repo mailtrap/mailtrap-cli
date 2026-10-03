@@ -13,6 +13,7 @@ func NewCmdOrganizations(f *cmdutil.Factory) *cobra.Command {
 
 	cmd.AddCommand(NewCmdListSubAccounts(f))
 	cmd.AddCommand(NewCmdCreateSubAccount(f))
+	cmd.AddCommand(NewCmdDeleteSubAccount(f))
 
 	return cmd
 }

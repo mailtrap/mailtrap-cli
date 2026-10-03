@@ -132,3 +132,16 @@ Create a sub-account under an organization.
 |------|------|----------|-------------|
 | `--org-id` | string | Yes | Organization ID |
 | `--name` | string | Yes | Sub-account name |
+
+---
+
+## organizations delete-sub-account
+
+Delete a sub-account from an organization. Requires sub-account management permissions for the organization.
+
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--org-id` | string | Yes | Organization ID |
+| `--sub-account-id` | string | Yes | Sub-account ID |
+
+**Caution:** Permanent – the sub-account and all of its data are removed and cannot be restored. Deleting the organization's last sub-account also deletes the organization. A repeated call for the same sub-account returns 404. Rate limit: 10 requests per minute per organization.

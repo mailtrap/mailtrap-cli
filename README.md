@@ -215,7 +215,7 @@ mailtrap inbound messages list --inbox-id 735 -o json | jq -r '.last_id // empty
 | **Permissions** | `permissions resources`, `permissions bulk-update` |
 | **Tokens** | `tokens list`, `tokens get`, `tokens create [--expires-at]`, `tokens delete`, `tokens reset [--expires-at]` |
 | **Billing** | `billing usage` |
-| **Organizations** | `organizations list-sub-accounts`, `organizations create-sub-account` |
+| **Organizations** | `organizations list-sub-accounts`, `organizations create-sub-account`, `organizations delete-sub-account` |
 | **Config** | `configure`, `completion [bash\|zsh\|fish\|powershell]` |
 
 ## Shell Completion

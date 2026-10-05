@@ -52,7 +52,7 @@ These were discovered during integration testing and are important for correct i
 | `GET /api_tokens` | `{"errors": "Access forbidden"}` | May require admin-level token |
 | `GET /contacts` | 404 (HTML page) | Endpoint may not exist or requires different path |
 | `GET /suppressions` | `[...]` | Flat array |
-| `GET /email_templates` | `[...]` | Flat array |
+| `GET /templates` | `{"data": [...], "pagination": {...}}` | Page-token pagination, no total |
 | `GET /contacts/lists` | `[...]` | Flat array |
 | `GET /contacts/fields` | `[...]` | Flat array |
 | `GET /account_accesses` | `[...]` | Flat array |
@@ -120,9 +120,9 @@ Tests are organized by endpoint group. Each test specifies:
 | # | Test | Command | Expected |
 |---|------|---------|----------|
 | 4.1 | List templates | `mailtrap templates list` | Table with template entries |
-| 4.2 | List templates (JSON) | `mailtrap templates list --output json` | Valid JSON array |
+| 4.2 | List templates (JSON) | `mailtrap templates list --output json` | Valid JSON object with `data` and `pagination` |
 | 4.3 | Get template | `mailtrap templates get --id <TEMPLATE_ID>` | Single template details |
-| 4.4 | Create template | `mailtrap templates create --name "test-tpl" --subject "Test" --text "body"` | New template in output |
+| 4.4 | Create template | `mailtrap templates create --name "test-tpl" --subject "Test" --body-text "body"` | New template in output (flat request body, category defaults to `General`) |
 | 4.5 | Update template | `mailtrap templates update --id <NEW_ID> --name "test-tpl-updated"` | Updated template |
 | 4.6 | Delete template | `mailtrap templates delete --id <NEW_ID>` | Success message |
 | 4.7 | Get missing ID | `mailtrap templates get` | Error: `--id is required` |

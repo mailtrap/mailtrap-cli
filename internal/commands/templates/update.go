@@ -36,38 +36,35 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("email_templates", fmt.Sprintf("%d", opts.ID))
+			path := cmdutil.AccountPath("templates", fmt.Sprintf("%d", opts.ID))
 
-			templateFields := map[string]interface{}{}
+			body := map[string]interface{}{}
 			if cmd.Flags().Changed("name") {
-				templateFields["name"] = opts.Name
+				body["name"] = opts.Name
 			}
 			if cmd.Flags().Changed("subject") {
-				templateFields["subject"] = opts.Subject
+				body["subject"] = opts.Subject
 			}
 			if cmd.Flags().Changed("body-html") {
-				templateFields["body_html"] = opts.BodyHTML
+				body["body_html"] = opts.BodyHTML
 			}
 			if cmd.Flags().Changed("body-text") {
-				templateFields["body_text"] = opts.BodyText
+				body["body_text"] = opts.BodyText
 			}
 			if cmd.Flags().Changed("category") {
-				templateFields["category"] = opts.Category
+				body["category"] = opts.Category
+			}
+			if len(body) == 0 {
+				return fmt.Errorf("at least one attribute flag is required")
 			}
 
-			body := map[string]interface{}{
-				"email_template": templateFields,
-			}
-
-			var result Template
-			if err := c.Patch(context.Background(), client.BaseGeneral, path, body, &result); err != nil {
+			var resp templateResponse
+			if err := c.Patch(context.Background(), client.BaseGeneral, path, body, &resp); err != nil {
 				return err
 			}
 
 			format := cmdutil.GetOutputFormat()
-			output.Print(f.IOStreams.Out, format, result, templateColumns)
-
-			return nil
+			return output.Print(f.IOStreams.Out, format, resp.Data, templateColumns)
 		},
 	}
 

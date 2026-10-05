@@ -31,17 +31,15 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("email_templates", fmt.Sprintf("%d", opts.ID))
+			path := cmdutil.AccountPath("templates", fmt.Sprintf("%d", opts.ID))
 
-			var result Template
-			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &result); err != nil {
+			var resp templateResponse
+			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &resp); err != nil {
 				return err
 			}
 
 			format := cmdutil.GetOutputFormat()
-			output.Print(f.IOStreams.Out, format, result, templateColumns)
-
-			return nil
+			return output.Print(f.IOStreams.Out, format, resp.Data, templateColumns)
 		},
 	}
 

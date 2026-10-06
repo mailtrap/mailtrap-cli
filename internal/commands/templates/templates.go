@@ -5,11 +5,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const experimentalNote = "Uses the experimental /api/templates endpoints; their request and response shapes may change before general availability."
+
 func NewCmdTemplates(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "templates",
 		Short: "Manage email templates",
-		Long:  "Manage email templates.\n\nUses the experimental /api/templates endpoints; their request and response shapes may change before general availability.",
+		Long:  "Manage email templates.\n\n" + experimentalNote,
 	}
 
 	cmd.AddCommand(NewCmdList(f))
@@ -17,6 +19,10 @@ func NewCmdTemplates(f *cmdutil.Factory) *cobra.Command {
 	cmd.AddCommand(NewCmdCreate(f))
 	cmd.AddCommand(NewCmdUpdate(f))
 	cmd.AddCommand(NewCmdDelete(f))
+
+	for _, sub := range cmd.Commands() {
+		sub.Long = sub.Short + ".\n\n" + experimentalNote
+	}
 
 	return cmd
 }

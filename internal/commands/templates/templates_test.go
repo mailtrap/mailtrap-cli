@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -135,6 +136,39 @@ func TestTemplatesListNextPage(t *testing.T) {
 
 	if !strings.Contains(buf.String(), "Next page: --token 2") {
 		t.Errorf("expected next page footer, got:\n%s", buf.String())
+	}
+}
+
+func TestTemplatesListNextPageRunsWithSamePerPage(t *testing.T) {
+	var requests []string
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		requests = append(requests, r.URL.RawQuery)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(listBody())
+	})
+	defer cleanup()
+
+	cmd := templates.NewCmdTemplates(f)
+	cmd.SetArgs([]string{"list", "--per-page", "1"})
+	cmd.SetOut(buf)
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	_, hint, found := strings.Cut(buf.String(), "Next page: ")
+	if !found {
+		t.Fatalf("expected next page footer, got:\n%s", buf.String())
+	}
+
+	cmd = templates.NewCmdTemplates(f)
+	cmd.SetArgs(append([]string{"list"}, strings.Fields(hint)...))
+	cmd.SetOut(buf)
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error running the footer's command: %v", err)
+	}
+
+	if want := []string{"per_page=1", "per_page=1&token=2"}; !reflect.DeepEqual(requests, want) {
+		t.Errorf("expected queries %v, got %v", want, requests)
 	}
 }
 
@@ -395,5 +429,54 @@ func TestTemplatesUpdateRequiresAttribute(t *testing.T) {
 	err := cmd.Execute()
 	if err == nil || !strings.Contains(err.Error(), "at least one attribute flag is required") {
 		t.Fatalf("expected attribute flag error, got: %v", err)
+	}
+}
+
+func TestTemplatesJSONKeepsTemplateAsIs(t *testing.T) {
+	template := `{"id":1,"uuid":"abc-123","name":"Welcome","subject":"Hello","category":"General",` +
+		`"body_html":null,"body_text":"Hi","created_at":"2024-01-01T00:00:00Z","updated_at":"2024-01-02T00:00:00Z"}`
+
+	for _, args := range [][]string{
+		{"get", "--id", "1"},
+		{"create", "--name", "Welcome", "--subject", "Hello", "--body-text", "Hi"},
+		{"update", "--id", "1", "--name", "Welcome"},
+	} {
+		t.Run(args[0], func(t *testing.T) {
+			f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				io.WriteString(w, `{"data":`+template+`}`)
+			})
+			defer cleanup()
+
+			viper.Set("output", "json")
+
+			cmd := templates.NewCmdTemplates(f)
+			cmd.SetArgs(args)
+			cmd.SetOut(buf)
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+
+			var got, want map[string]interface{}
+			if err := json.Unmarshal(buf.Bytes(), &got); err != nil {
+				t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, buf.String())
+			}
+			json.Unmarshal([]byte(template), &want)
+			if !reflect.DeepEqual(got, want) {
+				t.Errorf("expected the template unchanged\nwant: %v\ngot:  %v", want, got)
+			}
+		})
+	}
+}
+
+func TestTemplatesSubcommandsHelpShowsExperimentalNote(t *testing.T) {
+	f, _, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {})
+	defer cleanup()
+
+	for _, sub := range templates.NewCmdTemplates(f).Commands() {
+		if !strings.Contains(sub.Long, "experimental /api/templates endpoints") {
+			t.Errorf("expected %q help to note the experimental endpoints, got %q", sub.Name(), sub.Long)
+		}
 	}
 }

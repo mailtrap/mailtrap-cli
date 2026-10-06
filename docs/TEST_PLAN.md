@@ -126,6 +126,7 @@ Tests are organized by endpoint group. Each test specifies:
 | 4.5 | Update template | `mailtrap templates update --id <NEW_ID> --name "test-tpl-updated"` | Updated template |
 | 4.6 | Delete template | `mailtrap templates delete --id <NEW_ID>` | Success message |
 | 4.7 | Get missing ID | `mailtrap templates get` | Error: `--id is required` |
+| 4.8 | Next page keeps page size | `mailtrap templates list --per-page 1`, then run the `Next page:` hint | Hint is `--token 2 --per-page 1`; it prints the second template |
 
 **Cleanup:** Delete created template.
 

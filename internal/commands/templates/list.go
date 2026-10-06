@@ -41,7 +41,7 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "list",
-		Short: "List all email templates",
+		Short: "List email templates, one page at a time",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			c, err := f.NewClient()
 			if err != nil {
@@ -53,8 +53,11 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 			}
 
 			query := url.Values{}
+			page := templatesPage
 			if cmd.Flags().Changed("per-page") {
 				query.Set("per_page", fmt.Sprintf("%d", perPage))
+				// Without per_page the API reads the next token at its default page size.
+				page.NextArgs = fmt.Sprintf("--per-page %d", perPage)
 			}
 			if cmd.Flags().Changed("token") {
 				query.Set("token", fmt.Sprintf("%d", token))
@@ -65,7 +68,7 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			return output.PrintPage(f.IOStreams.Out, cmdutil.GetOutputFormat(), resp, templatesPage, templateColumns)
+			return output.PrintPage(f.IOStreams.Out, cmdutil.GetOutputFormat(), resp, page, templateColumns)
 		},
 	}
 

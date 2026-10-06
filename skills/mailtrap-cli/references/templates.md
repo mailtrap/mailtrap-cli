@@ -6,14 +6,14 @@ Detailed flag specifications for `mailtrap templates` commands.
 
 ## templates list
 
-List all email templates for the account.
+List email templates for the account, one page at a time.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--per-page` | int | No | Number of templates per page (default 50, max 100) |
 | `--token` | int | No | Page number to retrieve (page-token pagination) |
 
-**Output:** Table of templates with ID, UUID, name, subject, category and creation time, followed by `Next page: --token N` when more pages exist. With `--output json`, the full response object is printed: `.data` holds the templates and `.pagination.next_token` the next page (`null` on the last page).
+**Output:** Table of templates with ID, UUID, name, subject, category and creation time, followed by `Next page: --token N` when more pages exist (`Next page: --token N --per-page M` when `--per-page` was set, because the next page must use the same page size). With `--output json`, the full response object is printed: `.data` holds the templates and `.pagination.next_token` the next page (`null` on the last page).
 
 ---
 

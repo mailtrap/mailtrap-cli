@@ -38,7 +38,7 @@ Table and text output show a summary and, for paginated lists, a `Next page: --<
 | `inbound threads list` | `.data` | `.total_count` | `.last_id` → `--last-id` |
 | `email-logs list` | `.messages` | `.total_count` | `.next_page_cursor` → `--cursor` |
 | `email-campaigns list` | `.data` | — | `.pagination.next_token` → `--token` |
-| `templates list` | `.data` | — | `.pagination.next_token` → `--token` |
+| `templates list` | `.data` | — | `.pagination.next_token` → `--token` (repeat `--per-page`) |
 | `tracking-opt-outs list` | `.data` | — | `.last_id` → `--last-id` |
 
 A `null` cursor means there are no more pages. `suppressions list` and `messages list` return a bare array; pass the last item's `id` as `--last-id` for the next page.

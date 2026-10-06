@@ -9,6 +9,7 @@ func NewCmdTemplates(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "templates",
 		Short: "Manage email templates",
+		Long:  "Manage email templates.\n\nUses the experimental /api/templates endpoints; their request and response shapes may change before general availability.",
 	}
 
 	cmd.AddCommand(NewCmdList(f))

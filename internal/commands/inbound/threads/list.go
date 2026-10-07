@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
@@ -30,6 +31,7 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 	var (
 		inboxID string
 		lastID  string
+		search  string
 	)
 
 	cmd := &cobra.Command{
@@ -47,10 +49,12 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 
 			path := fmt.Sprintf("/api/inbound/inboxes/%s/threads", inboxID)
 
-			var params url.Values
+			params := url.Values{}
 			if lastID != "" {
-				params = url.Values{}
 				params.Set("last_id", lastID)
+			}
+			if search != "" {
+				params.Set("search", search)
 			}
 
 			var resp json.RawMessage
@@ -58,12 +62,22 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			return output.PrintPage(f.IOStreams.Out, cmdutil.GetOutputFormat(), resp, threadsPage, threadColumns)
+			page := threadsPage
+			if search != "" {
+				page.NextArgs = "--search " + shellQuote(search)
+			}
+
+			return output.PrintPage(f.IOStreams.Out, cmdutil.GetOutputFormat(), resp, page, threadColumns)
 		},
 	}
 
 	cmd.Flags().StringVar(&inboxID, "inbox-id", "", "Inbox ID (required)")
 	cmd.Flags().StringVar(&lastID, "last-id", "", "Pagination cursor (last_id from previous response)")
+	cmd.Flags().StringVar(&search, "search", "", "Search threads by subject or address")
 
 	return cmd
+}
+
+func shellQuote(s string) string {
+	return "'" + strings.ReplaceAll(s, "'", `'\''`) + "'"
 }

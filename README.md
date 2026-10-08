@@ -125,7 +125,7 @@ mailtrap tracking-opt-outs create --email "no-tracking@example.com" --domain-id 
 mailtrap tracking-opt-outs delete --id "0198f1c4-0c0f-7a1c-8b0e-3f5d2a1b4c6d"
 
 # Templates
-mailtrap templates list
+mailtrap templates list --per-page 20
 mailtrap templates create --name "Welcome" --subject "Hello {{name}}" --body-html '<h1>Hi!</h1>'
 
 # Webhooks
@@ -188,7 +188,7 @@ mailtrap domains list --output text
 export MAILTRAP_OUTPUT=json
 ```
 
-With `--output json`, commands print the API response as returned. Paginated lists (`inbound messages list`, `inbound threads list`, `email-logs list`, `email-campaigns list`, `tracking-opt-outs list`) print the full response object, so the next-page cursor and total count are available to scripts:
+With `--output json`, commands print the API response as returned. Paginated lists (`inbound messages list`, `inbound threads list`, `email-logs list`, `email-campaigns list`, `templates list`, `tracking-opt-outs list`) print the full response object, so the next-page cursor and, where the API provides one, the total count are available to scripts:
 
 ```bash
 mailtrap inbound messages list --inbox-id 735 -o json | jq -r '.last_id // empty'

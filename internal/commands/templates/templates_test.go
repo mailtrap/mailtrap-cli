@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -40,12 +41,21 @@ func setupTest(handler http.HandlerFunc) (*cmdutil.Factory, *bytes.Buffer, func(
 	}
 }
 
+func listBody() map[string]interface{} {
+	return map[string]interface{}{
+		"data": []map[string]interface{}{
+			{"id": 1, "uuid": "abc-123", "name": "Welcome", "subject": "Hello", "category": "transactional", "created_at": "2024-01-01"},
+		},
+		"pagination": map[string]interface{}{"token": 1, "prev_token": nil, "next_token": 2},
+	}
+}
+
 func TestTemplatesList(t *testing.T) {
 	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			t.Errorf("expected GET, got %s", r.Method)
 		}
-		if r.URL.Path != "/api/accounts/123/email_templates" {
+		if r.URL.Path != "/api/accounts/123/templates" {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 		if r.Header.Get("Api-Token") != "test-token" {
@@ -53,9 +63,7 @@ func TestTemplatesList(t *testing.T) {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"id": 1, "uuid": "abc-123", "name": "Welcome", "subject": "Hello", "category": "transactional", "created_at": "2024-01-01"},
-		})
+		json.NewEncoder(w).Encode(listBody())
 	})
 	defer cleanup()
 
@@ -77,9 +85,7 @@ func TestTemplatesList(t *testing.T) {
 func TestTemplatesListJSON(t *testing.T) {
 	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"id": 1, "uuid": "abc-123", "name": "Welcome", "subject": "Hello", "category": "transactional", "created_at": "2024-01-01"},
-		})
+		json.NewEncoder(w).Encode(listBody())
 	})
 	defer cleanup()
 
@@ -95,15 +101,115 @@ func TestTemplatesListJSON(t *testing.T) {
 	}
 
 	output := buf.String()
-	var result []map[string]interface{}
+	var result struct {
+		Data       []map[string]interface{} `json:"data"`
+		Pagination map[string]interface{}   `json:"pagination"`
+	}
 	if err := json.Unmarshal([]byte(output), &result); err != nil {
-		t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, output)
+		t.Fatalf("output is not a JSON object: %v\noutput:\n%s", err, output)
 	}
-	if len(result) != 1 {
-		t.Fatalf("expected 1 template, got %d", len(result))
+	if len(result.Data) != 1 {
+		t.Fatalf("expected 1 template, got %d", len(result.Data))
 	}
-	if result[0]["name"] != "Welcome" {
-		t.Errorf("expected name 'Welcome', got %v", result[0]["name"])
+	if result.Data[0]["name"] != "Welcome" {
+		t.Errorf("expected name 'Welcome', got %v", result.Data[0]["name"])
+	}
+	if result.Pagination["next_token"] != float64(2) {
+		t.Errorf("expected pagination.next_token 2, got %v", result.Pagination["next_token"])
+	}
+}
+
+func TestTemplatesListNextPage(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(listBody())
+	})
+	defer cleanup()
+
+	cmd := templates.NewCmdTemplates(f)
+	cmd.SetArgs([]string{"list"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if !strings.Contains(buf.String(), "Next page: --token 2") {
+		t.Errorf("expected next page footer, got:\n%s", buf.String())
+	}
+}
+
+func TestTemplatesListNextPageRunsWithSamePerPage(t *testing.T) {
+	var requests []string
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		requests = append(requests, r.URL.RawQuery)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(listBody())
+	})
+	defer cleanup()
+
+	cmd := templates.NewCmdTemplates(f)
+	cmd.SetArgs([]string{"list", "--per-page", "1"})
+	cmd.SetOut(buf)
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	_, hint, found := strings.Cut(buf.String(), "Next page: ")
+	if !found {
+		t.Fatalf("expected next page footer, got:\n%s", buf.String())
+	}
+
+	cmd = templates.NewCmdTemplates(f)
+	cmd.SetArgs(append([]string{"list"}, strings.Fields(hint)...))
+	cmd.SetOut(buf)
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error running the footer's command: %v", err)
+	}
+
+	if want := []string{"per_page=1", "per_page=1&token=2"}; !reflect.DeepEqual(requests, want) {
+		t.Errorf("expected queries %v, got %v", want, requests)
+	}
+}
+
+func TestTemplatesListQuery(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		if got := r.URL.Query().Get("per_page"); got != "10" {
+			t.Errorf("expected per_page=10, got %q", got)
+		}
+		if got := r.URL.Query().Get("token"); got != "2" {
+			t.Errorf("expected token=2, got %q", got)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(listBody())
+	})
+	defer cleanup()
+
+	cmd := templates.NewCmdTemplates(f)
+	cmd.SetArgs([]string{"list", "--per-page", "10", "--token", "2"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestTemplatesListOmitsUnsetQuery(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.RawQuery != "" {
+			t.Errorf("expected no query, got %q", r.URL.RawQuery)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(listBody())
+	})
+	defer cleanup()
+
+	cmd := templates.NewCmdTemplates(f)
+	cmd.SetArgs([]string{"list"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
 	}
 }
 
@@ -112,14 +218,14 @@ func TestTemplatesGet(t *testing.T) {
 		if r.Method != http.MethodGet {
 			t.Errorf("expected GET, got %s", r.Method)
 		}
-		if !strings.HasSuffix(r.URL.Path, "/api/accounts/123/email_templates/1") {
+		if !strings.HasSuffix(r.URL.Path, "/api/accounts/123/templates/1") {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]interface{}{
+		json.NewEncoder(w).Encode(map[string]interface{}{"data": map[string]interface{}{
 			"id": 1, "uuid": "abc-123", "name": "Welcome", "subject": "Hello", "category": "transactional", "created_at": "2024-01-01",
-		})
+		}})
 	})
 	defer cleanup()
 
@@ -143,7 +249,7 @@ func TestTemplatesCreate(t *testing.T) {
 		if r.Method != http.MethodPost {
 			t.Errorf("expected POST, got %s", r.Method)
 		}
-		if r.URL.Path != "/api/accounts/123/email_templates" {
+		if r.URL.Path != "/api/accounts/123/templates" {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 
@@ -153,30 +259,30 @@ func TestTemplatesCreate(t *testing.T) {
 			t.Fatalf("failed to unmarshal body: %v", err)
 		}
 
-		tmpl, ok := payload["email_template"].(map[string]interface{})
-		if !ok {
-			t.Fatal("expected 'email_template' key in body")
+		if _, ok := payload["email_template"]; ok {
+			t.Error("expected a flat body without 'email_template' key")
 		}
-		if tmpl["name"] != "New" {
-			t.Errorf("expected name 'New', got %v", tmpl["name"])
+		if payload["name"] != "New" {
+			t.Errorf("expected name 'New', got %v", payload["name"])
 		}
-		if tmpl["subject"] != "Hello {{name}}" {
-			t.Errorf("expected subject 'Hello {{name}}', got %v", tmpl["subject"])
+		if payload["subject"] != "Hello {{name}}" {
+			t.Errorf("expected subject 'Hello {{name}}', got %v", payload["subject"])
 		}
-		if tmpl["body_html"] != "<h1>Hi</h1>" {
-			t.Errorf("expected body_html '<h1>Hi</h1>', got %v", tmpl["body_html"])
+		if payload["body_html"] != "<h1>Hi</h1>" {
+			t.Errorf("expected body_html '<h1>Hi</h1>', got %v", payload["body_html"])
 		}
-		if tmpl["body_text"] != "" {
-			t.Errorf("expected body_text '', got %v", tmpl["body_text"])
+		if payload["body_text"] != "" {
+			t.Errorf("expected body_text '', got %v", payload["body_text"])
 		}
-		if tmpl["category"] != "" {
-			t.Errorf("expected category '', got %v", tmpl["category"])
+		if payload["category"] != "General" {
+			t.Errorf("expected category 'General', got %v", payload["category"])
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]interface{}{
-			"id": 2, "uuid": "def-456", "name": "New", "subject": "Hello {{name}}", "category": "", "created_at": "2024-01-01",
-		})
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(map[string]interface{}{"data": map[string]interface{}{
+			"id": 2, "uuid": "def-456", "name": "New", "subject": "Hello {{name}}", "category": "General", "created_at": "2024-01-01",
+		}})
 	})
 	defer cleanup()
 
@@ -218,7 +324,7 @@ func TestTemplatesUpdate(t *testing.T) {
 		if r.Method != http.MethodPatch {
 			t.Errorf("expected PATCH, got %s", r.Method)
 		}
-		if !strings.HasSuffix(r.URL.Path, "/api/accounts/123/email_templates/1") {
+		if !strings.HasSuffix(r.URL.Path, "/api/accounts/123/templates/1") {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
 
@@ -228,18 +334,20 @@ func TestTemplatesUpdate(t *testing.T) {
 			t.Fatalf("failed to unmarshal body: %v", err)
 		}
 
-		tmpl, ok := payload["email_template"].(map[string]interface{})
-		if !ok {
-			t.Fatal("expected 'email_template' key in body")
+		if _, ok := payload["email_template"]; ok {
+			t.Error("expected a flat body without 'email_template' key")
 		}
-		if tmpl["name"] != "Updated" {
-			t.Errorf("expected name 'Updated', got %v", tmpl["name"])
+		if payload["name"] != "Updated" {
+			t.Errorf("expected name 'Updated', got %v", payload["name"])
+		}
+		if len(payload) != 1 {
+			t.Errorf("expected only changed flags in body, got %v", payload)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]interface{}{
+		json.NewEncoder(w).Encode(map[string]interface{}{"data": map[string]interface{}{
 			"id": 1, "uuid": "abc-123", "name": "Updated", "subject": "Hello", "category": "transactional", "created_at": "2024-01-01",
-		})
+		}})
 	})
 	defer cleanup()
 
@@ -263,10 +371,10 @@ func TestTemplatesDelete(t *testing.T) {
 		if r.Method != http.MethodDelete {
 			t.Errorf("expected DELETE, got %s", r.Method)
 		}
-		if !strings.HasSuffix(r.URL.Path, "/api/accounts/123/email_templates/1") {
+		if !strings.HasSuffix(r.URL.Path, "/api/accounts/123/templates/1") {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusNoContent)
 	})
 	defer cleanup()
 
@@ -282,5 +390,93 @@ func TestTemplatesDelete(t *testing.T) {
 	output := buf.String()
 	if !strings.Contains(output, "deleted successfully") {
 		t.Errorf("expected output to contain 'deleted successfully', got:\n%s", output)
+	}
+}
+
+func TestTemplatesCreateKeepsExplicitCategory(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		var payload map[string]interface{}
+		_ = json.NewDecoder(r.Body).Decode(&payload)
+		if payload["category"] != "Promo" {
+			t.Errorf("expected category 'Promo', got %v", payload["category"])
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		w.Write([]byte(`{"data":{"id":2,"name":"New"}}`))
+	})
+	defer cleanup()
+
+	cmd := templates.NewCmdTemplates(f)
+	cmd.SetArgs([]string{"create", "--name", "New", "--subject", "Hi", "--category", "Promo"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestTemplatesUpdateRequiresAttribute(t *testing.T) {
+	f, _, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		t.Error("unexpected request")
+	})
+	defer cleanup()
+
+	cmd := templates.NewCmdTemplates(f)
+	cmd.SetArgs([]string{"update", "--id", "1"})
+	cmd.SilenceUsage = true
+	cmd.SilenceErrors = true
+
+	err := cmd.Execute()
+	if err == nil || !strings.Contains(err.Error(), "at least one attribute flag is required") {
+		t.Fatalf("expected attribute flag error, got: %v", err)
+	}
+}
+
+func TestTemplatesJSONKeepsTemplateAsIs(t *testing.T) {
+	template := `{"id":1,"uuid":"abc-123","name":"Welcome","subject":"Hello","category":"General",` +
+		`"body_html":null,"body_text":"Hi","created_at":"2024-01-01T00:00:00Z","updated_at":"2024-01-02T00:00:00Z"}`
+
+	for _, args := range [][]string{
+		{"get", "--id", "1"},
+		{"create", "--name", "Welcome", "--subject", "Hello", "--body-text", "Hi"},
+		{"update", "--id", "1", "--name", "Welcome"},
+	} {
+		t.Run(args[0], func(t *testing.T) {
+			f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				io.WriteString(w, `{"data":`+template+`}`)
+			})
+			defer cleanup()
+
+			viper.Set("output", "json")
+
+			cmd := templates.NewCmdTemplates(f)
+			cmd.SetArgs(args)
+			cmd.SetOut(buf)
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+
+			var got, want map[string]interface{}
+			if err := json.Unmarshal(buf.Bytes(), &got); err != nil {
+				t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, buf.String())
+			}
+			json.Unmarshal([]byte(template), &want)
+			if !reflect.DeepEqual(got, want) {
+				t.Errorf("expected the template unchanged\nwant: %v\ngot:  %v", want, got)
+			}
+		})
+	}
+}
+
+func TestTemplatesSubcommandsHelpShowsExperimentalNote(t *testing.T) {
+	f, _, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {})
+	defer cleanup()
+
+	for _, sub := range templates.NewCmdTemplates(f).Commands() {
+		if !strings.Contains(sub.Long, "experimental /api/templates endpoints") {
+			t.Errorf("expected %q help to note the experimental endpoints, got %q", sub.Name(), sub.Long)
+		}
 	}
 }

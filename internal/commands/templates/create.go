@@ -34,27 +34,23 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("email_templates")
+			path := cmdutil.AccountPath("templates")
 
 			body := map[string]interface{}{
-				"email_template": map[string]interface{}{
-					"name":      opts.Name,
-					"subject":   opts.Subject,
-					"body_html": opts.BodyHTML,
-					"body_text": opts.BodyText,
-					"category":  opts.Category,
-				},
+				"name":      opts.Name,
+				"subject":   opts.Subject,
+				"body_html": opts.BodyHTML,
+				"body_text": opts.BodyText,
+				"category":  opts.Category,
 			}
 
-			var result Template
-			if err := c.Post(context.Background(), client.BaseGeneral, path, body, &result); err != nil {
+			var resp templateResponse
+			if err := c.Post(context.Background(), client.BaseGeneral, path, body, &resp); err != nil {
 				return err
 			}
 
 			format := cmdutil.GetOutputFormat()
-			output.Print(f.IOStreams.Out, format, result, templateColumns)
-
-			return nil
+			return output.Print(f.IOStreams.Out, format, resp.Data, templateColumns)
 		},
 	}
 
@@ -62,7 +58,8 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().StringVar(&opts.Subject, "subject", "", "Template subject (required)")
 	cmd.Flags().StringVar(&opts.BodyHTML, "body-html", "", "HTML body content")
 	cmd.Flags().StringVar(&opts.BodyText, "body-text", "", "Plain text body content")
-	cmd.Flags().StringVar(&opts.Category, "category", "", "Template category")
+	// The API requires a category, but the CLI does not make the user pick one.
+	cmd.Flags().StringVar(&opts.Category, "category", "General", "Template category")
 
 	_ = cmd.MarkFlagRequired("name")
 	_ = cmd.MarkFlagRequired("subject")

@@ -30,7 +30,7 @@ func NewCmdDelete(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("email_templates", fmt.Sprintf("%d", opts.ID))
+			path := cmdutil.AccountPath("templates", fmt.Sprintf("%d", opts.ID))
 
 			if err := c.Delete(context.Background(), client.BaseGeneral, path, nil); err != nil {
 				return err

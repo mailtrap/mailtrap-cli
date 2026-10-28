@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -210,5 +211,149 @@ func TestSendTransactionalJSON(t *testing.T) {
 	}
 	if result["success"] != true {
 		t.Errorf("expected success true, got %v", result["success"])
+	}
+}
+
+func TestSendWithTemplate(t *testing.T) {
+	for _, stream := range []string{"transactional", "bulk"} {
+		t.Run(stream, func(t *testing.T) {
+			f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+				body, _ := io.ReadAll(r.Body)
+				var reqBody map[string]interface{}
+				json.Unmarshal(body, &reqBody)
+
+				if reqBody["template_uuid"] != "tpl-uuid" {
+					t.Errorf("expected template_uuid 'tpl-uuid', got %v", reqBody["template_uuid"])
+				}
+				wantVars := map[string]interface{}{
+					"user_name": "John",
+					"order":     map[string]interface{}{"total": float64(42)},
+				}
+				if !reflect.DeepEqual(reqBody["template_variables"], wantVars) {
+					t.Errorf("expected template_variables %v, got %v", wantVars, reqBody["template_variables"])
+				}
+				if _, ok := reqBody["subject"]; ok {
+					t.Errorf("expected no subject in template request, got %v", reqBody["subject"])
+				}
+
+				w.Header().Set("Content-Type", "application/json")
+				json.NewEncoder(w).Encode(map[string]interface{}{
+					"success":     true,
+					"message_ids": []string{"msg-004"},
+				})
+			})
+			defer cleanup()
+
+			cmd := send.NewCmdSend(f)
+			cmd.SetArgs([]string{
+				stream,
+				"--from", "sender@example.com",
+				"--to", "recipient@example.com",
+				"--template-uuid", "tpl-uuid",
+				"--template-variables", `{"user_name":"John","order":{"total":42}}`,
+			})
+			cmd.SetOut(buf)
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+		})
+	}
+}
+
+func TestSendTemplateVariablesKeepLargeIntegers(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		if !strings.Contains(string(body), `"order_id":9007199254740993`) {
+			t.Errorf("expected order_id sent unchanged, got body %s", body)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success":     true,
+			"message_ids": []string{"msg-005"},
+		})
+	})
+	defer cleanup()
+
+	cmd := send.NewCmdSend(f)
+	cmd.SetArgs([]string{
+		"transactional",
+		"--from", "sender@example.com",
+		"--to", "recipient@example.com",
+		"--template-uuid", "tpl-uuid",
+		"--template-variables", `{"order_id":9007199254740993}`,
+	})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestSendTemplateFlagValidation(t *testing.T) {
+	tests := []struct {
+		name    string
+		args    []string
+		wantErr string
+	}{
+		{
+			name:    "subject required without template",
+			args:    []string{"--text", "Hello"},
+			wantErr: "--subject is required",
+		},
+		{
+			name:    "subject with template",
+			args:    []string{"--template-uuid", "tpl-uuid", "--subject", "Hi"},
+			wantErr: "--subject cannot be used with --template-uuid",
+		},
+		{
+			name:    "html with template",
+			args:    []string{"--template-uuid", "tpl-uuid", "--html", "<p>Hi</p>"},
+			wantErr: "--html cannot be used with --template-uuid",
+		},
+		{
+			name:    "category with template",
+			args:    []string{"--template-uuid", "tpl-uuid", "--category", "welcome"},
+			wantErr: "--category cannot be used with --template-uuid",
+		},
+		{
+			name:    "variables without template",
+			args:    []string{"--subject", "Hi", "--template-variables", `{"a":"b"}`},
+			wantErr: "--template-variables requires --template-uuid",
+		},
+		{
+			name:    "variables not a JSON object",
+			args:    []string{"--template-uuid", "tpl-uuid", "--template-variables", `["a"]`},
+			wantErr: "invalid --template-variables JSON object",
+		},
+		{
+			name:    "variables null",
+			args:    []string{"--template-uuid", "tpl-uuid", "--template-variables", "null"},
+			wantErr: "invalid --template-variables JSON object: got null",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			f, _, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+				t.Error("expected no request to be sent")
+			})
+			defer cleanup()
+
+			cmd := send.NewCmdSend(f)
+			cmd.SetArgs(append([]string{
+				"transactional",
+				"--from", "sender@example.com",
+				"--to", "recipient@example.com",
+			}, tt.args...))
+			cmd.SetOut(&bytes.Buffer{})
+			cmd.SetErr(&bytes.Buffer{})
+
+			err := cmd.Execute()
+			if err == nil || !strings.Contains(err.Error(), tt.wantErr) {
+				t.Errorf("expected error containing %q, got %v", tt.wantErr, err)
+			}
+		})
 	}
 }

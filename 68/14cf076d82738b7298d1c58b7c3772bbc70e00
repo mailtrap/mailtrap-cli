@@ -1,0 +1,52 @@
+internal/cmdutil/template.go
+  s_6633d98916449f::t_f5ff92600cfd4a 1-30,35-36,40-42
+  s_6633d98916449f::t_4157125a6cc132 31-34,37-39
+README.md
+  s_6633d98916449f::t_dccbb276683d51 82-88
+internal/commands/send/transactional.go
+  s_6633d98916449f::t_ddc034be30cb27 132
+  s_6633d98916449f::t_2a7250d316707b 138-139
+  s_6633d98916449f::t_e263bc30dd712f 15-16
+  s_6633d98916449f::t_27761f37262094 48,56-59
+  s_6633d98916449f::t_d041c4fb5bf955 85-92
+  s_6633d98916449f::t_793801bd1d50b5 17-25
+  s_6633d98916449f::t_7973e03d1fc189 5
+internal/commands/send/send_test.go
+  s_6633d98916449f::t_e6c68e137609ff 329-334
+  s_6633d98916449f::t_c5f7d4ea04b0b2 216-263,294-328,335-359
+  s_6633d98916449f::t_453c557d8a39fd 264-293
+  s_6633d98916449f::t_2a8bd479305998 9
+docs/TEST_PLAN.md
+  s_6633d98916449f::t_65edb5e99efc25 105-106
+skills/mailtrap-cli/references/sandbox.md
+  s_6633d98916449f::t_7a6638374fbfe6 17,23-24
+internal/commands/sandbox_send/send.go
+  s_6633d98916449f::t_df5b65e64c4933 17-25
+  s_6633d98916449f::t_0df1500e893fdb 15-16
+  s_6633d98916449f::t_a1badbbaeb5590 82-89
+  s_6633d98916449f::t_aaaeedd62dff02 45,53-56
+  s_6633d98916449f::t_9a0edd4b15241f 132
+  s_6633d98916449f::t_72f8814a20e3a2 138-139
+  s_6633d98916449f::t_490757b52b59ba 5
+internal/commands/sandbox_send/sandbox_send_test.go
+  s_6633d98916449f::t_c19b1c39cd3003 174-238
+skills/mailtrap-cli/references/sending.md
+  s_6633d98916449f::t_cf2f1509e20c23 54,60-61
+  s_6633d98916449f::t_d9f834327663c7 15,21-22,29,36-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6814cf076d82738b7298d1c58b7c3772bbc70e00",
+  "prompts": {},
+  "sessions": {
+    "s_6633d98916449f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "15d74010-aabd-4edb-b792-fcdb4859f20e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}

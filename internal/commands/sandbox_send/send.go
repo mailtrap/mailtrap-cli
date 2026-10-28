@@ -2,6 +2,7 @@ package sandbox_send
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
@@ -11,16 +12,17 @@ import (
 )
 
 type sendRequest struct {
-	From         emailAddr   `json:"from"`
-	To           []emailAddr `json:"to"`
-	Subject      string      `json:"subject"`
-	Text         string      `json:"text,omitempty"`
-	HTML         string      `json:"html,omitempty"`
-	CC           []emailAddr `json:"cc,omitempty"`
-	BCC          []emailAddr `json:"bcc,omitempty"`
-	Category     string      `json:"category,omitempty"`
-	TemplateUUID string      `json:"template_uuid,omitempty"`
-	ReplyTo      *emailAddr  `json:"reply_to,omitempty"`
+	From              emailAddr                  `json:"from"`
+	To                []emailAddr                `json:"to"`
+	Subject           string                     `json:"subject,omitempty"`
+	Text              string                     `json:"text,omitempty"`
+	HTML              string                     `json:"html,omitempty"`
+	CC                []emailAddr                `json:"cc,omitempty"`
+	BCC               []emailAddr                `json:"bcc,omitempty"`
+	Category          string                     `json:"category,omitempty"`
+	TemplateUUID      string                     `json:"template_uuid,omitempty"`
+	TemplateVariables map[string]json.RawMessage `json:"template_variables,omitempty"`
+	ReplyTo           *emailAddr                 `json:"reply_to,omitempty"`
 }
 
 type sendResponse struct {
@@ -40,6 +42,7 @@ func NewCmdSingle(f *cmdutil.Factory) *cobra.Command {
 		bcc          []string
 		category     string
 		templateUUID string
+		templateVars string
 		replyTo      string
 	)
 
@@ -47,6 +50,10 @@ func NewCmdSingle(f *cmdutil.Factory) *cobra.Command {
 		Use:   "single",
 		Short: "Send a single email to a sandbox",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := cmdutil.ValidateTemplateFlags(cmd, templateUUID, templateVars); err != nil {
+				return err
+			}
+
 			c, err := f.NewClient()
 			if err != nil {
 				return err
@@ -70,6 +77,14 @@ func NewCmdSingle(f *cmdutil.Factory) *cobra.Command {
 				HTML:         html,
 				Category:     category,
 				TemplateUUID: templateUUID,
+			}
+
+			if templateVars != "" {
+				vars, err := cmdutil.ParseTemplateVariables(templateVars)
+				if err != nil {
+					return err
+				}
+				req.TemplateVariables = vars
 			}
 
 			if len(cc) > 0 {
@@ -114,19 +129,19 @@ func NewCmdSingle(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().StringVar(&sandboxID, "sandbox-id", "", "Sandbox ID")
 	cmd.Flags().StringVar(&from, "from", "", "Sender email address (e.g. 'Name <email>' or 'email')")
 	cmd.Flags().StringSliceVar(&to, "to", nil, "Recipient email address (can be repeated)")
-	cmd.Flags().StringVar(&subject, "subject", "", "Email subject")
+	cmd.Flags().StringVar(&subject, "subject", "", "Email subject (required unless --template-uuid is set)")
 	cmd.Flags().StringVar(&text, "text", "", "Plain text body")
 	cmd.Flags().StringVar(&html, "html", "", "HTML body")
 	cmd.Flags().StringSliceVar(&cc, "cc", nil, "CC recipient (can be repeated)")
 	cmd.Flags().StringSliceVar(&bcc, "bcc", nil, "BCC recipient (can be repeated)")
 	cmd.Flags().StringVar(&category, "category", "", "Email category")
-	cmd.Flags().StringVar(&templateUUID, "template-uuid", "", "Template UUID")
+	cmd.Flags().StringVar(&templateUUID, "template-uuid", "", "Template UUID; the template provides subject, bodies and category")
+	cmd.Flags().StringVar(&templateVars, "template-variables", "", `Template variables as a JSON object (e.g. '{"user_name":"John"}')`)
 	cmd.Flags().StringVar(&replyTo, "reply-to", "", "Reply-to email address")
 
 	_ = cmd.MarkFlagRequired("sandbox-id")
 	_ = cmd.MarkFlagRequired("from")
 	_ = cmd.MarkFlagRequired("to")
-	_ = cmd.MarkFlagRequired("subject")
 
 	return cmd
 }

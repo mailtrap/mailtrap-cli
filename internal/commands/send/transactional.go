@@ -2,6 +2,7 @@ package send
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
@@ -11,16 +12,17 @@ import (
 )
 
 type sendRequest struct {
-	From         cmdutil.EmailAddr   `json:"from"`
-	To           []cmdutil.EmailAddr `json:"to"`
-	Subject      string              `json:"subject"`
-	Text         string              `json:"text,omitempty"`
-	HTML         string              `json:"html,omitempty"`
-	CC           []cmdutil.EmailAddr `json:"cc,omitempty"`
-	BCC          []cmdutil.EmailAddr `json:"bcc,omitempty"`
-	Category     string              `json:"category,omitempty"`
-	TemplateUUID string              `json:"template_uuid,omitempty"`
-	ReplyTo      *cmdutil.EmailAddr  `json:"reply_to,omitempty"`
+	From              cmdutil.EmailAddr          `json:"from"`
+	To                []cmdutil.EmailAddr        `json:"to"`
+	Subject           string                     `json:"subject,omitempty"`
+	Text              string                     `json:"text,omitempty"`
+	HTML              string                     `json:"html,omitempty"`
+	CC                []cmdutil.EmailAddr        `json:"cc,omitempty"`
+	BCC               []cmdutil.EmailAddr        `json:"bcc,omitempty"`
+	Category          string                     `json:"category,omitempty"`
+	TemplateUUID      string                     `json:"template_uuid,omitempty"`
+	TemplateVariables map[string]json.RawMessage `json:"template_variables,omitempty"`
+	ReplyTo           *cmdutil.EmailAddr         `json:"reply_to,omitempty"`
 }
 
 type sendResponse struct {
@@ -43,6 +45,7 @@ func newSendCmd(f *cmdutil.Factory, name, short string, base client.BaseURL) *co
 		bcc          []string
 		category     string
 		templateUUID string
+		templateVars string
 		replyTo      string
 	)
 
@@ -50,6 +53,10 @@ func newSendCmd(f *cmdutil.Factory, name, short string, base client.BaseURL) *co
 		Use:   name,
 		Short: short,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := cmdutil.ValidateTemplateFlags(cmd, templateUUID, templateVars); err != nil {
+				return err
+			}
+
 			c, err := f.NewClient()
 			if err != nil {
 				return err
@@ -73,6 +80,14 @@ func newSendCmd(f *cmdutil.Factory, name, short string, base client.BaseURL) *co
 				HTML:         html,
 				Category:     category,
 				TemplateUUID: templateUUID,
+			}
+
+			if templateVars != "" {
+				vars, err := cmdutil.ParseTemplateVariables(templateVars)
+				if err != nil {
+					return err
+				}
+				req.TemplateVariables = vars
 			}
 
 			if len(cc) > 0 {
@@ -114,18 +129,18 @@ func newSendCmd(f *cmdutil.Factory, name, short string, base client.BaseURL) *co
 
 	cmd.Flags().StringVar(&from, "from", "", "Sender email address (e.g. 'Name <email>' or 'email')")
 	cmd.Flags().StringSliceVar(&to, "to", nil, "Recipient email address (can be repeated)")
-	cmd.Flags().StringVar(&subject, "subject", "", "Email subject")
+	cmd.Flags().StringVar(&subject, "subject", "", "Email subject (required unless --template-uuid is set)")
 	cmd.Flags().StringVar(&text, "text", "", "Plain text body")
 	cmd.Flags().StringVar(&html, "html", "", "HTML body")
 	cmd.Flags().StringSliceVar(&cc, "cc", nil, "CC recipient (can be repeated)")
 	cmd.Flags().StringSliceVar(&bcc, "bcc", nil, "BCC recipient (can be repeated)")
 	cmd.Flags().StringVar(&category, "category", "", "Email category")
-	cmd.Flags().StringVar(&templateUUID, "template-uuid", "", "Template UUID")
+	cmd.Flags().StringVar(&templateUUID, "template-uuid", "", "Template UUID; the template provides subject, bodies and category")
+	cmd.Flags().StringVar(&templateVars, "template-variables", "", `Template variables as a JSON object (e.g. '{"user_name":"John"}')`)
 	cmd.Flags().StringVar(&replyTo, "reply-to", "", "Reply-to email address")
 
 	_ = cmd.MarkFlagRequired("from")
 	_ = cmd.MarkFlagRequired("to")
-	_ = cmd.MarkFlagRequired("subject")
 
 	return cmd
 }

@@ -102,6 +102,8 @@ Tests are organized by endpoint group. Each test specifies:
 | 2.5 | Batch bulk | `mailtrap send batch-bulk --from you@yourdomain.com --to recipient@example.com --subject "Batch Bulk" --text "Hi"` | Success |
 | 2.6 | Missing flags | `mailtrap send transactional` | Error: required flags |
 | 2.7 | JSON output | `mailtrap send transactional --from you@yourdomain.com --to recipient@example.com --subject "JSON" --text "Hi" --output json` | Valid JSON |
+| 2.8 | Send from template | `mailtrap send transactional --from you@yourdomain.com --to recipient@example.com --template-uuid <TEMPLATE_UUID> --template-variables '{"user_name":"John"}'` | Success; delivered email has the template's subject and `John` substituted. Repeat with `send bulk` |
+| 2.9 | Template with subject | `mailtrap send transactional --from you@yourdomain.com --to recipient@example.com --template-uuid <TEMPLATE_UUID> --subject "X"` | Error: `--subject cannot be used with --template-uuid` |
 
 ## 3. Domains (Sending)
 

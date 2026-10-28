@@ -14,13 +14,14 @@ Send a single email to a sandbox for testing.
 | `--sandbox-id` | string | Yes | Sandbox ID |
 | `--from` | string | Yes | Sender address |
 | `--to` | string[] | Yes | Recipient(s), can be repeated |
-| `--subject` | string | Yes | Email subject |
+| `--subject` | string | Unless `--template-uuid` | Email subject |
 | `--text` | string | No | Plain-text body |
 | `--html` | string | No | HTML body |
 | `--cc` | string[] | No | CC recipients |
 | `--bcc` | string[] | No | BCC recipients |
 | `--category` | string | No | Email category |
-| `--template-uuid` | string | No | Template UUID |
+| `--template-uuid` | string | No | Template UUID — the template provides subject, bodies and category, so `--subject`, `--text`, `--html` and `--category` are rejected with it |
+| `--template-variables` | JSON object | No | Template variable values, e.g. `'{"user_name":"John"}'`; requires `--template-uuid` |
 | `--reply-to` | string | No | Reply-to address |
 
 **Note:** Sandbox emails are not delivered to real inboxes. They appear in the Mailtrap sandbox for inspection.

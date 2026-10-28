@@ -171,3 +171,68 @@ func TestSandboxSendBatch(t *testing.T) {
 		t.Errorf("expected output to contain 'true', got:\n%s", output)
 	}
 }
+
+func TestSandboxSendSingleWithTemplate(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		var reqBody map[string]interface{}
+		json.Unmarshal(body, &reqBody)
+
+		if reqBody["template_uuid"] != "tpl-uuid" {
+			t.Errorf("expected template_uuid 'tpl-uuid', got %v", reqBody["template_uuid"])
+		}
+		vars, ok := reqBody["template_variables"].(map[string]interface{})
+		if !ok || vars["user_name"] != "John" {
+			t.Errorf("expected template_variables with user_name 'John', got %v", reqBody["template_variables"])
+		}
+		if _, ok := reqBody["subject"]; ok {
+			t.Errorf("expected no subject in template request, got %v", reqBody["subject"])
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"success":     true,
+			"message_ids": []string{"msg-1"},
+		})
+	})
+	defer cleanup()
+
+	cmd := sandbox_send.NewCmdSandboxSend(f)
+	cmd.SetArgs([]string{
+		"single",
+		"--sandbox-id", "1",
+		"--from", "test@example.com",
+		"--to", "user@example.com",
+		"--template-uuid", "tpl-uuid",
+		"--template-variables", `{"user_name":"John"}`,
+	})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestSandboxSendSingleTemplateWithSubject(t *testing.T) {
+	f, _, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		t.Error("expected no request to be sent")
+	})
+	defer cleanup()
+
+	cmd := sandbox_send.NewCmdSandboxSend(f)
+	cmd.SetArgs([]string{
+		"single",
+		"--sandbox-id", "1",
+		"--from", "test@example.com",
+		"--to", "user@example.com",
+		"--template-uuid", "tpl-uuid",
+		"--subject", "Hi",
+	})
+	cmd.SetOut(&bytes.Buffer{})
+	cmd.SetErr(&bytes.Buffer{})
+
+	err := cmd.Execute()
+	if err == nil || !strings.Contains(err.Error(), "--subject cannot be used with --template-uuid") {
+		t.Errorf("expected subject/template conflict error, got %v", err)
+	}
+}

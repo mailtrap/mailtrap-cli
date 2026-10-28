@@ -79,6 +79,13 @@ mailtrap send bulk \
   --subject "Weekly Update" \
   --text "Here's what's new..."
 
+# From a template (works for bulk and sandbox-send single too)
+mailtrap send transactional \
+  --from "App <noreply@yourdomain.com>" \
+  --to user@example.com \
+  --template-uuid b81aabcd-1a1e-41cf-91b6-eca0254b3d96 \
+  --template-variables '{"user_name":"John"}'
+
 # Batch (from JSON file)
 mailtrap send batch-transactional --file emails.json
 ```

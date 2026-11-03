@@ -232,8 +232,8 @@ Tests are organized by endpoint group. Each test specifies:
 | 12.4 | Update sandbox | `mailtrap sandboxes update --id <NEW_ID> --name "test-sandbox-updated"` | Updated name |
 | 12.5 | Mark read | `mailtrap sandboxes mark-read --id <SANDBOX_ID>` | Success message |
 | 12.6 | Reset credentials | `mailtrap sandboxes reset-credentials --id <NEW_ID>` | Success/new credentials |
-| 12.7 | Toggle email username | `mailtrap sandboxes toggle-email-username --id <NEW_ID>` | Toggled response |
-| 12.8 | Reset email username | `mailtrap sandboxes reset-email-username --id <NEW_ID>` | Reset response |
+| 12.7 | Toggle email username | `mailtrap sandboxes toggle-email --id <NEW_ID>` | Toggled response |
+| 12.8 | Reset email username | `mailtrap sandboxes reset-email --id <NEW_ID>` | Reset response |
 | 12.9 | Clean sandbox | `mailtrap sandboxes clean --id <NEW_ID>` | Success message |
 | 12.10 | Delete sandbox | `mailtrap sandboxes delete --id <NEW_ID>` | Success message |
 | 12.11 | Get missing ID | `mailtrap sandboxes get` | Error: `--id is required` |

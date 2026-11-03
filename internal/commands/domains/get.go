@@ -2,7 +2,6 @@ package domains
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
@@ -32,7 +31,7 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("sending_domains", fmt.Sprintf("%s", domainID))
+			path := cmdutil.AccountPath("sending_domains", domainID)
 
 			var domain Domain
 			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &domain); err != nil {

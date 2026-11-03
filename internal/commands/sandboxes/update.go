@@ -2,7 +2,6 @@ package sandboxes
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
@@ -36,7 +35,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID))
+			path := cmdutil.AccountPath("inboxes", sandboxID)
 			body := map[string]interface{}{
 				"inbox": map[string]string{"name": name},
 			}

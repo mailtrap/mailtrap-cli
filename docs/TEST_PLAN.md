@@ -26,7 +26,7 @@ export MAILTRAP_API_TOKEN=your-token
 Before running integration tests, ensure you have:
 - A Mailtrap account with API access
 - A verified **domain** for transactional/bulk send tests
-- At least one **sandbox project** with a **sandbox** for sandbox tests
+- At least one **project** with a **sandbox** for sandbox tests
 - Note down your **sandbox ID** for sandbox send tests
 
 ### 3. Build the CLI

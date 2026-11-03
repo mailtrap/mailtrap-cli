@@ -2,7 +2,6 @@ package sandboxes
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
@@ -32,7 +31,7 @@ func NewCmdMarkRead(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID), "all_read")
+			path := cmdutil.AccountPath("inboxes", sandboxID, "all_read")
 
 			var sandbox Sandbox
 			if err := c.Patch(context.Background(), client.BaseGeneral, path, nil, &sandbox); err != nil {

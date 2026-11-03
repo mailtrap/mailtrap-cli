@@ -31,7 +31,7 @@ func NewCmdClean(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID), "clean")
+			path := cmdutil.AccountPath("inboxes", sandboxID, "clean")
 
 			if err := c.Patch(context.Background(), client.BaseGeneral, path, nil, nil); err != nil {
 				return err

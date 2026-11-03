@@ -52,7 +52,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 
 	cmd.Flags().StringVar(&folderID, "folder-id", "", "Folder ID (required)")
 	cmd.Flags().StringVar(&name, "name", "", "Inbox name (required)")
-	cmd.Flags().IntVar(&domainID, "domain-id", 0, "Sending domain ID for a custom-domain (catch-all) inbox")
+	cmd.Flags().IntVar(&domainID, "domain-id", 0, "Domain ID for a custom-domain (catch-all) inbox")
 
 	return cmd
 }

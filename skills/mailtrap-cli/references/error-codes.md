@@ -11,7 +11,7 @@ Common API errors and their meanings when using the Mailtrap CLI.
 | 400 | Bad Request | Invalid flag values, malformed JSON in `--file`, missing required fields |
 | 401 | Unauthorized | Invalid or expired API token |
 | 403 | Forbidden | Token lacks permissions for this action |
-| 404 | Not Found | Invalid resource ID (domain, template, inbox, message, etc.) |
+| 404 | Not Found | Invalid resource ID (domain, template, sandbox, message, etc.) |
 | 422 | Unprocessable Entity | Validation error (e.g. duplicate domain, invalid email format) |
 | 429 | Too Many Requests | Rate limit exceeded — wait and retry |
 | 500 | Internal Server Error | Mailtrap server issue — retry later |

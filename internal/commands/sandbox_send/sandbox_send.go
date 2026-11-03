@@ -12,8 +12,8 @@ import (
 func NewCmdSandboxSend(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "sandbox-send",
-		Short: "Send emails to a Mailtrap sandbox inbox",
-		Long:  "Send single or batch emails to a Mailtrap sandbox inbox for testing.",
+		Short: "Send emails to a Mailtrap sandbox",
+		Long:  "Send single or batch emails to a Mailtrap sandbox for testing.",
 	}
 
 	cmd.AddCommand(NewCmdSingle(f))

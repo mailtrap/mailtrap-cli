@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type Inbox struct {
+type Sandbox struct {
 	ID            int    `json:"id"`
 	Name          string `json:"name"`
 	EmailUsername string `json:"email_username"`
@@ -18,7 +18,7 @@ type Inbox struct {
 	MaxSize       int    `json:"max_size"`
 }
 
-var inboxColumns = []output.Column{
+var sandboxColumns = []output.Column{
 	{Header: "ID", Field: "id"},
 	{Header: "NAME", Field: "name"},
 	{Header: "EMAIL_USERNAME", Field: "email_username"},
@@ -43,13 +43,13 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 
 			path := cmdutil.AccountPath("inboxes")
 
-			var inboxes []Inbox
-			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &inboxes); err != nil {
+			var sandboxes []Sandbox
+			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &sandboxes); err != nil {
 				return err
 			}
 
 			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, inboxes, inboxColumns)
+			return output.Print(f.IOStreams.Out, format, sandboxes, sandboxColumns)
 		},
 	}
 

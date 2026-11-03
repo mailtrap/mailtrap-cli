@@ -12,14 +12,14 @@ import (
 )
 
 func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
-	var inboxID string
+	var sandboxID string
 	var name string
 
 	cmd := &cobra.Command{
 		Use:   "update",
 		Short: "Update a sandbox",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cmdutil.RequireFlag("id", inboxID); err != nil {
+			if err := cmdutil.RequireFlag("id", sandboxID); err != nil {
 				return err
 			}
 			if err := cmdutil.RequireFlag("name", name); err != nil {
@@ -36,22 +36,22 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID))
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID))
 			body := map[string]interface{}{
 				"inbox": map[string]string{"name": name},
 			}
 
-			var inbox Inbox
-			if err := c.Patch(context.Background(), client.BaseGeneral, path, body, &inbox); err != nil {
+			var sandbox Sandbox
+			if err := c.Patch(context.Background(), client.BaseGeneral, path, body, &sandbox); err != nil {
 				return err
 			}
 
 			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, inbox, inboxColumns)
+			return output.Print(f.IOStreams.Out, format, sandbox, sandboxColumns)
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "id", "", "Sandbox ID")
+	cmd.Flags().StringVar(&sandboxID, "id", "", "Sandbox ID")
 	cmd.Flags().StringVar(&name, "name", "", "Sandbox name")
 
 	return cmd

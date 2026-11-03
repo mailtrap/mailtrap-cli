@@ -25,7 +25,7 @@ type campaignAttrs struct {
 
 func addAttributeFlags(cmd *cobra.Command, attrs *campaignAttrs) {
 	cmd.Flags().StringVar(&attrs.Name, "name", "", "Campaign name")
-	cmd.Flags().Int64Var(&attrs.DomainID, "domain-id", 0, "ID of the verified sending domain, as returned by the Sending Domains endpoints")
+	cmd.Flags().Int64Var(&attrs.DomainID, "domain-id", 0, "ID of the verified domain, as returned by the Domains endpoints")
 	cmd.Flags().StringVar(&attrs.FromDisplayName, "from-display-name", "", "Display name shown in the From header")
 	cmd.Flags().StringVar(&attrs.FromLocalPart, "from-local-part", "", "Local part (before the @) of the From address")
 	cmd.Flags().StringVar(&attrs.ReplyToDisplayName, "reply-to-display-name", "", "Reply-To display name")

@@ -41,13 +41,13 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 				"inbox": map[string]string{"name": name},
 			}
 
-			var inbox Inbox
-			if err := c.Post(context.Background(), client.BaseGeneral, path, body, &inbox); err != nil {
+			var sandbox Sandbox
+			if err := c.Post(context.Background(), client.BaseGeneral, path, body, &sandbox); err != nil {
 				return err
 			}
 
 			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, inbox, inboxColumns)
+			return output.Print(f.IOStreams.Out, format, sandbox, sandboxColumns)
 		},
 	}
 

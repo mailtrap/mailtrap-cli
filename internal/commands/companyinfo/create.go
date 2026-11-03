@@ -26,7 +26,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "create",
-		Short: "Create company info for a sending domain",
+		Short: "Create company info for a domain",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			required := []struct {
 				flag  string
@@ -84,7 +84,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&domainID, "domain-id", "", "Sending domain ID (required)")
+	cmd.Flags().StringVar(&domainID, "domain-id", "", "Domain ID (required)")
 	cmd.Flags().StringVar(&name, "name", "", "Company or individual name (required)")
 	cmd.Flags().StringVar(&address, "address", "", "Street address (required)")
 	cmd.Flags().StringVar(&city, "city", "", "City (required)")

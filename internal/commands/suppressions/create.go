@@ -70,7 +70,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&email, "email", "", "Email address to suppress (required)")
-	cmd.Flags().Int64Var(&domainID, "domain-id", 0, "ID of the sending domain the suppression applies to (required)")
+	cmd.Flags().Int64Var(&domainID, "domain-id", 0, "ID of the domain the suppression applies to (required)")
 	cmd.Flags().StringVar(&sendingStream, "sending-stream", "", "Sending stream to suppress for: transactional, bulk (required)")
 	cmd.Flags().StringVar(&suppressType, "type", "", "Suppression reason: hard bounce, spam complaint, unsubscription, manual import")
 

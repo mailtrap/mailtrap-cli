@@ -12,13 +12,13 @@ import (
 )
 
 func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
-	var inboxID string
+	var sandboxID string
 
 	cmd := &cobra.Command{
 		Use:   "get",
 		Short: "Get a sandbox",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cmdutil.RequireFlag("id", inboxID); err != nil {
+			if err := cmdutil.RequireFlag("id", sandboxID); err != nil {
 				return err
 			}
 
@@ -32,19 +32,19 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID))
+			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", sandboxID))
 
-			var inbox Inbox
-			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &inbox); err != nil {
+			var sandbox Sandbox
+			if err := c.Get(context.Background(), client.BaseGeneral, path, nil, &sandbox); err != nil {
 				return err
 			}
 
 			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, inbox, inboxColumns)
+			return output.Print(f.IOStreams.Out, format, sandbox, sandboxColumns)
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "id", "", "Sandbox ID")
+	cmd.Flags().StringVar(&sandboxID, "id", "", "Sandbox ID")
 
 	return cmd
 }

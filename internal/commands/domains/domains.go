@@ -8,7 +8,7 @@ import (
 func NewCmdDomains(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "domains",
-		Short: "Manage sending domains",
+		Short: "Manage domains",
 	}
 
 	cmd.AddCommand(NewCmdList(f))

@@ -43,25 +43,25 @@ var statsColumns = []output.Column{
 // MarshalJSON on each type flattens the nested stats for table/text output.
 
 type DomainStats struct {
-	SendingDomainID int   `json:"sending_domain_id"`
-	Stats           Stats `json:"stats"`
+	DomainID int   `json:"sending_domain_id"`
+	Stats    Stats `json:"stats"`
 }
 
 func (d DomainStats) MarshalJSON() ([]byte, error) {
 	type flat struct {
-		SendingDomainID int     `json:"sending_domain_id"`
-		DeliveryCount   int     `json:"delivery_count"`
-		DeliveryRate    float64 `json:"delivery_rate"`
-		BounceCount     int     `json:"bounce_count"`
-		BounceRate      float64 `json:"bounce_rate"`
-		OpenCount       int     `json:"open_count"`
-		OpenRate        float64 `json:"open_rate"`
-		ClickCount      int     `json:"click_count"`
-		ClickRate       float64 `json:"click_rate"`
-		SpamCount       int     `json:"spam_count"`
-		SpamRate        float64 `json:"spam_rate"`
+		DomainID      int     `json:"sending_domain_id"`
+		DeliveryCount int     `json:"delivery_count"`
+		DeliveryRate  float64 `json:"delivery_rate"`
+		BounceCount   int     `json:"bounce_count"`
+		BounceRate    float64 `json:"bounce_rate"`
+		OpenCount     int     `json:"open_count"`
+		OpenRate      float64 `json:"open_rate"`
+		ClickCount    int     `json:"click_count"`
+		ClickRate     float64 `json:"click_rate"`
+		SpamCount     int     `json:"spam_count"`
+		SpamRate      float64 `json:"spam_rate"`
 	}
-	return json.Marshal(flat{d.SendingDomainID, d.Stats.DeliveryCount, d.Stats.DeliveryRate, d.Stats.BounceCount, d.Stats.BounceRate, d.Stats.OpenCount, d.Stats.OpenRate, d.Stats.ClickCount, d.Stats.ClickRate, d.Stats.SpamCount, d.Stats.SpamRate})
+	return json.Marshal(flat{d.DomainID, d.Stats.DeliveryCount, d.Stats.DeliveryRate, d.Stats.BounceCount, d.Stats.BounceRate, d.Stats.OpenCount, d.Stats.OpenRate, d.Stats.ClickCount, d.Stats.ClickRate, d.Stats.SpamCount, d.Stats.SpamRate})
 }
 
 var domainStatsColumns = []output.Column{

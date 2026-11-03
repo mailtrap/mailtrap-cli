@@ -72,7 +72,7 @@ Inboxes are managed within a folder.
 |------|------|----------|-------------|
 | `--folder-id` | string | Yes | Folder ID |
 | `--name` | string | Yes | Inbox name |
-| `--domain-id` | int | No | Sending domain ID for a custom-domain (catch-all) inbox; omit for a Mailtrap-hosted inbox |
+| `--domain-id` | int | No | Domain ID for a custom-domain (catch-all) inbox; omit for a Mailtrap-hosted inbox |
 
 ---
 

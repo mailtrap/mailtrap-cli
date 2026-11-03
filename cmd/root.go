@@ -39,7 +39,7 @@ func NewRootCmd(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:           "mailtrap",
 		Short:         "CLI for the Mailtrap email platform",
-		Long:          "A command-line interface for managing Mailtrap email sending, sandbox testing, contacts, and account settings.",
+		Long:          "A command-line interface for managing Mailtrap email sending, sandboxes, contacts, and account settings.",
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}

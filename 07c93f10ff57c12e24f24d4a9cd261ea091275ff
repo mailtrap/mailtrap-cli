@@ -1,0 +1,21 @@
+README.md
+  s_35e942bf87a8d1::t_4d034b2101cb05 133-136,194
+skills/mailtrap-cli/references/accounts.md
+  s_35e942bf87a8d1::t_e0563b76ba4fd0 61,84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "07c93f10ff57c12e24f24d4a9cd261ea091275ff",
+  "prompts": {},
+  "sessions": {
+    "s_35e942bf87a8d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fe0c4ad9-a5e3-40ee-b534-5305c3091a31",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Alex Shchyhol <oleksandr.shchyhol@railsware.com>"
+    }
+  }
+}

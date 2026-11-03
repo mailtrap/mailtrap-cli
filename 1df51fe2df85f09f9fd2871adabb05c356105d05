@@ -1,0 +1,25 @@
+internal/commands/suppressions/suppressions_test.go
+  s_a416a2bbf03afd::t_bb60f85452feac 60,78-79,87,129
+  s_a416a2bbf03afd::t_45304d6f4d6979 192-229
+skills/mailtrap-cli/references/domains.md
+  s_a416a2bbf03afd::t_e65c666aed302f 53-60
+internal/commands/suppressions/list.go
+  s_a416a2bbf03afd::t_1aebd309b58d06 15-20,26-28
+  s_a416a2bbf03afd::t_674a77072b7f46 36,64-66,81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "1df51fe2df85f09f9fd2871adabb05c356105d05",
+  "prompts": {},
+  "sessions": {
+    "s_a416a2bbf03afd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73aab1cf-cfd1-42b8-b656-f26905d319ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

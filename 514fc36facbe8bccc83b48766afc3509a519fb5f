@@ -1,0 +1,21 @@
+skills/mailtrap-cli/references/domains.md
+  s_a416a2bbf03afd::t_446e11d487cd13 3,53-73,84-119
+skills/mailtrap-cli/SKILL.md
+  s_a416a2bbf03afd::t_446e11d487cd13 67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "514fc36facbe8bccc83b48766afc3509a519fb5f",
+  "prompts": {},
+  "sessions": {
+    "s_a416a2bbf03afd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73aab1cf-cfd1-42b8-b656-f26905d319ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

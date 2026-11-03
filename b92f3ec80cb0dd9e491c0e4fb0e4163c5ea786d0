@@ -1,0 +1,23 @@
+internal/commands/emailcampaigns/emailcampaigns_test.go
+  s_9b6c91d8748263::t_8400ed7f8af683 211-238
+  s_9b6c91d8748263::t_bd5a8e1bc32186 9
+  s_9b6c91d8748263::t_6fc94573aaff06 239-240
+internal/commands/emailcampaigns/list.go
+  s_9b6c91d8748263::t_17098d35b0b9ff 15-16,18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b92f3ec80cb0dd9e491c0e4fb0e4163c5ea786d0",
+  "prompts": {},
+  "sessions": {
+    "s_9b6c91d8748263": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "167f51ad-c991-4710-9d53-fd1593350402",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

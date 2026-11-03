@@ -1,0 +1,27 @@
+internal/commands/inbound/threads/threads_test.go
+  s_9b6c91d8748263::t_6901f49499cdcb 153-157,161-168
+internal/commands/inbound/messages/get.go
+  s_9b6c91d8748263::t_1e04f6f7657605 49,54
+  s_9b6c91d8748263::t_ffd3b889418811 14-24
+  s_9b6c91d8748263::t_7ba07c75d3772b 5
+internal/commands/inbound/messages/messages_test.go
+  s_9b6c91d8748263::t_f354f9156551b7 9
+  s_9b6c91d8748263::t_757a254c2f7dbc 265-269,273-311
+  s_9b6c91d8748263::t_01877e295a6a75 78-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "08e5349335487123bcd4380079719014a26fca45",
+  "prompts": {},
+  "sessions": {
+    "s_9b6c91d8748263": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "167f51ad-c991-4710-9d53-fd1593350402",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}

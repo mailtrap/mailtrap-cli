@@ -1,0 +1,37 @@
+internal/commands/trackingoptouts/delete.go
+  s_a416a2bbf03afd::t_9494b79739d894 1-42
+internal/commands/trackingoptouts/list.go
+  s_a416a2bbf03afd::t_9494b79739d894 1-72
+internal/commands/trackingoptouts/trackingoptouts_test.go
+  s_a416a2bbf03afd::t_9494b79739d894 1-294
+internal/commands/trackingoptouts/create.go
+  s_a416a2bbf03afd::t_9494b79739d894 1-58
+cmd/root.go
+  s_a416a2bbf03afd::t_9494b79739d894 34,63
+README.md
+  s_a416a2bbf03afd::t_9494b79739d894 115-124,184-185
+internal/commands/suppressions/create.go
+  s_a416a2bbf03afd::t_9494b79739d894 1-75
+internal/commands/suppressions/suppressions_test.go
+  s_a416a2bbf03afd::t_9494b79739d894 193-327
+internal/commands/trackingoptouts/trackingoptouts.go
+  s_a416a2bbf03afd::t_9494b79739d894 1-36
+internal/commands/suppressions/suppressions.go
+  s_a416a2bbf03afd::t_9494b79739d894 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "4681385b5e70e142217c4b260f61d7ab5741a11f",
+  "prompts": {},
+  "sessions": {
+    "s_a416a2bbf03afd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73aab1cf-cfd1-42b8-b656-f26905d319ee",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

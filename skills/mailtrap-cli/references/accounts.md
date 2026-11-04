@@ -137,7 +137,7 @@ Create a sub-account under an organization.
 
 ## organizations delete-sub-account
 
-Delete a sub-account from an organization. Requires sub-account management permissions for the organization.
+Delete a sub-account from an organization. Requires organization admin permissions.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|

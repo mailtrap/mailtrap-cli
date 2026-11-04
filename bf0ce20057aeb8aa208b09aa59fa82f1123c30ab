@@ -1,0 +1,26 @@
+internal/commands/email_logs/email_logs_test.go
+  s_9b6c91d8748263::t_63b01bc71b4333 114-118,122-129
+  s_9b6c91d8748263::t_a067d7d0eb9fbb 6,9,211-242
+internal/commands/email_logs/get.go
+  s_9b6c91d8748263::t_6bf01e087b88f0 5,36
+internal/commands/email_logs/list.go
+  s_9b6c91d8748263::t_8e41e6ee36349a 5,15-19,101,106
+skills/mailtrap-cli/references/email-logs.md
+  s_9b6c91d8748263::t_14d25edd2bfaa3 26,40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "bf0ce20057aeb8aa208b09aa59fa82f1123c30ab",
+  "prompts": {},
+  "sessions": {
+    "s_9b6c91d8748263": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "167f51ad-c991-4710-9d53-fd1593350402",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}

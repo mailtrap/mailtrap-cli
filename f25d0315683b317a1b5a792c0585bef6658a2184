@@ -1,0 +1,23 @@
+docs/TEST_PLAN.md
+  s_593e6098d671b2::t_04b49d82b1d20a 235-236
+internal/commands/domains/delete.go
+  s_593e6098d671b2::t_04b49d82b1d20a 34
+internal/commands/domains/get.go
+  s_593e6098d671b2::t_04b49d82b1d20a 34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f25d0315683b317a1b5a792c0585bef6658a2184",
+  "prompts": {},
+  "sessions": {
+    "s_593e6098d671b2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "76c59bbd-3d5c-448c-97ea-8158dde0d71b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

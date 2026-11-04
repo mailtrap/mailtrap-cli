@@ -1,0 +1,22 @@
+README.md
+  s_9b6c91d8748263::t_533f4a17be0200 184-187
+  s_9b6c91d8748263::t_31b25deed93658 188-189
+skills/mailtrap-cli/SKILL.md
+  s_9b6c91d8748263::t_27661e5fd9b40d 31-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3d26d3c8b74f6ff36bd50632d51ea41a6db2453a",
+  "prompts": {},
+  "sessions": {
+    "s_9b6c91d8748263": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "167f51ad-c991-4710-9d53-fd1593350402",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}

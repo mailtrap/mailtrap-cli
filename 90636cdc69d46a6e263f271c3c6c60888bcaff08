@@ -1,0 +1,29 @@
+internal/commands/messages/messages_test.go
+  s_9b6c91d8748263::t_75ecd97f979a67 106-128
+  s_9b6c91d8748263::t_4335ab0e0fda3b 6,9,258-289
+skills/mailtrap-cli/references/sandbox.md
+  s_9b6c91d8748263::t_3e976bdd13c691 193,198-199
+  s_9b6c91d8748263::t_65ca1a793bec6d 205
+internal/commands/messages/get.go
+  s_9b6c91d8748263::t_64c2d2ce72b82b 5,42
+internal/commands/messages/list.go
+  s_9b6c91d8748263::t_23e807b81d839c 5,7-8,27-31,53-62,66,71-72
+internal/commands/messages/update.go
+  s_9b6c91d8748263::t_4f98e91fd9f702 5,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "90636cdc69d46a6e263f271c3c6c60888bcaff08",
+  "prompts": {},
+  "sessions": {
+    "s_9b6c91d8748263": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "167f51ad-c991-4710-9d53-fd1593350402",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}

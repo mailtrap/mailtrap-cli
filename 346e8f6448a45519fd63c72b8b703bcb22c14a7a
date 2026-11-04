@@ -1,0 +1,22 @@
+internal/output/page_test.go
+  s_9b6c91d8748263::t_c88c12d07e495f 76-90
+internal/output/page.go
+  s_9b6c91d8748263::t_7508bc6f5d5311 35-36
+  s_9b6c91d8748263::t_416a04de36f593 50-51,53-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "346e8f6448a45519fd63c72b8b703bcb22c14a7a",
+  "prompts": {},
+  "sessions": {
+    "s_9b6c91d8748263": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "167f51ad-c991-4710-9d53-fd1593350402",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Marcin Klocek <marcin.klocek@railsware.com>"
+    }
+  }
+}

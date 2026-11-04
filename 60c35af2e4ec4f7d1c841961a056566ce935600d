@@ -1,0 +1,41 @@
+internal/commands/sandboxes/reset_credentials.go
+  s_f12307391a7a36::t_9a545af4711eab 34
+internal/commands/sandboxes/get.go
+  s_f12307391a7a36::t_9a545af4711eab 34
+internal/commands/webhooks/create.go
+  s_f12307391a7a36::t_42d17402def1e4 100
+internal/commands/sandboxes/mark_read.go
+  s_f12307391a7a36::t_9a545af4711eab 34
+internal/commands/sandboxes/update.go
+  s_f12307391a7a36::t_9a545af4711eab 38
+internal/commands/sandboxes/delete.go
+  s_f12307391a7a36::t_9a545af4711eab 34
+internal/commands/sandboxes/toggle_email.go
+  s_f12307391a7a36::t_9a545af4711eab 34
+internal/commands/sandboxes/create.go
+  s_f12307391a7a36::t_9a545af4711eab 38
+internal/commands/webhooks/update.go
+  s_f12307391a7a36::t_9a545af4711eab 76
+internal/commands/sandboxes/clean.go
+  s_f12307391a7a36::t_9a545af4711eab 34
+docs/TEST_PLAN.md
+  s_f12307391a7a36::t_42d17402def1e4 29
+internal/commands/sandboxes/reset_email.go
+  s_f12307391a7a36::t_9a545af4711eab 34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "60c35af2e4ec4f7d1c841961a056566ce935600d",
+  "prompts": {},
+  "sessions": {
+    "s_f12307391a7a36": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "57445adb-c4ae-4d27-b47a-a53752ee3f9c",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

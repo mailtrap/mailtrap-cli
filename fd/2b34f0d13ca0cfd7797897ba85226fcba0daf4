@@ -1,0 +1,21 @@
+internal/commands/organizations/delete_sub_account.go
+  s_aa5f4f45f56f4a::t_263326d73cb3a8 19
+skills/mailtrap-cli/references/accounts.md
+  s_aa5f4f45f56f4a::t_3073612350c0e7 140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fd2b34f0d13ca0cfd7797897ba85226fcba0daf4",
+  "prompts": {},
+  "sessions": {
+    "s_aa5f4f45f56f4a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7d123fe-8ec1-4895-b22c-de345b4cc7cc",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Alex Shchyhol <oleksandr.shchyhol@railsware.com>"
+    }
+  }
+}

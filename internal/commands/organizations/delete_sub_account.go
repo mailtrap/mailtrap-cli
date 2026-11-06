@@ -22,7 +22,7 @@ The organization must have the Organization & Sub-accounts feature enabled; othe
 The deletion is permanent: the sub-account and all of its data are removed and cannot be restored.
 Deleting the organization's last sub-account also deletes the organization.
 
-A repeated call for the same sub-account returns 404. A concurrent deletion of the same sub-account fails with 409. Rate limit: 10 requests per minute per organization.`,
+A repeated call for the same sub-account returns 404. A concurrent deletion of the same sub-account may fail with 409. Rate limit: 10 requests per minute per organization.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !cmd.Flags().Changed("org-id") {
 				return fmt.Errorf("--org-id is required")

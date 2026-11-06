@@ -144,4 +144,4 @@ Delete a sub-account from an organization. Requires organization admin permissio
 | `--org-id` | int | Yes | Organization ID |
 | `--sub-account-id` | int | Yes | Sub-account ID |
 
-**Caution:** Permanent – the sub-account and all of its data are removed and cannot be restored. Deleting the organization's last sub-account also deletes the organization. A repeated call for the same sub-account returns 404. A concurrent deletion of the same sub-account fails with 409. Rate limit: 10 requests per minute per organization.
+**Caution:** Permanent – the sub-account and all of its data are removed and cannot be restored. Deleting the organization's last sub-account also deletes the organization. A repeated call for the same sub-account returns 404. A concurrent deletion of the same sub-account may fail with 409. Rate limit: 10 requests per minute per organization.

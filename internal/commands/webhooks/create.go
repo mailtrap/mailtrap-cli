@@ -97,7 +97,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().StringVar(&sendingStream, "sending-stream", "", "Sending stream: transactional, bulk")
 	cmd.Flags().StringSliceVar(&eventTypes, "event-types", nil, "Event types (comma-separated): delivery, soft_bounce, bounce, suspension, unsubscribe, open, spam_complaint, click, reject")
 	cmd.Flags().IntVar(&domainID, "domain-id", 0, "Domain ID to scope the webhook to (email_sending and campaigns)")
-	cmd.Flags().IntVar(&inboundInboxID, "inbound-inbox-id", 0, "Inbox ID to scope the webhook to (inbound_receiving only; omit to apply to all inboxes)")
+	cmd.Flags().IntVar(&inboundInboxID, "inbound-inbox-id", 0, "Email Inbound inbox ID to scope the webhook to (inbound_receiving only; omit to apply to all inboxes)")
 
 	return cmd
 }

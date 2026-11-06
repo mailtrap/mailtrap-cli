@@ -6,7 +6,7 @@ Detailed flag specifications for `mailtrap domains`, `mailtrap company-info`, `m
 
 ## domains list
 
-List all sending domains for the account.
+List all domains for the account.
 
 No additional flags. Uses `--account-id` from global config.
 
@@ -16,7 +16,7 @@ No additional flags. Uses `--account-id` from global config.
 
 ## domains get
 
-Retrieve details of a specific sending domain.
+Retrieve details of a specific domain.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -26,7 +26,7 @@ Retrieve details of a specific sending domain.
 
 ## domains create
 
-Register a new sending domain.
+Register a new domain.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -38,7 +38,7 @@ Register a new sending domain.
 
 ## domains update
 
-Update the tracking and inbound settings of a sending domain.
+Update the tracking and inbound settings of a domain.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -55,7 +55,7 @@ Only the flags actually passed are sent, so a partial update leaves the other se
 
 ## domains delete
 
-Delete a sending domain.
+Delete a domain.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -65,11 +65,11 @@ Delete a sending domain.
 
 ## company-info get
 
-Retrieve the company info of a sending domain, used for domain compliance verification.
+Retrieve the company info of a domain, used for domain compliance verification.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--domain-id` | string | Yes | Sending domain ID |
+| `--domain-id` | string | Yes | Domain ID |
 
 **Note:** Uses the API token's account; `--account-id` is not needed.
 
@@ -77,11 +77,11 @@ Retrieve the company info of a sending domain, used for domain compliance verifi
 
 ## company-info create
 
-Set the company info of a sending domain.
+Set the company info of a domain.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--domain-id` | string | Yes | Sending domain ID |
+| `--domain-id` | string | Yes | Domain ID |
 | `--name` | string | Yes | Company or individual name |
 | `--address` | string | Yes | Street address |
 | `--city` | string | Yes | City |
@@ -97,7 +97,7 @@ Set the company info of a sending domain.
 
 ## company-info update
 
-Change the company info of a sending domain.
+Change the company info of a domain.
 
 Takes the same flags as `company-info create`, all optional except `--domain-id`. Only the flags actually passed are sent, so a partial update leaves the other fields alone. An update with no attribute flags is rejected rather than sent as an empty payload.
 
@@ -125,7 +125,7 @@ Add an address to the suppression list.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--email` | string | Yes | Email address to suppress |
-| `--domain-id` | int | Yes | Sending domain the suppression applies to |
+| `--domain-id` | int | Yes | Domain the suppression applies to |
 | `--sending-stream` | string | Yes | `transactional` or `bulk` |
 | `--type` | string | No | Suppression reason: `hard bounce`, `spam complaint`, `unsubscription`, `manual import`. Defaults to `manual import` |
 
@@ -165,7 +165,7 @@ Exclude an address from open and click tracking.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--email` | string | Yes | Email address to opt out |
-| `--domain-id` | int | Yes | Sending domain the opt-out applies to |
+| `--domain-id` | int | Yes | Domain the opt-out applies to |
 
 ---
 

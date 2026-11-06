@@ -25,9 +25,9 @@ export MAILTRAP_API_TOKEN=your-token
 
 Before running integration tests, ensure you have:
 - A Mailtrap account with API access
-- A verified **sending domain** for transactional/bulk send tests
-- At least one **sandbox project** with an **inbox** for sandbox tests
-- Note down your **inbox ID** for sandbox send tests
+- A verified **domain** for transactional/bulk send tests
+- At least one **project** with a **sandbox** for sandbox tests
+- Note down your **sandbox ID** for sandbox send tests
 
 ### 3. Build the CLI
 
@@ -91,7 +91,7 @@ Tests are organized by endpoint group. Each test specifies:
 
 ## 2. Email Sending (Transactional/Bulk)
 
-**Note:** Requires a verified sending domain.
+**Note:** Requires a verified domain.
 
 | # | Test | Command | Expected |
 |---|------|---------|----------|
@@ -105,7 +105,7 @@ Tests are organized by endpoint group. Each test specifies:
 | 2.8 | Send from template | `mailtrap send transactional --from you@yourdomain.com --to recipient@example.com --template-uuid <TEMPLATE_UUID> --template-variables '{"user_name":"John"}'` | Success; delivered email has the template's subject and `John` substituted. Repeat with `send bulk` |
 | 2.9 | Template with subject | `mailtrap send transactional --from you@yourdomain.com --to recipient@example.com --template-uuid <TEMPLATE_UUID> --subject "X"` | Error: `--subject cannot be used with --template-uuid` |
 
-## 3. Domains (Sending)
+## 3. Domains
 
 **Note:** The API returns `{"data": [...]}` — the CLI may need a fix to unwrap this.
 
@@ -226,16 +226,16 @@ Tests are organized by endpoint group. Each test specifies:
 
 | # | Test | Command | Expected |
 |---|------|---------|----------|
-| 12.1 | List inboxes | `mailtrap sandboxes list` | Table with sandbox entries |
-| 12.2 | Get inbox | `mailtrap sandboxes get --id <INBOX_ID>` | Single sandbox details |
-| 12.3 | Create inbox | `mailtrap sandboxes create --project-id <PROJECT_ID> --name "test-sandbox"` | New inbox in output |
-| 12.4 | Update inbox | `mailtrap sandboxes update --id <NEW_ID> --name "test-sandbox-updated"` | Updated name |
-| 12.5 | Mark read | `mailtrap sandboxes mark-read --id <INBOX_ID>` | Success message |
+| 12.1 | List sandboxes | `mailtrap sandboxes list` | Table with sandbox entries |
+| 12.2 | Get sandbox | `mailtrap sandboxes get --id <SANDBOX_ID>` | Single sandbox details |
+| 12.3 | Create sandbox | `mailtrap sandboxes create --project-id <PROJECT_ID> --name "test-sandbox"` | New sandbox in output |
+| 12.4 | Update sandbox | `mailtrap sandboxes update --id <NEW_ID> --name "test-sandbox-updated"` | Updated name |
+| 12.5 | Mark read | `mailtrap sandboxes mark-read --id <SANDBOX_ID>` | Success message |
 | 12.6 | Reset credentials | `mailtrap sandboxes reset-credentials --id <NEW_ID>` | Success/new credentials |
-| 12.7 | Toggle email username | `mailtrap sandboxes toggle-email-username --id <NEW_ID>` | Toggled response |
-| 12.8 | Reset email username | `mailtrap sandboxes reset-email-username --id <NEW_ID>` | Reset response |
-| 12.9 | Clean inbox | `mailtrap sandboxes clean --id <NEW_ID>` | Success message |
-| 12.10 | Delete inbox | `mailtrap sandboxes delete --id <NEW_ID>` | Success message |
+| 12.7 | Toggle email username | `mailtrap sandboxes toggle-email --id <NEW_ID>` | Toggled response |
+| 12.8 | Reset email username | `mailtrap sandboxes reset-email --id <NEW_ID>` | Reset response |
+| 12.9 | Clean sandbox | `mailtrap sandboxes clean --id <NEW_ID>` | Success message |
+| 12.10 | Delete sandbox | `mailtrap sandboxes delete --id <NEW_ID>` | Success message |
 | 12.11 | Get missing ID | `mailtrap sandboxes get` | Error: `--id is required` |
 
 **Cleanup:** Delete test sandbox.
@@ -244,11 +244,11 @@ Tests are organized by endpoint group. Each test specifies:
 
 | # | Test | Command | Expected |
 |---|------|---------|----------|
-| 13.1 | Send single | `mailtrap sandbox-send single --sandbox-id <INBOX_ID> --from test@example.com --to recipient@example.com --subject "Integration Test" --text "Hello from CLI"` | Success response with message ID |
-| 13.2 | Send batch | `mailtrap sandbox-send batch --sandbox-id <INBOX_ID> --from test@example.com --to recipient@example.com --subject "Batch Test" --text "Batch hello"` | Success response |
+| 13.1 | Send single | `mailtrap sandbox-send single --sandbox-id <SANDBOX_ID> --from test@example.com --to recipient@example.com --subject "Integration Test" --text "Hello from CLI"` | Success response with message ID |
+| 13.2 | Send batch | `mailtrap sandbox-send batch --sandbox-id <SANDBOX_ID> --from test@example.com --to recipient@example.com --subject "Batch Test" --text "Batch hello"` | Success response |
 | 13.3 | Missing flags | `mailtrap sandbox-send single` | Error: required flags |
 
-**Verification:** After 13.1, run `mailtrap messages list --sandbox-id <INBOX_ID>` to confirm the message appears.
+**Verification:** After 13.1, run `mailtrap messages list --sandbox-id <SANDBOX_ID>` to confirm the message appears.
 
 ## 14. Messages (Sandbox)
 
@@ -256,22 +256,22 @@ Prerequisite: Send a test email to the sandbox first (test 13.1).
 
 | # | Test | Command | Expected |
 |---|------|---------|----------|
-| 14.1 | List messages | `mailtrap messages list --sandbox-id <INBOX_ID>` | Table with message entries |
-| 14.2 | List messages (JSON) | `mailtrap messages list --sandbox-id <INBOX_ID> --output json` | Valid JSON array |
-| 14.3 | Get message | `mailtrap messages get --sandbox-id <INBOX_ID> --id <MSG_ID>` | Single message details |
-| 14.4 | Update message | `mailtrap messages update --sandbox-id <INBOX_ID> --id <MSG_ID> --is-read true` | Updated message |
-| 14.5 | Spam score | `mailtrap messages spam-score --sandbox-id <INBOX_ID> --id <MSG_ID>` | Spam score data |
-| 14.6 | HTML analysis | `mailtrap messages html-analysis --sandbox-id <INBOX_ID> --id <MSG_ID>` | Analysis data |
-| 14.7 | Headers | `mailtrap messages headers --sandbox-id <INBOX_ID> --id <MSG_ID>` | Email headers |
-| 14.8 | HTML body | `mailtrap messages html --sandbox-id <INBOX_ID> --id <MSG_ID>` | Raw HTML content |
-| 14.9 | Text body | `mailtrap messages text --sandbox-id <INBOX_ID> --id <MSG_ID>` | Raw text content |
-| 14.10 | Source | `mailtrap messages source --sandbox-id <INBOX_ID> --id <MSG_ID>` | Raw source |
-| 14.11 | Raw | `mailtrap messages raw --sandbox-id <INBOX_ID> --id <MSG_ID>` | Raw message |
-| 14.12 | EML | `mailtrap messages eml --sandbox-id <INBOX_ID> --id <MSG_ID>` | EML format |
-| 14.13 | Forward | `mailtrap messages forward --sandbox-id <INBOX_ID> --id <MSG_ID> --email forward@example.com` | Success |
-| 14.14 | Delete message | `mailtrap messages delete --sandbox-id <INBOX_ID> --id <MSG_ID>` | Success message |
+| 14.1 | List messages | `mailtrap messages list --sandbox-id <SANDBOX_ID>` | Table with message entries |
+| 14.2 | List messages (JSON) | `mailtrap messages list --sandbox-id <SANDBOX_ID> --output json` | Valid JSON array |
+| 14.3 | Get message | `mailtrap messages get --sandbox-id <SANDBOX_ID> --id <MSG_ID>` | Single message details |
+| 14.4 | Update message | `mailtrap messages update --sandbox-id <SANDBOX_ID> --id <MSG_ID> --is-read true` | Updated message |
+| 14.5 | Spam score | `mailtrap messages spam-score --sandbox-id <SANDBOX_ID> --id <MSG_ID>` | Spam score data |
+| 14.6 | HTML analysis | `mailtrap messages html-analysis --sandbox-id <SANDBOX_ID> --id <MSG_ID>` | Analysis data |
+| 14.7 | Headers | `mailtrap messages headers --sandbox-id <SANDBOX_ID> --id <MSG_ID>` | Email headers |
+| 14.8 | HTML body | `mailtrap messages html --sandbox-id <SANDBOX_ID> --id <MSG_ID>` | Raw HTML content |
+| 14.9 | Text body | `mailtrap messages text --sandbox-id <SANDBOX_ID> --id <MSG_ID>` | Raw text content |
+| 14.10 | Source | `mailtrap messages source --sandbox-id <SANDBOX_ID> --id <MSG_ID>` | Raw source |
+| 14.11 | Raw | `mailtrap messages raw --sandbox-id <SANDBOX_ID> --id <MSG_ID>` | Raw message |
+| 14.12 | EML | `mailtrap messages eml --sandbox-id <SANDBOX_ID> --id <MSG_ID>` | EML format |
+| 14.13 | Forward | `mailtrap messages forward --sandbox-id <SANDBOX_ID> --id <MSG_ID> --email forward@example.com` | Success |
+| 14.14 | Delete message | `mailtrap messages delete --sandbox-id <SANDBOX_ID> --id <MSG_ID>` | Success message |
 | 14.15 | Missing sandbox-id | `mailtrap messages list` | Error: `--sandbox-id is required` |
-| 14.16 | Missing id | `mailtrap messages get --sandbox-id <INBOX_ID>` | Error: `--id is required` |
+| 14.16 | Missing id | `mailtrap messages get --sandbox-id <SANDBOX_ID>` | Error: `--id is required` |
 
 ## 15. Attachments (Sandbox)
 
@@ -279,8 +279,8 @@ Prerequisite: Send an email with an attachment to the sandbox.
 
 | # | Test | Command | Expected |
 |---|------|---------|----------|
-| 15.1 | List attachments | `mailtrap attachments list --sandbox-id <INBOX_ID> --message-id <MSG_ID>` | Table with attachments |
-| 15.2 | Get attachment | `mailtrap attachments get --sandbox-id <INBOX_ID> --message-id <MSG_ID> --id <ATT_ID>` | Attachment details |
+| 15.1 | List attachments | `mailtrap attachments list --sandbox-id <SANDBOX_ID> --message-id <MSG_ID>` | Table with attachments |
+| 15.2 | Get attachment | `mailtrap attachments get --sandbox-id <SANDBOX_ID> --message-id <MSG_ID> --id <ATT_ID>` | Attachment details |
 | 15.3 | Missing flags | `mailtrap attachments list` | Error: required flags |
 
 ## 16. Account Access
@@ -401,7 +401,7 @@ Run tests in dependency order so earlier tests create resources needed by later 
 
 1. **Accounts** (read-only, validates API access)
 2. **Sending** (transactional/bulk — requires verified domain)
-3. **Domains** (CRUD for sending domains)
+3. **Domains** (CRUD)
 4. **Templates** (CRUD)
 5. **Suppressions** (list/delete)
 6. **Stats** (requires start-date)
@@ -410,7 +410,7 @@ Run tests in dependency order so earlier tests create resources needed by later 
 9. **Contact Fields** (CRUD)
 10. **Contacts** (CRUD)
 11. **Projects** (CRUD — creates project for sandbox tests)
-12. **Inboxes** (CRUD — creates sandbox for sandbox send/message tests)
+12. **Sandboxes** (CRUD — creates a sandbox for sandbox send/message tests)
 13. **Sandbox Send** (sends email to sandbox for message tests)
 14. **Messages** (all subcommands on the sent message)
 15. **Attachments** (requires message with attachment)

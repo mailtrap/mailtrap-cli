@@ -1,7 +1,7 @@
 # Mailtrap CLI Skill
 
 The `mailtrap` CLI is the official command-line interface for the Mailtrap email platform.
-It covers transactional/bulk email sending, sandbox testing, domain management, templates,
+It covers transactional/bulk email sending, sandboxes, domain management, templates,
 contacts, statistics, and account administration.
 
 ## Authentication
@@ -50,6 +50,7 @@ A `null` cursor means there are no more pages. `suppressions list` and `messages
 - **Batch operations**: use `--file path/to/payload.json` with a JSON array of email objects
 - **Config priority**: CLI flags > environment variables > config file
 - **Exit codes**: 0 on success, 1 on error (with descriptive message)
+- **Naming**: sandboxes were formerly called inboxes, and domains were sending domains. A user asking about an "inbox" usually means a sandbox (`sandboxes`, `--sandbox-id`) unless they mean Email Inbound (`inbound`). API paths, JSON keys and token resource types keep the old names (`/inboxes`, `sending_domain_id`, `"inbox"`, `"sending_domain"`)
 - **API base**: most requests go to `https://mailtrap.io/api/accounts/{account-id}/...`. Several groups do not and take no `--account-id`: `inbound` (`/api/inbound/...`), `company-info` (`/api/domains/{domain-id}/company_info`), `tracking-opt-outs` (`/api/tracking_opt_outs`), `email-campaigns` (`/api/email_campaigns`) and `organizations` (`/api/organizations/...`). `send` and `sandbox-send` go to their own hosts entirely.
 
 ## Command Groups
@@ -57,8 +58,8 @@ A `null` cursor means there are no more pages. `suppressions list` and `messages
 | Group | Purpose | Reference |
 |-------|---------|-----------|
 | `send` | Transactional & bulk email sending | [sending.md](references/sending.md) |
-| `domains` | Sending domain management | [domains.md](references/domains.md) |
-| `company-info` | Sending domain company info for compliance verification | [domains.md](references/domains.md) |
+| `domains` | Domain management | [domains.md](references/domains.md) |
+| `company-info` | Domain company info for compliance verification | [domains.md](references/domains.md) |
 | `templates` | Email template CRUD | [templates.md](references/templates.md) |
 | `stats` | Aggregated sending statistics | [email-logs.md](references/email-logs.md) |
 | `email-logs` | Individual email log lookup | [email-logs.md](references/email-logs.md) |
@@ -66,7 +67,7 @@ A `null` cursor means there are no more pages. `suppressions list` and `messages
 | `contacts` | Contact management & import/export | [contacts.md](references/contacts.md) |
 | `contact-lists` | Contact list CRUD | [contacts.md](references/contacts.md) |
 | `contact-fields` | Custom contact fields | [contacts.md](references/contacts.md) |
-| `sandbox-send` | Sandbox email testing | [sandbox.md](references/sandbox.md) |
+| `sandbox-send` | Sending emails to a sandbox | [sandbox.md](references/sandbox.md) |
 | `projects` | Sandbox project management | [sandbox.md](references/sandbox.md) |
 | `sandboxes` | Sandbox management | [sandbox.md](references/sandbox.md) |
 | `messages` | Sandbox message inspection | [sandbox.md](references/sandbox.md) |

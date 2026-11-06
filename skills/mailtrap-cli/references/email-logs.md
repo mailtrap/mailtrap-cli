@@ -69,7 +69,7 @@ mailtrap stats get \
 
 ## stats by-domain
 
-Get statistics grouped by sending domain.
+Get statistics grouped by domain.
 
 Same flags as `stats get`.
 

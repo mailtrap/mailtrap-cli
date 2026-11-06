@@ -2,7 +2,6 @@ package sandboxes
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
 	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
@@ -12,13 +11,13 @@ import (
 )
 
 func NewCmdToggleEmail(f *cmdutil.Factory) *cobra.Command {
-	var inboxID string
+	var sandboxID string
 
 	cmd := &cobra.Command{
 		Use:   "toggle-email",
 		Short: "Toggle email username of a sandbox",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cmdutil.RequireFlag("id", inboxID); err != nil {
+			if err := cmdutil.RequireFlag("id", sandboxID); err != nil {
 				return err
 			}
 
@@ -32,19 +31,19 @@ func NewCmdToggleEmail(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("inboxes", fmt.Sprintf("%s", inboxID), "toggle_email_username")
+			path := cmdutil.AccountPath("inboxes", sandboxID, "toggle_email_username")
 
-			var inbox Inbox
-			if err := c.Patch(context.Background(), client.BaseGeneral, path, nil, &inbox); err != nil {
+			var sandbox Sandbox
+			if err := c.Patch(context.Background(), client.BaseGeneral, path, nil, &sandbox); err != nil {
 				return err
 			}
 
 			format := cmdutil.GetOutputFormat()
-			return output.Print(f.IOStreams.Out, format, inbox, inboxColumns)
+			return output.Print(f.IOStreams.Out, format, sandbox, sandboxColumns)
 		},
 	}
 
-	cmd.Flags().StringVar(&inboxID, "id", "", "Sandbox ID")
+	cmd.Flags().StringVar(&sandboxID, "id", "", "Sandbox ID")
 
 	return cmd
 }

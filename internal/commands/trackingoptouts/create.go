@@ -55,7 +55,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&email, "email", "", "Email address to opt out of tracking (required)")
-	cmd.Flags().Int64Var(&domainID, "domain-id", 0, "ID of the sending domain the opt-out applies to (required)")
+	cmd.Flags().Int64Var(&domainID, "domain-id", 0, "ID of the domain the opt-out applies to (required)")
 
 	return cmd
 }

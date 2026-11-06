@@ -15,7 +15,7 @@ func NewCmdDelete(f *cmdutil.Factory) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "delete",
-		Short: "Delete a sending domain",
+		Short: "Delete a domain",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := cmdutil.RequireFlag("id", domainID); err != nil {
 				return err
@@ -31,7 +31,7 @@ func NewCmdDelete(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("sending_domains", fmt.Sprintf("%s", domainID))
+			path := cmdutil.AccountPath("sending_domains", domainID)
 
 			if err := c.Delete(context.Background(), client.BaseGeneral, path, nil); err != nil {
 				return err

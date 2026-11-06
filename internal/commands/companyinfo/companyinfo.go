@@ -43,7 +43,7 @@ func companyInfoPath(domainID string) string {
 func NewCmdCompanyInfo(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "company-info",
-		Short: "Manage sending domain company info",
+		Short: "Manage domain company info",
 	}
 
 	cmd.AddCommand(NewCmdGet(f))

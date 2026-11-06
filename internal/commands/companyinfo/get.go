@@ -14,7 +14,7 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "get",
-		Short: "Get company info for a sending domain",
+		Short: "Get company info for a domain",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := cmdutil.RequireFlag("domain-id", domainID); err != nil {
 				return err
@@ -35,7 +35,7 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&domainID, "domain-id", "", "Sending domain ID (required)")
+	cmd.Flags().StringVar(&domainID, "domain-id", "", "Domain ID (required)")
 
 	return cmd
 }

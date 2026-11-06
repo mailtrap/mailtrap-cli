@@ -23,7 +23,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 		Long: `Create an API token with permissions.
 
 Permissions must be provided as a JSON array. Each entry requires:
-  - resource_type: "account", "project", "inbox", or "sending_domain"
+  - resource_type: "account", "project", "inbox" (a sandbox), or "sending_domain" (a domain)
   - resource_id: the resource ID (integer)
   - access_level: 10 (viewer) or 100 (admin)
 

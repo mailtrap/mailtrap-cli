@@ -239,6 +239,11 @@ func TestDeleteSubAccountInvalidFlags(t *testing.T) {
 			args: []string{"delete-sub-account", "--org-id", "0", "--sub-account-id", "789"},
 			want: "--org-id must be greater than 0",
 		},
+		{
+			name: "extra positional argument",
+			args: []string{"delete-sub-account", "--org-id", "456", "--sub-account-id", "789", "790"},
+			want: `unknown command "790"`,
+		},
 	}
 
 	for _, tc := range cases {

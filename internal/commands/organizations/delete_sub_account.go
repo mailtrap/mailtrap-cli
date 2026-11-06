@@ -15,6 +15,7 @@ func NewCmdDeleteSubAccount(f *cmdutil.Factory) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "delete-sub-account",
+		Args:  cobra.NoArgs,
 		Short: "Delete a sub-account from an organization",
 		Long: `Delete a sub-account from an organization. Requires organization admin permissions.
 The organization must have the Organization & Sub-accounts feature enabled; otherwise the command fails with 403.

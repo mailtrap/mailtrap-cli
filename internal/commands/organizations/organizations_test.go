@@ -179,6 +179,30 @@ func TestDeleteSubAccount(t *testing.T) {
 	}
 }
 
+func TestDeleteSubAccountAPIError(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Not Found"})
+	})
+	defer cleanup()
+
+	cmd := organizations.NewCmdOrganizations(f)
+	cmd.SetArgs([]string{"delete-sub-account", "--org-id", "456", "--sub-account-id", "789"})
+	cmd.SetOut(buf)
+
+	err := cmd.Execute()
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if !strings.Contains(err.Error(), "API error 404") {
+		t.Errorf("expected error to contain 'API error 404', got: %v", err)
+	}
+	if strings.Contains(buf.String(), "deleted successfully") {
+		t.Errorf("expected no success message, got:\n%s", buf.String())
+	}
+}
+
 func TestDeleteSubAccountInvalidFlags(t *testing.T) {
 	cases := []struct {
 		name string

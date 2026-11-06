@@ -176,7 +176,7 @@
     "expected": {
       "command": "organizations delete-sub-account",
       "flags": ["--org-id", "--sub-account-id"],
-      "must_not_contain": ["accounts delete", "account-access remove", "list-sub-accounts"]
+      "must_not_contain": ["accounts delete", "account-access remove"]
     }
   },
   {

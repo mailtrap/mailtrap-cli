@@ -88,3 +88,4 @@ A `null` cursor means there are no more pages. `suppressions list` and `messages
 - Message inspection commands (`messages html`, `messages raw`, etc.) require both `--sandbox-id` and `--id`
 - The `configure` command validates the token against the API before saving
 - Domain verification is handled through the Mailtrap web dashboard, not the CLI
+- `organizations delete-sub-account` is permanent, and deleting the organization's last sub-account also deletes the organization. Confirm with the user first, and run `organizations list-sub-accounts --org-id <id>` to check it isn't the last one

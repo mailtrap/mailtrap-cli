@@ -325,9 +325,9 @@ Prerequisite: Send an email with an attachment to the sandbox.
 
 | # | Test | Command | Expected |
 |---|------|---------|----------|
-| 20.1 | List sub-accounts | `mailtrap organizations list-sub-accounts` | Table with sub-accounts |
-| 20.2 | Create sub-account | `mailtrap organizations create-sub-account --name "test-sub"` | New sub-account |
-| 20.3 | Missing name | `mailtrap organizations create-sub-account` | Error: `--name is required` |
+| 20.1 | List sub-accounts | `mailtrap organizations list-sub-accounts --org-id <ORG_ID>` | Table with sub-accounts |
+| 20.2 | Create sub-account | `mailtrap organizations create-sub-account --org-id <ORG_ID> --name "test-sub"` | New sub-account |
+| 20.3 | Missing name | `mailtrap organizations create-sub-account --org-id <ORG_ID>` | Error: `--name is required` |
 | 20.4 | Delete sub-account | `mailtrap organizations delete-sub-account --org-id <ORG_ID> --sub-account-id <NEW_ID>` | Success message; repeated call returns 404 |
 | 20.5 | Delete with a list of IDs | `mailtrap organizations delete-sub-account --org-id <ORG_ID> --sub-account-id 12347,12348` | Error: `invalid argument`; nothing deleted |
 

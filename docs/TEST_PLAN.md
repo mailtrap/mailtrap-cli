@@ -329,6 +329,7 @@ Prerequisite: Send an email with an attachment to the sandbox.
 | 20.2 | Create sub-account | `mailtrap organizations create-sub-account --name "test-sub"` | New sub-account |
 | 20.3 | Missing name | `mailtrap organizations create-sub-account` | Error: `--name is required` |
 | 20.4 | Delete sub-account | `mailtrap organizations delete-sub-account --org-id <ORG_ID> --sub-account-id <NEW_ID>` | Success message; repeated call returns 404 |
+| 20.5 | Delete with a list of IDs | `mailtrap organizations delete-sub-account --org-id <ORG_ID> --sub-account-id 12347,12348` | Error: `invalid argument`; nothing deleted |
 
 **Caution:** Creating sub-accounts may have billing implications. Deleting a sub-account is permanent and removes all of its data; deleting the organization's last sub-account also deletes the organization. Only delete the sub-account created in 20.2.
 
@@ -446,7 +447,7 @@ Run tests in dependency order so earlier tests create resources needed by later 
 | Permissions | 2 | 3 |
 | Tokens | 5 | 6 |
 | Billing | 1 | 2 |
-| Organizations | 3 | 4 |
+| Organizations | 3 | 5 |
 | Configure | 1 | 2 |
 | Inbound | 24 | 30 |
-| **Total** | **~115** | **~138** |
+| **Total** | **~115** | **~139** |

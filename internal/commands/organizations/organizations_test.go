@@ -179,22 +179,62 @@ func TestDeleteSubAccount(t *testing.T) {
 	}
 }
 
-func TestDeleteSubAccountMissingFlags(t *testing.T) {
-	f, _, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {})
-	defer cleanup()
-
-	buf := &bytes.Buffer{}
-	f.IOStreams.Out = buf
-
-	cmd := organizations.NewCmdOrganizations(f)
-	cmd.SetArgs([]string{"delete-sub-account", "--org-id", "456"})
-	cmd.SetOut(buf)
-
-	err := cmd.Execute()
-	if err == nil {
-		t.Fatal("expected error when --sub-account-id is missing")
+func TestDeleteSubAccountInvalidFlags(t *testing.T) {
+	cases := []struct {
+		name string
+		args []string
+		want string
+	}{
+		{
+			name: "missing org id",
+			args: []string{"delete-sub-account", "--sub-account-id", "789"},
+			want: "--org-id is required",
+		},
+		{
+			name: "missing sub-account id",
+			args: []string{"delete-sub-account", "--org-id", "456"},
+			want: "--sub-account-id is required",
+		},
+		{
+			name: "list of sub-account ids",
+			args: []string{"delete-sub-account", "--org-id", "456", "--sub-account-id", "12347,12348"},
+			want: `invalid argument "12347,12348" for "--sub-account-id"`,
+		},
+		{
+			name: "non-numeric org id",
+			args: []string{"delete-sub-account", "--org-id", "abc", "--sub-account-id", "789"},
+			want: `invalid argument "abc" for "--org-id"`,
+		},
+		{
+			name: "non-positive sub-account id",
+			args: []string{"delete-sub-account", "--org-id", "456", "--sub-account-id", "0"},
+			want: "--sub-account-id must be greater than 0",
+		},
+		{
+			name: "non-positive org id",
+			args: []string{"delete-sub-account", "--org-id", "0", "--sub-account-id", "789"},
+			want: "--org-id must be greater than 0",
+		},
 	}
-	if !strings.Contains(err.Error(), "--sub-account-id is required") {
-		t.Errorf("expected '--sub-account-id is required' error, got: %v", err)
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+				t.Error("expected no request to be sent")
+			})
+			defer cleanup()
+
+			cmd := organizations.NewCmdOrganizations(f)
+			cmd.SetArgs(tc.args)
+			cmd.SetOut(buf)
+
+			err := cmd.Execute()
+			if err == nil {
+				t.Fatal("expected error, got nil")
+			}
+			if !strings.Contains(err.Error(), tc.want) {
+				t.Errorf("expected error to contain %q, got: %v", tc.want, err)
+			}
+		})
 	}
 }

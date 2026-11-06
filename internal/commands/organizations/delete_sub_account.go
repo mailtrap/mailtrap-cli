@@ -10,8 +10,8 @@ import (
 )
 
 func NewCmdDeleteSubAccount(f *cmdutil.Factory) *cobra.Command {
-	var orgID string
-	var subAccountID string
+	var orgID int64
+	var subAccountID int64
 
 	cmd := &cobra.Command{
 		Use:   "delete-sub-account",
@@ -24,11 +24,17 @@ Deleting the organization's last sub-account also deletes the organization.
 
 A repeated call for the same sub-account returns 404. A concurrent deletion of the same sub-account fails with 409. Rate limit: 10 requests per minute per organization.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := cmdutil.RequireFlag("org-id", orgID); err != nil {
-				return err
+			if !cmd.Flags().Changed("org-id") {
+				return fmt.Errorf("--org-id is required")
 			}
-			if err := cmdutil.RequireFlag("sub-account-id", subAccountID); err != nil {
-				return err
+			if orgID <= 0 {
+				return fmt.Errorf("--org-id must be greater than 0")
+			}
+			if !cmd.Flags().Changed("sub-account-id") {
+				return fmt.Errorf("--sub-account-id is required")
+			}
+			if subAccountID <= 0 {
+				return fmt.Errorf("--sub-account-id must be greater than 0")
 			}
 
 			c, err := f.NewClient()
@@ -36,20 +42,20 @@ A repeated call for the same sub-account returns 404. A concurrent deletion of t
 				return err
 			}
 
-			path := fmt.Sprintf("/api/organizations/%s/sub_accounts/%s", orgID, subAccountID)
+			path := fmt.Sprintf("/api/organizations/%d/sub_accounts/%d", orgID, subAccountID)
 
 			if err := c.Delete(context.Background(), client.BaseGeneral, path, nil); err != nil {
 				return err
 			}
 
-			fmt.Fprintf(f.IOStreams.Out, "Sub-account %s deleted successfully\n", subAccountID)
+			fmt.Fprintf(f.IOStreams.Out, "Sub-account %d deleted successfully\n", subAccountID)
 
 			return nil
 		},
 	}
 
-	cmd.Flags().StringVar(&orgID, "org-id", "", "Organization ID")
-	cmd.Flags().StringVar(&subAccountID, "sub-account-id", "", "Sub-account ID")
+	cmd.Flags().Int64Var(&orgID, "org-id", 0, "Organization ID")
+	cmd.Flags().Int64Var(&subAccountID, "sub-account-id", 0, "Sub-account ID")
 
 	return cmd
 }

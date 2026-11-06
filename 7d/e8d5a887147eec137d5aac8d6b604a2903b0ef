@@ -1,0 +1,19 @@
+docs/TEST_PLAN.md
+  s_d392b1a7bd3998::t_829bed0d9f854d 328-330
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7de8d5a887147eec137d5aac8d6b604a2903b0ef",
+  "prompts": {},
+  "sessions": {
+    "s_d392b1a7bd3998": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9c39a2a8-37c3-4aec-869e-1f55857a4a10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Alex Shchyhol <oleksandr.shchyhol@railsware.com>"
+    }
+  }
+}

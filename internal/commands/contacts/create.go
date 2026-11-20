@@ -15,6 +15,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	var firstName string
 	var lastName string
 	var listIDs []int
+	var subscriptionTopics string
 
 	cmd := &cobra.Command{
 		Use:   "create",
@@ -22,6 +23,15 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := cmdutil.RequireFlag("email", email); err != nil {
 				return err
+			}
+
+			var topics []subscriptionTopicInput
+			if cmd.Flags().Changed("subscription-topics") {
+				parsed, err := parseSubscriptionTopics(subscriptionTopics)
+				if err != nil {
+					return err
+				}
+				topics = parsed
 			}
 
 			c, err := f.NewClient()
@@ -55,6 +65,10 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 				contactData["list_ids"] = listIDs
 			}
 
+			if topics != nil {
+				contactData["subscription_topics"] = topics
+			}
+
 			body := map[string]interface{}{
 				"contact": contactData,
 			}
@@ -73,6 +87,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().StringVar(&firstName, "first-name", "", "Contact first name")
 	cmd.Flags().StringVar(&lastName, "last-name", "", "Contact last name")
 	cmd.Flags().IntSliceVar(&listIDs, "list-ids", nil, "List IDs to add the contact to")
+	cmd.Flags().StringVar(&subscriptionTopics, "subscription-topics", "", subscriptionTopicsUsage)
 
 	return cmd
 }

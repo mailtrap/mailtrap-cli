@@ -2,6 +2,7 @@ package contacts
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
@@ -11,18 +12,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type Contact struct {
-	ID        string                 `json:"id"`
-	Email     string                 `json:"email"`
-	Fields    map[string]interface{} `json:"fields,omitempty"`
-	ListIDs   []int                  `json:"list_ids,omitempty"`
-	Status    string                 `json:"status,omitempty"`
-	CreatedAt interface{}            `json:"created_at"`
-	UpdatedAt interface{}            `json:"updated_at"`
-}
-
+// contactResponse keeps the contact as raw JSON so --output json prints every
+// field, including subscription_topics.
 type contactResponse struct {
-	Data Contact `json:"data"`
+	Data json.RawMessage `json:"data"`
 }
 
 var contactColumns = []output.Column{

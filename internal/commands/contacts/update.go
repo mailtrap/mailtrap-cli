@@ -19,6 +19,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 	var listIDsIncluded []int
 	var listIDsExcluded []int
 	var unsubscribed bool
+	var subscriptionTopics string
 
 	cmd := &cobra.Command{
 		Use:   "update",
@@ -29,6 +30,15 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 			}
 			if err := cmdutil.RequireFlag("email", email); err != nil {
 				return err
+			}
+
+			var topics []subscriptionTopicInput
+			if cmd.Flags().Changed("subscription-topics") {
+				parsed, err := parseSubscriptionTopics(subscriptionTopics)
+				if err != nil {
+					return err
+				}
+				topics = parsed
 			}
 
 			c, err := f.NewClient()
@@ -68,6 +78,10 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 				contactData["unsubscribed"] = unsubscribed
 			}
 
+			if topics != nil {
+				contactData["subscription_topics"] = topics
+			}
+
 			body := map[string]interface{}{
 				"contact": contactData,
 			}
@@ -89,6 +103,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().IntSliceVar(&listIDsIncluded, "list-ids-included", nil, "List IDs to subscribe to")
 	cmd.Flags().IntSliceVar(&listIDsExcluded, "list-ids-excluded", nil, "List IDs to unsubscribe from")
 	cmd.Flags().BoolVar(&unsubscribed, "unsubscribed", false, "Set contact as unsubscribed")
+	cmd.Flags().StringVar(&subscriptionTopics, "subscription-topics", "", subscriptionTopicsUsage)
 
 	return cmd
 }

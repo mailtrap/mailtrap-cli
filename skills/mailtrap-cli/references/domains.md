@@ -113,8 +113,11 @@ List all suppressions (bounced/unsubscribed addresses).
 | `--start-time` | string | No | Filter by start time |
 | `--end-time` | string | No | Filter by end time |
 | `--last-id` | string | No | Pagination cursor: id of the last record from the previous response |
+| `--include-topic-unsubscriptions` | bool | No | Also list unsubscriptions from single subscription topics |
 
 **Note:** The endpoint returns up to 1000 suppressions per request. Page through larger result sets with `--last-id`.
+
+With `--include-topic-unsubscriptions`, rows of type `topic unsubscription` carry the topic in `subscription_topic_id` (TOPIC_ID column); other rows have `null` there. Topic unsubscriptions can't be created or deleted with `suppressions create` / `delete`. See [subscription-topics.md](subscription-topics.md).
 
 ---
 

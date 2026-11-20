@@ -12,6 +12,8 @@ Get a specific contact.
 |------|------|----------|-------------|
 | `--id` | string | Yes | Contact ID |
 
+**Output:** With `--output json`, the contact as the API returns it. `subscription_topics` holds the contact's subscription topic preferences, one `{subscription_topic_id, domain_id, status}` entry per topic and domain; it is `null` when they couldn't be read (retry), and absent on accounts without subscription topics. `create` and `update` return the same shape.
+
 ---
 
 ## contacts create
@@ -24,6 +26,14 @@ Create a new contact.
 | `--first-name` | string | No | First name |
 | `--last-name` | string | No | Last name |
 | `--list-ids` | int[] | No | List IDs to add the contact to |
+| `--subscription-topics` | string | No | Subscription topic preferences as a JSON array (see below) |
+
+`--subscription-topics` takes one entry per topic and domain: `subscription_topic_id` and `domain_id` (both required, from `subscription-topics list` and `domains list`) and `status` (`subscribed` or `unsubscribed`). Topic and domain pairs left out keep their status. On accounts without subscription topics the API rejects the flag with `422` ("are not available for this account"). If the contact is saved but its preferences are not, the API returns `503`; send them again with `contacts update`.
+
+```bash
+mailtrap contacts create --email user@example.com \
+  --subscription-topics '[{"subscription_topic_id":7,"domain_id":4321,"status":"unsubscribed"}]'
+```
 
 ---
 
@@ -37,6 +47,7 @@ Update an existing contact.
 | `--email` | string | No | New email address |
 | `--first-name` | string | No | New first name |
 | `--last-name` | string | No | New last name |
+| `--subscription-topics` | string | No | Subscription topic preferences as a JSON array, as for `contacts create`; pairs left out keep their status |
 
 ---
 
@@ -58,6 +69,12 @@ Import contacts from a JSON file.
 |------|------|----------|-------------|
 | `--file` | string | Yes | Path to JSON file with contact data |
 | `--list-id` | int | No | List ID to import contacts into |
+
+The file is posted as is. Each contact may carry `subscription_topics`, with the same entries as `contacts create --subscription-topics`:
+
+```json
+{"contacts": [{"email": "user@example.com", "subscription_topics": [{"subscription_topic_id": 7, "domain_id": 4321, "status": "unsubscribed"}]}]}
+```
 
 ---
 

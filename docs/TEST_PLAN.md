@@ -53,6 +53,7 @@ These were discovered during integration testing and are important for correct i
 | `GET /contacts` | 404 (HTML page) | Endpoint may not exist or requires different path |
 | `GET /suppressions` | `[...]` | Flat array |
 | `GET /templates` | `{"data": [...], "pagination": {...}}` | Page-token pagination, no total |
+| `GET /api/subscription_topics` | `{"data": [...], "pagination": {...}}` | Token-scoped (no account ID); page-token pagination, no total; `403` with an empty body on accounts without subscription topics |
 | `GET /contacts/lists` | `[...]` | Flat array |
 | `GET /contacts/fields` | `[...]` | Flat array |
 | `GET /account_accesses` | `[...]` | Flat array |
@@ -379,6 +380,32 @@ Prerequisite: Send an email with an attachment to the sandbox.
 
 **Cleanup:** Delete created forward rules, inbox and folder (`inbound forward-rules delete`, `inbound inboxes delete`, `inbound folders delete`).
 
+## 23. Subscription Topics
+
+**Note:** `subscription-topics` commands take no `--account-id` (requests go to `/api/subscription_topics`). Run 23.1–23.12 on an account with subscription topics, two domains, a topic for every domain and a topic for one domain, and 23.13–23.17 on an account without them. Topics are created in the Mailtrap app.
+
+| # | Test | Command | Expected |
+|---|------|---------|----------|
+| 23.1 | List topics | `mailtrap subscription-topics list` | Table with ID, NAME, DESCRIPTION, DOMAIN ID, CREATED AT; DOMAIN ID empty for the every-domain topic |
+| 23.2 | List topics (JSON) | `mailtrap subscription-topics list --output json` | Valid JSON object with `data` and `pagination` |
+| 23.3 | Next page keeps page size | `mailtrap subscription-topics list --per-page 1`, then run the `Next page:` hint | Hint is `--token 2 --per-page 1`; it prints the other topic |
+| 23.4 | Get topic | `mailtrap subscription-topics get --id <TOPIC_ID>` | Single topic with an empty DELETED AT |
+| 23.5 | Get deleted topic | Delete a topic in the app, then `mailtrap subscription-topics get --id <DELETED_TOPIC_ID>` | Topic with DELETED AT set; it is gone from 23.1 |
+| 23.6 | Get missing ID | `mailtrap subscription-topics get` | Error: `required flag(s) "id" not set` |
+| 23.7 | Campaign with topic | `mailtrap email-campaigns create --name "topic-test" --domain-id <DOMAIN_ID> --from-local-part news --subject "Hi" --subscription-topic-id <TOPIC_ID>` | TOPIC ID column shows the topic; `email-campaigns get --id <NEW_ID> -o json` has `subscription_topic_id` |
+| 23.8 | Campaign with uncovered topic | `mailtrap email-campaigns update --id <NEW_ID> --subscription-topic-id <OTHER_DOMAIN_TOPIC_ID>` | `API error 422`, campaign unchanged |
+| 23.9 | Contact topic preferences | `mailtrap contacts update --id <CONTACT_ID> --email <EMAIL> --subscription-topics '[{"subscription_topic_id":<TOPIC_ID>,"domain_id":<DOMAIN_ID>,"status":"unsubscribed"}]' -o json` | `subscription_topics` lists the topic as `unsubscribed` on that domain and `subscribed` on the other |
+| 23.10 | Invalid topic entry | `mailtrap contacts update --id <CONTACT_ID> --email <EMAIL> --subscription-topics '[{"subscription_topic_id":<TOPIC_ID>,"status":"unsubscribed"}]'` | Error: `entry 1: domain_id must be greater than 0`; no request sent |
+| 23.11 | Import with topics | `mailtrap contacts import --file contacts.json` with a contact carrying `subscription_topics` | Import completes; `contacts get` shows the preference |
+| 23.12 | Topic unsubscriptions | `mailtrap suppressions list --include-topic-unsubscriptions` after 23.9 | A `topic unsubscription` row with TOPIC_ID and DOMAIN_NAME; without the flag the row is absent |
+| 23.13 | Topics off: list | `mailtrap subscription-topics list` | `API error 403` |
+| 23.14 | Topics off: campaign | `mailtrap email-campaigns create ... --subscription-topic-id 1` | Campaign saved; TOPIC ID empty |
+| 23.15 | Topics off: contact read | `mailtrap contacts get --id <CONTACT_ID> -o json` | No `subscription_topics` key, no error |
+| 23.16 | Topics off: contact write | `mailtrap contacts update --id <CONTACT_ID> --email <EMAIL> --subscription-topics '[{"subscription_topic_id":1,"domain_id":<DOMAIN_ID>,"status":"subscribed"}]'` | `API error 422` naming `subscription_topics` ("are not available for this account") |
+| 23.17 | Topics off: suppressions | `mailtrap suppressions list --include-topic-unsubscriptions` | No `topic unsubscription` rows |
+
+**Cleanup:** Delete the campaign created in 23.7 and the contacts imported in 23.11.
+
 ---
 
 ## Discovered Bugs / Issues
@@ -421,6 +448,7 @@ Run tests in dependency order so earlier tests create resources needed by later 
 20. **Organizations** (read-only, skip create/delete unless safe – delete only the sub-account created in 20.2)
 21. **Configure** (local config only)
 22. **Inbound** (CRUD for folders/inboxes/forward rules; messages/threads need received mail)
+23. **Subscription Topics** (read-only topics; campaign, contact and suppression topic fields on accounts with and without topics)
 
 ---
 
@@ -450,4 +478,5 @@ Run tests in dependency order so earlier tests create resources needed by later 
 | Organizations | 3 | 5 |
 | Configure | 1 | 2 |
 | Inbound | 24 | 30 |
-| **Total** | **~115** | **~139** |
+| Subscription Topics | 2 | 17 |
+| **Total** | **~117** | **~156** |

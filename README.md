@@ -123,6 +123,7 @@ mailtrap company-info update --domain-id 123 --city "New York" --zip-code 10001
 
 # Suppressions
 mailtrap suppressions list --email "bounced@example.com"
+mailtrap suppressions list --include-topic-unsubscriptions
 mailtrap suppressions create --email "bounced@example.com" --domain-id 123 --sending-stream transactional
 mailtrap suppressions delete --id "2fe148b8-b019-431f-ab3f-107663fdf868"
 
@@ -162,6 +163,8 @@ mailtrap tokens reset --id 42 --expires-at never
 
 # Contacts
 mailtrap contacts create --email "user@example.com" --first-name "John"
+mailtrap contacts update --id <CONTACT_ID> --email "user@example.com" \
+  --subscription-topics '[{"subscription_topic_id":7,"domain_id":4321,"status":"unsubscribed"}]'
 mailtrap contact-lists list
 mailtrap contact-lists list --search news
 mailtrap contact-fields create --name "Company" --data-type text --merge-tag "{{company}}"
@@ -171,8 +174,13 @@ mailtrap email-campaigns list --search spring
 mailtrap email-campaigns create --name "Spring Sale" --domain-id 4321 --from-local-part news --subject "Spring is here"
 mailtrap email-campaigns update --id 4567 --body-html '<h1>Hi {{first_name}}!</h1><a href="__unsubscribe_url__">Unsubscribe</a>' --contact-list-ids 55,56
 mailtrap email-campaigns update --id 4567 --clear-contact-lists
+mailtrap email-campaigns update --id 4567 --subscription-topic-id 7
 mailtrap email-campaigns schedule --id 4567 --datetime "2030-01-01T09:00:00Z"
 mailtrap email-campaigns stats --id 4567 --start-date 2026-05-01 --end-date 2026-05-31
+
+# Subscription topics
+mailtrap subscription-topics list
+mailtrap subscription-topics get --id 7
 
 # Sandboxes & projects
 mailtrap projects list
@@ -195,7 +203,7 @@ mailtrap domains list --output text
 export MAILTRAP_OUTPUT=json
 ```
 
-With `--output json`, commands print the API response as returned. Paginated lists (`inbound messages list`, `inbound threads list`, `email-logs list`, `email-campaigns list`, `templates list`, `tracking-opt-outs list`) print the full response object, so the next-page cursor and, where the API provides one, the total count are available to scripts:
+With `--output json`, commands print the API response as returned. Paginated lists (`inbound messages list`, `inbound threads list`, `email-logs list`, `email-campaigns list`, `subscription-topics list`, `templates list`, `tracking-opt-outs list`) print the full response object, so the next-page cursor and, where the API provides one, the total count are available to scripts:
 
 ```bash
 mailtrap inbound messages list --inbox-id 735 -o json | jq -r '.last_id // empty'
@@ -220,6 +228,7 @@ mailtrap inbound messages list --inbox-id 735 -o json | jq -r '.last_id // empty
 | **Contact Lists** | `contact-lists list`, `contact-lists get`, `contact-lists create`, `contact-lists update`, `contact-lists delete` |
 | **Contact Fields** | `contact-fields list`, `contact-fields get`, `contact-fields create`, `contact-fields update`, `contact-fields delete` |
 | **Email Campaigns** | `email-campaigns list`, `email-campaigns get`, `email-campaigns create`, `email-campaigns update`, `email-campaigns delete`, `email-campaigns start`, `email-campaigns schedule`, `email-campaigns cancel`, `email-campaigns terminate`, `email-campaigns reset`, `email-campaigns stats` |
+| **Subscription Topics** | `subscription-topics list`, `subscription-topics get` |
 | **Projects** | `projects list`, `projects get`, `projects create`, `projects update`, `projects delete` |
 | **Sandboxes** | `sandboxes list`, `sandboxes get`, `sandboxes create`, `sandboxes update`, `sandboxes delete`, `sandboxes clean`, `sandboxes mark-read`, `sandboxes reset-credentials`, `sandboxes toggle-email`, `sandboxes reset-email` |
 | **Messages** | `messages list`, `messages get`, `messages update`, `messages delete`, `messages forward`, `messages spam-score`, `messages html-analysis`, `messages headers`, `messages html`, `messages text`, `messages source`, `messages raw`, `messages eml` |

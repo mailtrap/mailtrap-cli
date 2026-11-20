@@ -1,0 +1,23 @@
+internal/commands/suppressions/list.go
+  s_9dd1991a9f877c::t_7076c667da17dd 5,21,30,61-63,65-66,80
+internal/commands/suppressions/suppressions_test.go
+  s_9dd1991a9f877c::t_6178f8485b0e57 6,9,372-459
+internal/commands/suppressions/create.go
+  s_9dd1991a9f877c::t_7076c667da17dd 5,16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d1c2cfdf87554ae3aa90940a2e6710565dd4366e",
+  "prompts": {},
+  "sessions": {
+    "s_9dd1991a9f877c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "037af311-449c-4cd6-8107-49bb64d5ca87",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

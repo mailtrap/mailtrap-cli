@@ -28,6 +28,7 @@ import (
 	"github.com/mailtrap/mailtrap-cli/internal/commands/sandboxes"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/send"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/stats"
+	"github.com/mailtrap/mailtrap-cli/internal/commands/subscriptiontopics"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/suppressions"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/templates"
 	"github.com/mailtrap/mailtrap-cli/internal/commands/tokens"
@@ -80,6 +81,7 @@ func NewRootCmd(f *cmdutil.Factory) *cobra.Command {
 	cmd.AddCommand(contact_lists.NewCmdContactLists(f))
 	cmd.AddCommand(contact_fields.NewCmdContactFields(f))
 	cmd.AddCommand(emailcampaigns.NewCmdEmailCampaigns(f))
+	cmd.AddCommand(subscriptiontopics.NewCmdSubscriptionTopics(f))
 
 	// Account Management
 	cmd.AddCommand(accounts.NewCmdAccounts(f))

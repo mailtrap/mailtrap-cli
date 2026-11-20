@@ -72,7 +72,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().StringVar(&webhookURL, "url", "", "Webhook URL")
 	cmd.Flags().BoolVar(&active, "active", true, "Whether the webhook is active")
 	cmd.Flags().StringVar(&payloadFormat, "payload-format", "", "Payload format: json, jsonlines")
-	cmd.Flags().StringSliceVar(&eventTypes, "event-types", nil, "Event types (comma-separated): delivery, soft_bounce, bounce, suspension, unsubscribe, open, spam_complaint, click, reject")
+	cmd.Flags().StringSliceVar(&eventTypes, "event-types", nil, eventTypesUsage)
 	cmd.Flags().IntVar(&inboundInboxID, "inbound-inbox-id", 0, "Email Inbound inbox ID to scope the webhook to (inbound_receiving only)")
 
 	return cmd

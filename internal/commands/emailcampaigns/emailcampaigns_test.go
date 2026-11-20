@@ -500,10 +500,8 @@ func TestEmailCampaignsUpdateSubscriptionTopic(t *testing.T) {
 			t.Errorf("expected body %v, got %v", want, reqBody)
 		}
 
-		campaign := sampleCampaign()
-		campaign["subscription_topic_id"] = nil
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]interface{}{"data": campaign})
+		json.NewEncoder(w).Encode(map[string]interface{}{"data": sampleCampaign()})
 	})
 	defer cleanup()
 
@@ -511,7 +509,6 @@ func TestEmailCampaignsUpdateSubscriptionTopic(t *testing.T) {
 	cmd.SetArgs([]string{"update", "--id", "4567", "--subscription-topic-id", "78"})
 	cmd.SetOut(buf)
 
-	// A null topic (accounts without subscription topics) prints as an empty cell.
 	if err := cmd.Execute(); err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

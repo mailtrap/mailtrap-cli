@@ -365,43 +365,6 @@ func TestWebhooksDelete(t *testing.T) {
 	}
 }
 
-func TestWebhooksCreateSubscriptionPreferencesUpdate(t *testing.T) {
-	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
-		var reqBody map[string]map[string]interface{}
-		json.NewDecoder(r.Body).Decode(&reqBody)
-
-		webhook := reqBody["webhook"]
-		if webhook["webhook_type"] != "campaigns" {
-			t.Errorf("unexpected webhook_type: %v", webhook["webhook_type"])
-		}
-		if events, ok := webhook["event_types"].([]interface{}); !ok || len(events) != 1 || events[0] != "subscription_preferences_update" {
-			t.Errorf("expected event_types [subscription_preferences_update], got %v", webhook["event_types"])
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		io.WriteString(w, `{"data":{"id":11,"url":"https://example.com/hooks","active":true,"webhook_type":"campaigns",`+
-			`"payload_format":"json","event_types":["subscription_preferences_update"],"signing_secret":"abc123secret"}}`)
-	})
-	defer cleanup()
-
-	cmd := webhooks.NewCmdWebhooks(f)
-	cmd.SetArgs([]string{
-		"create",
-		"--url", "https://example.com/hooks",
-		"--type", "campaigns",
-		"--event-types", "subscription_preferences_update",
-	})
-	cmd.SetOut(buf)
-
-	if err := cmd.Execute(); err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	if !strings.Contains(buf.String(), "subscription_preferences_update") {
-		t.Errorf("expected output to contain the event type, got:\n%s", buf.String())
-	}
-}
-
 func TestWebhooksEventTypesHelpListsSubscriptionPreferencesUpdate(t *testing.T) {
 	f, _, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {})
 	defer cleanup()

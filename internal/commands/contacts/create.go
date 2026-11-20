@@ -25,13 +25,15 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			var topics []subscriptionTopicInput
+			contactData := map[string]interface{}{
+				"email": email,
+			}
 			if cmd.Flags().Changed("subscription-topics") {
 				parsed, err := parseSubscriptionTopics(subscriptionTopics)
 				if err != nil {
 					return err
 				}
-				topics = parsed
+				contactData["subscription_topics"] = parsed
 			}
 
 			c, err := f.NewClient()
@@ -46,10 +48,6 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 
 			path := cmdutil.AccountPath("contacts")
 
-			contactData := map[string]interface{}{
-				"email": email,
-			}
-
 			fields := map[string]interface{}{}
 			if firstName != "" {
 				fields["first_name"] = firstName
@@ -63,10 +61,6 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 
 			if len(listIDs) > 0 {
 				contactData["list_ids"] = listIDs
-			}
-
-			if topics != nil {
-				contactData["subscription_topics"] = topics
 			}
 
 			body := map[string]interface{}{

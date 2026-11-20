@@ -1,11 +1,11 @@
 package contacts
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"slices"
 	"strings"
+
+	"github.com/mailtrap/mailtrap-cli/internal/cmdutil"
 )
 
 const subscriptionTopicsUsage = `Subscription topic preferences as a JSON array, e.g. '[{"subscription_topic_id":7,"domain_id":4321,"status":"unsubscribed"}]'; topic and domain pairs left out keep their status`
@@ -19,19 +19,9 @@ type subscriptionTopicInput struct {
 }
 
 func parseSubscriptionTopics(raw string) ([]subscriptionTopicInput, error) {
-	if !strings.HasPrefix(strings.TrimSpace(raw), "[") {
-		return nil, fmt.Errorf("invalid --subscription-topics: must be a JSON array")
-	}
-
-	dec := json.NewDecoder(strings.NewReader(raw))
-	dec.DisallowUnknownFields()
-
-	topics := []subscriptionTopicInput{}
-	if err := dec.Decode(&topics); err != nil {
-		return nil, fmt.Errorf("invalid --subscription-topics JSON: %w", err)
-	}
-	if _, err := dec.Token(); err != io.EOF {
-		return nil, fmt.Errorf("invalid --subscription-topics JSON: unexpected data after the array")
+	topics, err := cmdutil.ParseJSONArrayFlag[subscriptionTopicInput]("subscription-topics", raw)
+	if err != nil {
+		return nil, err
 	}
 
 	for i, topic := range topics {

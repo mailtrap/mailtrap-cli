@@ -1,11 +1,8 @@
 package forwardrules
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
 	"slices"
 	"strings"
 
@@ -32,19 +29,9 @@ type conditionInput struct {
 }
 
 func parseConditions(raw string) ([]conditionInput, error) {
-	if !strings.HasPrefix(strings.TrimSpace(raw), "[") {
-		return nil, fmt.Errorf("invalid --conditions: must be a JSON array")
-	}
-
-	dec := json.NewDecoder(bytes.NewReader([]byte(raw)))
-	dec.DisallowUnknownFields()
-
-	conditions := []conditionInput{}
-	if err := dec.Decode(&conditions); err != nil {
-		return nil, fmt.Errorf("invalid --conditions JSON: %w", err)
-	}
-	if _, err := dec.Token(); err != io.EOF {
-		return nil, fmt.Errorf("invalid --conditions JSON: unexpected data after the array")
+	conditions, err := cmdutil.ParseJSONArrayFlag[conditionInput]("conditions", raw)
+	if err != nil {
+		return nil, err
 	}
 
 	for i, cond := range conditions {

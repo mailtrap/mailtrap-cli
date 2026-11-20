@@ -2,6 +2,7 @@ package suppressions
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
@@ -12,7 +13,7 @@ import (
 )
 
 type suppressionResponse struct {
-	Data Suppression `json:"data"`
+	Data json.RawMessage `json:"data"`
 }
 
 func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {

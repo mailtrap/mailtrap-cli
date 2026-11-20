@@ -2,6 +2,7 @@ package suppressions
 
 import (
 	"context"
+	"encoding/json"
 	"net/url"
 
 	"github.com/mailtrap/mailtrap-cli/internal/client"
@@ -11,21 +12,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type Suppression struct {
-	ID            string `json:"id"`
-	Email         string `json:"email"`
-	Type          string `json:"type"`
-	SendingStream string `json:"sending_stream,omitempty"`
-	DomainName    string `json:"domain_name,omitempty"`
-	CreatedAt     string `json:"created_at"`
-}
-
 var suppressionColumns = []output.Column{
 	{Header: "ID", Field: "id"},
 	{Header: "EMAIL", Field: "email"},
 	{Header: "TYPE", Field: "type"},
 	{Header: "SENDING_STREAM", Field: "sending_stream"},
 	{Header: "DOMAIN_NAME", Field: "domain_name"},
+	{Header: "TOPIC_ID", Field: "subscription_topic_id"},
 	{Header: "CREATED_AT", Field: "created_at"},
 }
 
@@ -34,6 +27,7 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 	var startTime string
 	var endTime string
 	var lastID string
+	var includeTopicUnsubscriptions bool
 
 	cmd := &cobra.Command{
 		Use:   "list",
@@ -64,8 +58,12 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 			if lastID != "" {
 				query.Set("last_id", lastID)
 			}
+			if includeTopicUnsubscriptions {
+				query.Set("include_topic_unsubscriptions", "true")
+			}
 
-			var suppressions []Suppression
+			// Raw JSON keeps every field the API returns in --output json.
+			var suppressions json.RawMessage
 			if err := c.Get(context.Background(), client.BaseGeneral, path, query, &suppressions); err != nil {
 				return err
 			}
@@ -79,6 +77,7 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().StringVar(&startTime, "start-time", "", "Filter by start time")
 	cmd.Flags().StringVar(&endTime, "end-time", "", "Filter by end time")
 	cmd.Flags().StringVar(&lastID, "last-id", "", "Pagination cursor (id of the last record from the previous response)")
+	cmd.Flags().BoolVar(&includeTopicUnsubscriptions, "include-topic-unsubscriptions", false, "Also list unsubscriptions from single subscription topics (type 'topic unsubscription')")
 
 	return cmd
 }

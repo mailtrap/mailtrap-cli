@@ -3,8 +3,10 @@ package suppressions_test
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -365,5 +367,93 @@ func TestSuppressionsListPagination(t *testing.T) {
 
 	if !strings.Contains(buf.String(), "next@example.com") {
 		t.Errorf("expected output to contain 'next@example.com', got:\n%s", buf.String())
+	}
+}
+
+func TestSuppressionsListIncludeTopicUnsubscriptions(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.RawQuery != "include_topic_unsubscriptions=true" {
+			t.Errorf("expected query 'include_topic_unsubscriptions=true', got %q", r.URL.RawQuery)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		io.WriteString(w, `[{"id":"uuid-3","email":"reader@example.com","type":"topic unsubscription","created_at":"2026-11-01T10:00:00Z",`+
+			`"sending_stream":"bulk","domain_name":"example.com","subscription_topic_id":77,"message_bounce_category":null}]`)
+	})
+	defer cleanup()
+
+	cmd := suppressions.NewCmdSuppressions(f)
+	cmd.SetArgs([]string{"list", "--include-topic-unsubscriptions"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	output := buf.String()
+	for _, want := range []string{"TOPIC_ID", "topic unsubscription", "77"} {
+		if !strings.Contains(output, want) {
+			t.Errorf("expected output to contain %q, got:\n%s", want, output)
+		}
+	}
+}
+
+func TestSuppressionsListOmitsTopicUnsubscriptionsByDefault(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Query().Has("include_topic_unsubscriptions") {
+			t.Errorf("did not expect include_topic_unsubscriptions, got %q", r.URL.RawQuery)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		io.WriteString(w, `[]`)
+	})
+	defer cleanup()
+
+	cmd := suppressions.NewCmdSuppressions(f)
+	cmd.SetArgs([]string{"list", "--email", "test@example.com"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestSuppressionsJSONKeepsSuppressionsAsIs(t *testing.T) {
+	suppression := `{"id":"uuid-3","email":"reader@example.com","type":"topic unsubscription","created_at":"2026-11-01T10:00:00Z",` +
+		`"sending_stream":"bulk","domain_name":"example.com","subscription_topic_id":77,"message_bounce_category":null}`
+
+	for _, tc := range []struct {
+		args []string
+		body string
+		want string
+	}{
+		{[]string{"list"}, `[` + suppression + `]`, `[` + suppression + `]`},
+		{[]string{"create", "--email", "reader@example.com", "--domain-id", "4321", "--sending-stream", "bulk"}, `{"data":` + suppression + `}`, suppression},
+	} {
+		t.Run(tc.args[0], func(t *testing.T) {
+			f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				io.WriteString(w, tc.body)
+			})
+			defer cleanup()
+
+			viper.Set("output", "json")
+
+			cmd := suppressions.NewCmdSuppressions(f)
+			cmd.SetArgs(tc.args)
+			cmd.SetOut(buf)
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+
+			var got, want interface{}
+			if err := json.Unmarshal(buf.Bytes(), &got); err != nil {
+				t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, buf.String())
+			}
+			json.Unmarshal([]byte(tc.want), &want)
+			if !reflect.DeepEqual(got, want) {
+				t.Errorf("expected the response unchanged\nwant: %v\ngot:  %v", want, got)
+			}
+		})
 	}
 }

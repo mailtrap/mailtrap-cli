@@ -354,7 +354,9 @@ func TestAPIError_ErrorsFormats(t *testing.T) {
 			"API error 422: Contacts limit reached; email is invalid"},
 		{"nested errors", http.StatusUnprocessableEntity, `{"errors":{"contacts":[{"email":["is invalid"]}],"limit":5000}}`,
 			"API error 422: contacts email is invalid; limit 5000"},
-		{"null errors", http.StatusUnprocessableEntity, `{"errors":null}`, "API error 422"},
+		{"null errors", http.StatusNotFound, `{"error":"Not Found","errors":null}`, "API error 404: Not Found"},
+		{"other JSON", http.StatusForbidden, `{"message":"Access to this inbox is forbidden"}`,
+			`API error 403: {"message":"Access to this inbox is forbidden"}`},
 		{"plain text", http.StatusBadGateway, "bad gateway", "API error 502: bad gateway"},
 		{"empty body", http.StatusForbidden, "", "API error 403"},
 	}

@@ -17,10 +17,10 @@ type APIError struct {
 }
 
 // newAPIError builds the error for a failed response. A body that isn't a JSON
-// object of this shape becomes the message as is.
+// object of this shape, or carries no message in it, becomes the message as is.
 func newAPIError(statusCode int, body []byte) *APIError {
 	apiErr := &APIError{StatusCode: statusCode}
-	if json.Unmarshal(body, apiErr) != nil {
+	if json.Unmarshal(body, apiErr) != nil || (apiErr.Message == "" && len(errorMessages(apiErr.Errors)) == 0) {
 		return &APIError{StatusCode: statusCode, Message: string(body)}
 	}
 	return apiErr

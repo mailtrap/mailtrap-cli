@@ -73,7 +73,7 @@ Update a webhook. The type, sending stream and domain can't be changed.
 | `--event-types` | string[] | No | Event types (comma-separated); replaces the current list |
 | `--inbound-inbox-id` | int | No | Email Inbound inbox ID to scope the webhook to (`inbound_receiving` only) |
 
-Only supplied flags are updated; omitted fields remain unchanged.
+Only supplied flags are updated; omitted fields remain unchanged. Pass at least one besides `--id`: the API answers an empty update with `API error 400: Bad Request`.
 
 ```bash
 mailtrap webhooks update --id 1 --active=false

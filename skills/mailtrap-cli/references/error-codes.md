@@ -45,7 +45,7 @@ The message comes from the response body:
 | `{"errors": {"name": ["can't be blank"], "email": ["is invalid"]}}` | `email is invalid; name can't be blank` (one `field message` pair per message, sorted by field) |
 | `{"errors": {"base": ["Contacts limit reached"]}}` | `Contacts limit reached` (`base` errors belong to no field) |
 | empty | nothing: `API error 403` |
-| not JSON | the body as is |
+| anything else | the body as is |
 
 ---
 
@@ -59,7 +59,7 @@ Error: required flag(s) "--from", "--to", "--subject" not set
 
 ### Invalid API token
 ```
-Error: API error 401: Unauthorized
+Error: API error 401: Incorrect API token
 ```
 **Fix:** Run `mailtrap configure --api-token <valid-token>` or set `MAILTRAP_API_TOKEN`.
 
@@ -95,7 +95,7 @@ Error: API error 422: Domain is not verified
 
 ### Rate limited
 ```
-Error: API error 429: Too Many Requests
+Error: API error 429: Throttled
 ```
 **Fix:** Wait before retrying. Consider using batch endpoints for high-volume sends.
 

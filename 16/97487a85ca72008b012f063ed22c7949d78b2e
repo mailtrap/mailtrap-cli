@@ -1,0 +1,21 @@
+internal/commands/contacts/contacts_test.go
+  s_7445ec35d4535a::t_5461cf4b805716 663,668
+  s_7445ec35d4535a::t_941de55ae867aa 505-512,515-523,525,532,543,553-555,557-558,560-567
+  s_7445ec35d4535a::t_978ef50f8e8a33 572-573,579,587-588,593,598
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1697487a85ca72008b012f063ed22c7949d78b2e",
+  "prompts": {},
+  "sessions": {
+    "s_7445ec35d4535a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9c18936a-2fb3-4776-9c8f-08ee3ae6af11",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

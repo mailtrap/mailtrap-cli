@@ -117,7 +117,7 @@ List all suppressions (bounced/unsubscribed addresses).
 
 **Note:** The endpoint returns up to 1000 suppressions per request. Page through larger result sets with `--last-id`.
 
-With `--include-topic-unsubscriptions`, rows of type `topic unsubscription` carry the topic in `subscription_topic_id` (TOPIC_ID column); other rows have `null` there. Topic unsubscriptions can't be created or deleted with `suppressions create` / `delete`. See [subscription-topics.md](subscription-topics.md).
+With `--include-topic-unsubscriptions`, rows of type `topic unsubscription` carry the topic in `subscription_topic_id` (TOPIC_ID column); other rows have `null` there. Topic rows come back only when the API token can read contacts (account-level access); a token limited to domains gets the plain suppressions with no error. Topic unsubscriptions can't be created or deleted with `suppressions create` / `delete`. See [subscription-topics.md](subscription-topics.md).
 
 ---
 

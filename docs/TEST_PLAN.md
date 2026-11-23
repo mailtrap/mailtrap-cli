@@ -397,7 +397,7 @@ Prerequisite: Send an email with an attachment to the sandbox.
 | 23.9 | Contact topic preferences | `mailtrap contacts update --id <CONTACT_ID> --email <EMAIL> --subscription-topics '[{"subscription_topic_id":<TOPIC_ID>,"domain_id":<DOMAIN_ID>,"status":"unsubscribed"}]' -o json` | `subscription_topics` lists the topic as `unsubscribed` on that domain and `subscribed` on the other |
 | 23.10 | Invalid topic entry | `mailtrap contacts update --id <CONTACT_ID> --email <EMAIL> --subscription-topics '[{"subscription_topic_id":<TOPIC_ID>,"status":"unsubscribed"}]'` | Error: `entry 1: domain_id must be greater than 0`; no request sent |
 | 23.11 | Import with topics | `mailtrap contacts import --file contacts.json` with a contact carrying `subscription_topics` | Import completes; `contacts get` shows the preference |
-| 23.12 | Topic unsubscriptions | `mailtrap suppressions list --include-topic-unsubscriptions` after 23.9 | A `topic unsubscription` row with TOPIC_ID and DOMAIN_NAME; without the flag the row is absent |
+| 23.12 | Topic unsubscriptions | `mailtrap suppressions list --include-topic-unsubscriptions` after 23.9 | A `topic unsubscription` row with TOPIC_ID and DOMAIN_NAME; without the flag, or with a token limited to one domain, the row is absent |
 | 23.13 | Topics off: list | `mailtrap subscription-topics list` | `API error 403` |
 | 23.14 | Topics off: campaign | `mailtrap email-campaigns create ... --subscription-topic-id 1` | Campaign saved; TOPIC ID empty |
 | 23.15 | Topics off: contact read | `mailtrap contacts get --id <CONTACT_ID> -o json` | No `subscription_topics` key, no error |

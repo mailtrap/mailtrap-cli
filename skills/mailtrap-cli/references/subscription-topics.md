@@ -58,4 +58,4 @@ mailtrap contacts update --id <CONTACT_ID> --email user@example.com \
 
 ## Topic unsubscriptions
 
-`suppressions list --include-topic-unsubscriptions` adds the contacts' unsubscriptions from single topics, with type `topic unsubscription` and the topic in `subscription_topic_id` (TOPIC_ID column). See [domains.md](domains.md).
+`suppressions list --include-topic-unsubscriptions` adds the contacts' unsubscriptions from single topics, with type `topic unsubscription` and the topic in `subscription_topic_id` (TOPIC_ID column). They are left out, with no error, unless the API token can read contacts. See [domains.md](domains.md).

@@ -77,7 +77,8 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().StringVar(&startTime, "start-time", "", "Filter by start time")
 	cmd.Flags().StringVar(&endTime, "end-time", "", "Filter by end time")
 	cmd.Flags().StringVar(&lastID, "last-id", "", "Pagination cursor (id of the last record from the previous response)")
-	cmd.Flags().BoolVar(&includeTopicUnsubscriptions, "include-topic-unsubscriptions", false, "Also list unsubscriptions from single subscription topics (type 'topic unsubscription')")
+	cmd.Flags().BoolVar(&includeTopicUnsubscriptions, "include-topic-unsubscriptions", false, "Also list unsubscriptions from single subscription topics (type 'topic unsubscription'); "+
+		"they are left out without an error unless the API token can read contacts")
 
 	return cmd
 }

@@ -199,7 +199,7 @@ Tests are organized by endpoint group. Each test specifies:
 |---|------|---------|----------|
 | 10.1 | Create contact | `mailtrap contacts create --email "test@integration.com"` | New contact in output |
 | 10.2 | Get contact | `mailtrap contacts get --id <CONTACT_ID>` | Single contact details |
-| 10.3 | Update contact | `mailtrap contacts update --id <CONTACT_ID> --first-name "Test"` | Updated contact |
+| 10.3 | Update contact | `mailtrap contacts update --id <CONTACT_ID> --email "test@integration.com" --first-name "Test"` | Updated contact |
 | 10.4 | List contacts | `mailtrap contacts list` | Table with contacts (may 404 — investigate) |
 | 10.5 | Import contacts | `mailtrap contacts import --file contacts.csv` | Import initiated |
 | 10.6 | Import status | `mailtrap contacts import-status --id <IMPORT_ID>` | Status details |

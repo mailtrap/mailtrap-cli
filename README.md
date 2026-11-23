@@ -121,7 +121,7 @@ mailtrap company-info create --domain-id 123 --name "Your Company" --address "12
   --city "San Francisco" --country US --zip-code 94105 --website-url "https://yourdomain.com"
 mailtrap company-info update --domain-id 123 --city "New York" --zip-code 10001
 
-# Suppressions
+# Suppressions (--include-topic-unsubscriptions needs a token that can read contacts; without it, topic rows are left out silently)
 mailtrap suppressions list --email "bounced@example.com"
 mailtrap suppressions list --include-topic-unsubscriptions
 mailtrap suppressions create --email "bounced@example.com" --domain-id 123 --sending-stream transactional

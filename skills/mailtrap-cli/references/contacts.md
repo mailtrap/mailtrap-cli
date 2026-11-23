@@ -44,7 +44,7 @@ Update an existing contact.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--id` | string | Yes | Contact ID |
-| `--email` | string | No | New email address |
+| `--email` | string | Yes | Contact email address, also for a topic-only update (pass the current one to keep it) |
 | `--first-name` | string | No | New first name |
 | `--last-name` | string | No | New last name |
 | `--subscription-topics` | string | No | Subscription topic preferences as a JSON array, as for `contacts create`; pairs left out keep their status |

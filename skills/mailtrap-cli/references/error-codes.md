@@ -27,6 +27,28 @@ Common API errors and their meanings when using the Mailtrap CLI.
 
 ---
 
+## API Error Format
+
+A failed request prints one line:
+
+```
+Error: API error <status>: <message>
+```
+
+The message comes from the response body:
+
+| Body | Message |
+|------|---------|
+| `{"error": "Not Found"}` | `Not Found` |
+| `{"errors": "Access forbidden"}` | `Access forbidden` |
+| `{"errors": ["'from' is required", "'subject' is required"]}` | `'from' is required; 'subject' is required` |
+| `{"errors": {"name": ["can't be blank"], "email": ["is invalid"]}}` | `email is invalid; name can't be blank` (one `field message` pair per message, sorted by field) |
+| `{"errors": {"base": ["Contacts limit reached"]}}` | `Contacts limit reached` (`base` errors belong to no field) |
+| empty | nothing: `API error 403` |
+| not JSON | the body as is |
+
+---
+
 ## Common Error Patterns
 
 ### Missing required flag
@@ -41,11 +63,29 @@ Error: API error 401: Unauthorized
 ```
 **Fix:** Run `mailtrap configure --api-token <valid-token>` or set `MAILTRAP_API_TOKEN`.
 
+### Missing permission
+```
+Error: API error 403: Access forbidden
+```
+**Fix:** Use a token with access to the resource, or ask an account admin to grant it.
+
 ### Resource not found
 ```
 Error: API error 404: Not Found
 ```
 **Fix:** Verify the resource ID exists. Use the corresponding `list` command to find valid IDs.
+
+### Validation failed
+```
+Error: API error 422: email is invalid
+```
+**Fix:** Correct the named field and retry. Several invalid fields are joined with `; `.
+
+### Nothing to update
+```
+Error: at least one attribute flag is required
+```
+**Fix:** Commands such as `templates update` and `contacts update` send only the flags you pass; pass at least one besides `--id`.
 
 ### Domain not verified
 ```

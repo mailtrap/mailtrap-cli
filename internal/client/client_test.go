@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"strings"
 	"testing"
 )
 
@@ -325,13 +324,59 @@ func TestAPIError_JSONBody(t *testing.T) {
 	if apiErr.Message != "validation failed" {
 		t.Errorf("expected message %q, got %q", "validation failed", apiErr.Message)
 	}
-	if v, ok := apiErr.Errors["name"]; !ok || v != "is required" {
-		t.Errorf("expected errors[name]=%q, got %v", "is required", apiErr.Errors)
+	if string(apiErr.Errors) != `{"name":"is required"}` {
+		t.Errorf("expected errors kept as sent, got %s", apiErr.Errors)
 	}
 	// Check Error() string output
 	errStr := apiErr.Error()
-	if !strings.Contains(errStr, "422") || !strings.Contains(errStr, "validation failed") {
+	if errStr != "API error 422: validation failed; name is required" {
 		t.Errorf("unexpected Error() output: %s", errStr)
+	}
+}
+
+func TestAPIError_ErrorsFormats(t *testing.T) {
+	cases := []struct {
+		name   string
+		status int
+		body   string
+		want   string
+	}{
+		{"error", http.StatusNotFound, `{"error":"Not Found"}`, "API error 404: Not Found"},
+		{"errors string", http.StatusServiceUnavailable,
+			`{"errors":"The contact was saved, but its subscription topic preferences were not. Send them again in an update of contact abc-123."}`,
+			"API error 503: The contact was saved, but its subscription topic preferences were not. Send them again in an update of contact abc-123."},
+		{"errors array", http.StatusBadRequest, `{"success":false,"errors":["'from' is required","'subject' is required"]}`,
+			"API error 400: 'from' is required; 'subject' is required"},
+		{"errors object of arrays", http.StatusUnprocessableEntity, `{"errors":{"name":["can't be blank"],"email":["is invalid","is too long"]}}`,
+			"API error 422: email is invalid; email is too long; name can't be blank"},
+		{"errors object of strings", http.StatusUnprocessableEntity, `{"errors":{"name":"is required"}}`, "API error 422: name is required"},
+		{"base errors", http.StatusUnprocessableEntity, `{"errors":{"base":["Contacts limit reached"],"email":["is invalid"]}}`,
+			"API error 422: Contacts limit reached; email is invalid"},
+		{"nested errors", http.StatusUnprocessableEntity, `{"errors":{"contacts":[{"email":["is invalid"]}],"limit":5000}}`,
+			"API error 422: contacts email is invalid; limit 5000"},
+		{"null errors", http.StatusUnprocessableEntity, `{"errors":null}`, "API error 422"},
+		{"plain text", http.StatusBadGateway, "bad gateway", "API error 502: bad gateway"},
+		{"empty body", http.StatusForbidden, "", "API error 403"},
+	}
+
+	for _, tc := range cases {
+		_, c, base := setupTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(tc.status)
+			io.WriteString(w, tc.body)
+		})
+
+		t.Run(tc.name, func(t *testing.T) {
+			err := c.Post(context.Background(), base, "/api/items", map[string]string{}, nil)
+			if err == nil || err.Error() != tc.want {
+				t.Errorf("expected %q, got %v", tc.want, err)
+			}
+		})
+		t.Run(tc.name+" raw", func(t *testing.T) {
+			_, err := c.GetRaw(context.Background(), base, "/api/items/1/raw", nil)
+			if err == nil || err.Error() != tc.want {
+				t.Errorf("expected %q, got %v", tc.want, err)
+			}
+		})
 	}
 }
 

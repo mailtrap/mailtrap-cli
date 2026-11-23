@@ -1,0 +1,35 @@
+internal/commands/contacts/contacts_test.go
+  s_c5d1a769c7d92d::t_a437811212461f 294-330,550,559,636,695-698
+internal/commands/contacts/update.go
+  s_c5d1a769c7d92d::t_fc72a8fb013e3b 32-35,65-79
+  s_c5d1a769c7d92d::t_a437811212461f 96
+skill-evals/mailtrap-cli/evals.json
+  s_c5d1a769c7d92d::t_a51601a8cfb915 106-107
+docs/TEST_PLAN.md
+  s_c5d1a769c7d92d::t_8125fa87178795 208
+  s_c5d1a769c7d92d::t_2acc06b9ba06ab 202,210-211,399-400,406,470,484
+README.md
+  s_c5d1a769c7d92d::t_2acc06b9ba06ab 166
+skills/mailtrap-cli/references/subscription-topics.md
+  s_c5d1a769c7d92d::t_2acc06b9ba06ab 51
+skills/mailtrap-cli/references/contacts.md
+  s_c5d1a769c7d92d::t_b594a77148604e 123-124,132-134,219
+  s_c5d1a769c7d92d::t_8f82aebaea6c98 47,50-52,55-56,77,80,91-92
+  s_c5d1a769c7d92d::t_48a03e05ed616c 220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ef63aeafa287610e6dfebeb7137d0164b9b4394e",
+  "prompts": {},
+  "sessions": {
+    "s_c5d1a769c7d92d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "34a9167b-ec9b-4b61-84d3-a09aa99a07a0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 The `mailtrap` CLI is the official command-line interface for the Mailtrap email platform.
 It covers transactional/bulk email sending, sandboxes, domain management, templates,
-contacts, statistics, and account administration.
+contacts, email campaigns, webhooks, statistics, and account administration.
 
 ## Authentication
 
@@ -50,7 +50,7 @@ A `null` cursor means there are no more pages. `suppressions list` and `messages
 - **Repeated flags**: flags like `--to`, `--cc`, `--bcc`, `--domain-ids` can be specified multiple times
 - **Batch operations**: use `--file path/to/payload.json` with a JSON array of email objects
 - **Config priority**: CLI flags > environment variables > config file
-- **Exit codes**: 0 on success, 1 on error (with descriptive message)
+- **Exit codes**: 0 on success, 1 on error (with descriptive message). API errors print as `API error <status>: <message>`; see [error-codes.md](references/error-codes.md)
 - **Naming**: sandboxes were formerly called inboxes, and domains were sending domains. A user asking about an "inbox" usually means a sandbox (`sandboxes`, `--sandbox-id`) unless they mean Email Inbound (`inbound`). API paths, JSON keys and token resource types keep the old names (`/inboxes`, `sending_domain_id`, `"inbox"`, `"sending_domain"`)
 - **API base**: most requests go to `https://mailtrap.io/api/accounts/{account-id}/...`. Several groups do not and take no `--account-id`: `inbound` (`/api/inbound/...`), `company-info` (`/api/domains/{domain-id}/company_info`), `tracking-opt-outs` (`/api/tracking_opt_outs`), `email-campaigns` (`/api/email_campaigns`), `subscription-topics` (`/api/subscription_topics`) and `organizations` (`/api/organizations/...`). `send` and `sandbox-send` go to their own hosts entirely.
 
@@ -68,6 +68,7 @@ A `null` cursor means there are no more pages. `suppressions list` and `messages
 | `contacts` | Contact management & import/export | [contacts.md](references/contacts.md) |
 | `contact-lists` | Contact list CRUD | [contacts.md](references/contacts.md) |
 | `contact-fields` | Custom contact fields | [contacts.md](references/contacts.md) |
+| `email-campaigns` | Email campaign CRUD, sending lifecycle & stats | [email-campaigns.md](references/email-campaigns.md) |
 | `subscription-topics` | Subscription topics, and the topic fields on campaigns, contacts and suppressions | [subscription-topics.md](references/subscription-topics.md) |
 | `sandbox-send` | Sending emails to a sandbox | [sandbox.md](references/sandbox.md) |
 | `projects` | Sandbox project management | [sandbox.md](references/sandbox.md) |
@@ -82,6 +83,7 @@ A `null` cursor means there are no more pages. `suppressions list` and `messages
 | `organizations` | Sub-account management | [accounts.md](references/accounts.md) |
 | `suppressions` | Suppression list management | [domains.md](references/domains.md) |
 | `tracking-opt-outs` | Open and click tracking opt-outs | [domains.md](references/domains.md) |
+| `webhooks` | Webhooks for sending, campaign, audit log & inbound events | [webhooks.md](references/webhooks.md) |
 
 ## Gotchas
 

@@ -48,7 +48,7 @@ A campaign's topic can be changed but not removed. On an account without subscri
 `contacts create` and `contacts update` take `--subscription-topics`, a JSON array with one entry per topic and domain. See [contacts.md](contacts.md).
 
 ```bash
-mailtrap contacts update --id <CONTACT_ID> --email user@example.com \
+mailtrap contacts update --id <CONTACT_ID> \
   --subscription-topics '[{"subscription_topic_id":7,"domain_id":4321,"status":"unsubscribed"}]'
 ```
 

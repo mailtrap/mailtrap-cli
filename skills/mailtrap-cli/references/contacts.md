@@ -44,10 +44,15 @@ Update an existing contact.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--id` | string | Yes | Contact ID |
-| `--email` | string | Yes | Contact email address, also for a topic-only update (pass the current one to keep it) |
+| `--email` | string | No | New email address |
 | `--first-name` | string | No | New first name |
 | `--last-name` | string | No | New last name |
+| `--list-ids-included` | int[] | No | List IDs to add the contact to |
+| `--list-ids-excluded` | int[] | No | List IDs to remove the contact from |
+| `--unsubscribed` | bool | No | Unsubscribe the contact (`--unsubscribed=false` subscribes it again) |
 | `--subscription-topics` | string | No | Subscription topic preferences as a JSON array, as for `contacts create`; pairs left out keep their status |
+
+Only supplied flags are updated; omitted fields remain unchanged. At least one flag besides `--id` is required, so a topic-only update needs just `--id` and `--subscription-topics`.
 
 ---
 
@@ -68,12 +73,11 @@ Import contacts from a JSON file.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--file` | string | Yes | Path to JSON file with contact data |
-| `--list-id` | int | No | List ID to import contacts into |
 
-The file is posted as is. Each contact may carry `subscription_topics`, with the same entries as `contacts create --subscription-topics`:
+The file is posted as is. Lists are set per contact in the file: `list_ids_included` adds the contact to lists and `list_ids_excluded` removes it from them. Each contact may also carry `subscription_topics`, with the same entries as `contacts create --subscription-topics`:
 
 ```json
-{"contacts": [{"email": "user@example.com", "subscription_topics": [{"subscription_topic_id": 7, "domain_id": 4321, "status": "unsubscribed"}]}]}
+{"contacts": [{"email": "user@example.com", "list_ids_included": [55], "subscription_topics": [{"subscription_topic_id": 7, "domain_id": 4321, "status": "unsubscribed"}]}]}
 ```
 
 ---
@@ -84,7 +88,8 @@ Export contacts.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--list-id` | int | No | List ID to export from |
+| `--list-ids` | int[] | No | Export only contacts in these lists |
+| `--status` | string | No | Export only contacts with this subscription status: `subscribed`, `unsubscribed` |
 
 ---
 
@@ -115,8 +120,8 @@ Create a custom event for a contact (used for automation triggers).
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--id` | string | Yes | Contact ID |
-| `--type` | string | Yes | Event type name |
-| `--data` | string | No | Event data as JSON string |
+| `--name` | string | Yes | Event name (max 255 characters) |
+| `--params` | string | No | Event params as a JSON object |
 
 ---
 
@@ -124,7 +129,9 @@ Create a custom event for a contact (used for automation triggers).
 
 List all contact lists.
 
-No additional flags.
+| Flag | Type | Required | Description |
+|------|------|----------|-------------|
+| `--search` | string | No | Filter by name (case-insensitive prefix match) |
 
 ---
 
@@ -207,8 +214,9 @@ Update a custom contact field.
 |------|------|----------|-------------|
 | `--id` | string | Yes | Contact field ID |
 | `--name` | string | No | New field name |
-| `--data-type` | string | No | New data type |
 | `--merge-tag` | string | No | New merge tag |
+
+The data type can't be changed.
 
 ---
 

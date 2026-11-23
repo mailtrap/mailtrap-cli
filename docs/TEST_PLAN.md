@@ -199,14 +199,16 @@ Tests are organized by endpoint group. Each test specifies:
 |---|------|---------|----------|
 | 10.1 | Create contact | `mailtrap contacts create --email "test@integration.com"` | New contact in output |
 | 10.2 | Get contact | `mailtrap contacts get --id <CONTACT_ID>` | Single contact details |
-| 10.3 | Update contact | `mailtrap contacts update --id <CONTACT_ID> --email "test@integration.com" --first-name "Test"` | Updated contact |
+| 10.3 | Update contact | `mailtrap contacts update --id <CONTACT_ID> --first-name "Test"` | Updated contact; email unchanged |
 | 10.4 | List contacts | `mailtrap contacts list` | Table with contacts (may 404 — investigate) |
 | 10.5 | Import contacts | `mailtrap contacts import --file contacts.csv` | Import initiated |
 | 10.6 | Import status | `mailtrap contacts import-status --id <IMPORT_ID>` | Status details |
 | 10.7 | Export contacts | `mailtrap contacts export` | Export initiated |
 | 10.8 | Export status | `mailtrap contacts export-status --id <EXPORT_ID>` | Status details |
-| 10.9 | Create event | `mailtrap contacts create-event --id <CONTACT_ID> --type "purchase"` | Event created |
+| 10.9 | Create event | `mailtrap contacts create-event --id <CONTACT_ID> --name "purchase"` | Event created |
 | 10.10 | Delete contact | `mailtrap contacts delete --id <CONTACT_ID>` | Success message |
+| 10.11 | Update without flags | `mailtrap contacts update --id <CONTACT_ID>` | Error: `at least one attribute flag is required`; no request sent |
+| 10.12 | Invalid email | `mailtrap contacts create --email "not-an-email"` | `Error: API error 422: email is invalid` |
 
 **Cleanup:** Delete created contact.
 
@@ -394,14 +396,14 @@ Prerequisite: Send an email with an attachment to the sandbox.
 | 23.6 | Get missing ID | `mailtrap subscription-topics get` | Error: `required flag(s) "id" not set` |
 | 23.7 | Campaign with topic | `mailtrap email-campaigns create --name "topic-test" --domain-id <DOMAIN_ID> --from-local-part news --subject "Hi" --subscription-topic-id <TOPIC_ID>` | TOPIC ID column shows the topic; `email-campaigns get --id <NEW_ID> -o json` has `subscription_topic_id` |
 | 23.8 | Campaign with uncovered topic | `mailtrap email-campaigns update --id <NEW_ID> --subscription-topic-id <OTHER_DOMAIN_TOPIC_ID>` | `API error 422`, campaign unchanged |
-| 23.9 | Contact topic preferences | `mailtrap contacts update --id <CONTACT_ID> --email <EMAIL> --subscription-topics '[{"subscription_topic_id":<TOPIC_ID>,"domain_id":<DOMAIN_ID>,"status":"unsubscribed"}]' -o json` | `subscription_topics` lists the topic as `unsubscribed` on that domain and `subscribed` on the other |
-| 23.10 | Invalid topic entry | `mailtrap contacts update --id <CONTACT_ID> --email <EMAIL> --subscription-topics '[{"subscription_topic_id":<TOPIC_ID>,"status":"unsubscribed"}]'` | Error: `entry 1: domain_id must be greater than 0`; no request sent |
+| 23.9 | Contact topic preferences | `mailtrap contacts update --id <CONTACT_ID> --subscription-topics '[{"subscription_topic_id":<TOPIC_ID>,"domain_id":<DOMAIN_ID>,"status":"unsubscribed"}]' -o json` | `subscription_topics` lists the topic as `unsubscribed` on that domain and `subscribed` on the other |
+| 23.10 | Invalid topic entry | `mailtrap contacts update --id <CONTACT_ID> --subscription-topics '[{"subscription_topic_id":<TOPIC_ID>,"status":"unsubscribed"}]'` | Error: `entry 1: domain_id must be greater than 0`; no request sent |
 | 23.11 | Import with topics | `mailtrap contacts import --file contacts.json` with a contact carrying `subscription_topics` | Import completes; `contacts get` shows the preference |
 | 23.12 | Topic unsubscriptions | `mailtrap suppressions list --include-topic-unsubscriptions` after 23.9 | A `topic unsubscription` row with TOPIC_ID and DOMAIN_NAME; without the flag, or with a token limited to one domain, the row is absent |
 | 23.13 | Topics off: list | `mailtrap subscription-topics list` | `API error 403` |
 | 23.14 | Topics off: campaign | `mailtrap email-campaigns create ... --subscription-topic-id 1` | Campaign saved; TOPIC ID empty |
 | 23.15 | Topics off: contact read | `mailtrap contacts get --id <CONTACT_ID> -o json` | No `subscription_topics` key, no error |
-| 23.16 | Topics off: contact write | `mailtrap contacts update --id <CONTACT_ID> --email <EMAIL> --subscription-topics '[{"subscription_topic_id":1,"domain_id":<DOMAIN_ID>,"status":"subscribed"}]'` | `API error 422` naming `subscription_topics` ("are not available for this account") |
+| 23.16 | Topics off: contact write | `mailtrap contacts update --id <CONTACT_ID> --subscription-topics '[{"subscription_topic_id":1,"domain_id":<DOMAIN_ID>,"status":"subscribed"}]'` | `API error 422: subscription_topics are not available for this account` |
 | 23.17 | Topics off: suppressions | `mailtrap suppressions list --include-topic-unsubscriptions` | No `topic unsubscription` rows |
 
 **Cleanup:** Delete the campaign created in 23.7 and the contacts imported in 23.11.
@@ -465,7 +467,7 @@ Run tests in dependency order so earlier tests create resources needed by later 
 | Email Logs | 2 | 4 |
 | Contact Lists | 5 | 6 |
 | Contact Fields | 5 | 6 |
-| Contacts | 10 | 10 |
+| Contacts | 10 | 12 |
 | Projects | 5 | 6 |
 | Sandboxes | 10 | 11 |
 | Sandbox Send | 2 | 3 |
@@ -479,4 +481,4 @@ Run tests in dependency order so earlier tests create resources needed by later 
 | Configure | 1 | 2 |
 | Inbound | 24 | 30 |
 | Subscription Topics | 2 | 17 |
-| **Total** | **~117** | **~156** |
+| **Total** | **~117** | **~158** |

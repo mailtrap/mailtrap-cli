@@ -291,6 +291,43 @@ func TestContactsUpdateWithListFlags(t *testing.T) {
 	}
 }
 
+func TestContactsUpdateWithoutEmail(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		var payload map[string]interface{}
+		if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+			t.Fatalf("failed to decode body: %v", err)
+		}
+
+		want := map[string]interface{}{"contact": map[string]interface{}{
+			"fields":       map[string]interface{}{"first_name": "Jane"},
+			"unsubscribed": false,
+		}}
+		if !reflect.DeepEqual(payload, want) {
+			t.Errorf("expected body %v, got %v", want, payload)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"data":{"id":"abc-123","email":"x@y.com","status":"subscribed"}}`))
+	})
+	defer cleanup()
+
+	cmd := contacts.NewCmdContacts(f)
+	cmd.SetArgs([]string{"update", "--id", "abc-123", "--first-name", "Jane", "--unsubscribed=false"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestContactsUpdateNothingToUpdate(t *testing.T) {
+	noRequest := func(w http.ResponseWriter, r *http.Request) {
+		t.Error("unexpected request")
+	}
+
+	expectError(t, noRequest, []string{"update", "--id", "abc-123"}, "at least one attribute flag is required")
+}
+
 func TestContactsDelete(t *testing.T) {
 	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodDelete {
@@ -510,8 +547,8 @@ func TestContactsSendSubscriptionTopics(t *testing.T) {
 		},
 	}
 	withoutTopics := map[string]interface{}{"email": "x@y.com"}
+	onlyTopics := map[string]interface{}{"subscription_topics": withTopics["subscription_topics"]}
 
-	// A topic-only update: the CLI still requires --email.
 	for _, tc := range []struct {
 		name    string
 		args    []string
@@ -519,6 +556,7 @@ func TestContactsSendSubscriptionTopics(t *testing.T) {
 	}{
 		{"create", []string{"create", "--email", "x@y.com", "--subscription-topics", topics}, withTopics},
 		{"update", []string{"update", "--id", "abc-123", "--email", "x@y.com", "--subscription-topics", topics}, withTopics},
+		{"topic-only update", []string{"update", "--id", "abc-123", "--subscription-topics", topics}, onlyTopics},
 		{"create without topics", []string{"create", "--email", "x@y.com"}, withoutTopics},
 		{"update without topics", []string{"update", "--id", "abc-123", "--email", "x@y.com"}, withoutTopics},
 	} {
@@ -595,7 +633,7 @@ func TestContactsInvalidSubscriptionTopics(t *testing.T) {
 	}
 	// update shares the parser; one case shows it is wired in.
 	t.Run("update", func(t *testing.T) {
-		expectError(t, noRequest, []string{"update", "--id", "abc-123", "--email", "x@y.com", "--subscription-topics", `[{"subscription_topic_id":7}]`},
+		expectError(t, noRequest, []string{"update", "--id", "abc-123", "--subscription-topics", `[{"subscription_topic_id":7}]`},
 			"entry 1: domain_id must be greater than 0")
 	})
 }
@@ -654,8 +692,10 @@ func TestContactsSubscriptionTopicsErrorsKeepMessage(t *testing.T) {
 		body   string
 		want   string
 	}{
-		{"topics off", http.StatusUnprocessableEntity, `{"errors":{"subscription_topics":["are not available for this account"]}}`, "are not available for this account"},
-		{"topics not saved", http.StatusServiceUnavailable, `{"errors":"The contact was saved, but its subscription topic preferences were not. Send them again in an update of contact abc-123."}`, "Send them again in an update of contact abc-123"},
+		{"topics off", http.StatusUnprocessableEntity, `{"errors":{"subscription_topics":["are not available for this account"]}}`,
+			"API error 422: subscription_topics are not available for this account"},
+		{"topics not saved", http.StatusServiceUnavailable, `{"errors":"The contact was saved, but its subscription topic preferences were not. Send them again in an update of contact abc-123."}`,
+			"API error 503: The contact was saved, but its subscription topic preferences were not. Send them again in an update of contact abc-123."},
 	}
 
 	for _, tc := range cases {

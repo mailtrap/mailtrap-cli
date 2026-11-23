@@ -93,6 +93,8 @@ Delete a draft email campaign.
 |------|------|----------|-------------|
 | `--id` | string | Yes | Email campaign ID |
 
+**Output:** `Email campaign deleted successfully.`, also with `--output json`.
+
 ---
 
 ## email-campaigns start
@@ -155,3 +157,5 @@ Get an email campaign's statistics: sent, delivered, opens, clicks, bounces, spa
 | `--id` | string | Yes | Email campaign ID |
 | `--start-date` | string | No | Start of the aggregation window (`YYYY-MM-DD`) |
 | `--end-date` | string | No | End of the aggregation window (`YYYY-MM-DD`) |
+
+**Output:** The statistics, not the campaign: counts and rates in a table, or the response's `data` object with `--output json`.

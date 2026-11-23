@@ -321,11 +321,8 @@ func TestAPIError_JSONBody(t *testing.T) {
 	if apiErr.StatusCode != 422 {
 		t.Errorf("expected status 422, got %d", apiErr.StatusCode)
 	}
-	if apiErr.Message != "validation failed" {
-		t.Errorf("expected message %q, got %q", "validation failed", apiErr.Message)
-	}
-	if string(apiErr.Errors) != `{"name":"is required"}` {
-		t.Errorf("expected errors kept as sent, got %s", apiErr.Errors)
+	if apiErr.Message != "validation failed; name is required" {
+		t.Errorf("expected message %q, got %q", "validation failed; name is required", apiErr.Message)
 	}
 	// Check Error() string output
 	errStr := apiErr.Error()

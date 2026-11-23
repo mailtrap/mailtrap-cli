@@ -76,7 +76,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 				return err
 			}
 
-			path := cmdutil.AccountPath("contacts", fmt.Sprintf("%s", contactID))
+			path := cmdutil.AccountPath("contacts", contactID)
 
 			body := map[string]interface{}{
 				"contact": contactData,

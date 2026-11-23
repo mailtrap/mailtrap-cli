@@ -4,37 +4,42 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"sort"
+	"maps"
+	"slices"
 	"strings"
 )
 
 type APIError struct {
 	StatusCode int
-	Message    string `json:"error"`
-	// Errors is the response's "errors" field as sent: a string, an array of
-	// messages, or an object mapping fields to a message or an array of them.
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Message    string
 }
 
-// newAPIError builds the error for a failed response. A body that isn't a JSON
-// object of this shape, or carries no message in it, becomes the message as is.
+// newAPIError builds the error for a failed response. Its message is the body's
+// "error" text followed by its "errors" (see errorMessages), joined with "; ".
+// A body that isn't a JSON object of this shape, or carries no message in it,
+// becomes the message as is.
 func newAPIError(statusCode int, body []byte) *APIError {
-	apiErr := &APIError{StatusCode: statusCode}
-	if json.Unmarshal(body, apiErr) != nil || (apiErr.Message == "" && len(errorMessages(apiErr.Errors)) == 0) {
-		return &APIError{StatusCode: statusCode, Message: string(body)}
+	var parsed struct {
+		Error  string          `json:"error"`
+		Errors json.RawMessage `json:"errors"`
 	}
-	return apiErr
+	if json.Unmarshal(body, &parsed) == nil {
+		messages := errorMessages(parsed.Errors)
+		if parsed.Error != "" {
+			messages = append([]string{parsed.Error}, messages...)
+		}
+		if len(messages) > 0 {
+			return &APIError{StatusCode: statusCode, Message: strings.Join(messages, "; ")}
+		}
+	}
+	return &APIError{StatusCode: statusCode, Message: string(body)}
 }
 
 func (e *APIError) Error() string {
-	messages := errorMessages(e.Errors)
 	if e.Message != "" {
-		messages = append([]string{e.Message}, messages...)
+		return fmt.Sprintf("API error %d: %s", e.StatusCode, e.Message)
 	}
-	if len(messages) == 0 {
-		return fmt.Sprintf("API error %d", e.StatusCode)
-	}
-	return fmt.Sprintf("API error %d: %s", e.StatusCode, strings.Join(messages, "; "))
+	return fmt.Sprintf("API error %d", e.StatusCode)
 }
 
 // errorMessages flattens an "errors" value into readable messages: a string as
@@ -65,14 +70,8 @@ func errorMessages(raw json.RawMessage) []string {
 
 	var fields map[string]json.RawMessage
 	if json.Unmarshal(raw, &fields) == nil {
-		names := make([]string, 0, len(fields))
-		for name := range fields {
-			names = append(names, name)
-		}
-		sort.Strings(names)
-
 		var messages []string
-		for _, name := range names {
+		for _, name := range slices.Sorted(maps.Keys(fields)) {
 			for _, message := range errorMessages(fields[name]) {
 				if name != "base" {
 					message = name + " " + message

@@ -44,6 +44,7 @@ The message comes from the response body:
 | `{"errors": ["'from' is required", "'subject' is required"]}` | `'from' is required; 'subject' is required` |
 | `{"errors": {"name": ["can't be blank"], "email": ["is invalid"]}}` | `email is invalid; name can't be blank` (one `field message` pair per message, sorted by field) |
 | `{"errors": {"base": ["Contacts limit reached"]}}` | `Contacts limit reached` (`base` errors belong to no field) |
+| `{"errors": [{"email": "a@x.io", "errors": ["duplicated email"]}]}` | `a@x.io: duplicated email` (each rejected contact of `contacts import`, by its email) |
 | empty | nothing: `API error 403` |
 | anything else | the body as is |
 

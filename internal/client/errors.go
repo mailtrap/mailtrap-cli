@@ -44,7 +44,9 @@ func (e *APIError) Error() string {
 
 // errorMessages flattens an "errors" value into readable messages: a string as
 // is, an array element by element, and an object as "field message" pairs
-// sorted by field ("base" errors, which belong to no field, without one).
+// sorted by field ("base" errors, which belong to no field, without one). An
+// object with its own "errors", one rejected item of a bulk request, prints
+// them after the item's email.
 func errorMessages(raw json.RawMessage) []string {
 	raw = bytes.TrimSpace(raw)
 	if len(raw) == 0 || bytes.Equal(raw, []byte("null")) {
@@ -70,6 +72,21 @@ func errorMessages(raw json.RawMessage) []string {
 
 	var fields map[string]json.RawMessage
 	if json.Unmarshal(raw, &fields) == nil {
+		// One rejected item of a bulk request, such as {"email": "a@x.io", "errors": [...]}
+		// from contacts import, prints its errors after the item's email.
+		if itemErrors, ok := fields["errors"]; ok {
+			var email string
+			json.Unmarshal(fields["email"], &email)
+			var messages []string
+			for _, message := range errorMessages(itemErrors) {
+				if email != "" {
+					message = email + ": " + message
+				}
+				messages = append(messages, message)
+			}
+			return messages
+		}
+
 		var messages []string
 		for _, name := range slices.Sorted(maps.Keys(fields)) {
 			for _, message := range errorMessages(fields[name]) {

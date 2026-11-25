@@ -85,11 +85,7 @@ func (c *Client) do(ctx context.Context, base BaseURL, method, path string, quer
 	}
 
 	if resp.StatusCode >= 400 {
-		apiErr := &APIError{StatusCode: resp.StatusCode}
-		if json.Unmarshal(respBody, apiErr) != nil {
-			apiErr.Message = string(respBody)
-		}
-		return apiErr
+		return newAPIError(resp.StatusCode, respBody)
 	}
 
 	if result != nil && len(respBody) > 0 {
@@ -151,7 +147,7 @@ func (c *Client) GetRaw(ctx context.Context, base BaseURL, path string, query ur
 	}
 
 	if resp.StatusCode >= 400 {
-		return nil, &APIError{StatusCode: resp.StatusCode, Message: string(data)}
+		return nil, newAPIError(resp.StatusCode, data)
 	}
 
 	return data, nil

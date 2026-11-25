@@ -28,12 +28,11 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 			if err := cmdutil.RequireFlag("id", contactID); err != nil {
 				return err
 			}
-			if err := cmdutil.RequireFlag("email", email); err != nil {
-				return err
-			}
 
-			contactData := map[string]interface{}{
-				"email": email,
+			// The API finds the contact by its ID, so the email is sent only to change it.
+			contactData := map[string]interface{}{}
+			if email != "" {
+				contactData["email"] = email
 			}
 			if cmd.Flags().Changed("subscription-topics") {
 				parsed, err := parseSubscriptionTopics(subscriptionTopics)
@@ -42,18 +41,6 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 				}
 				contactData["subscription_topics"] = parsed
 			}
-
-			c, err := f.NewClient()
-			if err != nil {
-				return err
-			}
-
-			_, err = config.RequireAccountID()
-			if err != nil {
-				return err
-			}
-
-			path := cmdutil.AccountPath("contacts", fmt.Sprintf("%s", contactID))
 
 			fields := map[string]interface{}{}
 			if firstName != "" {
@@ -75,6 +62,21 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 			if cmd.Flags().Changed("unsubscribed") {
 				contactData["unsubscribed"] = unsubscribed
 			}
+			if len(contactData) == 0 {
+				return fmt.Errorf("at least one attribute flag is required")
+			}
+
+			c, err := f.NewClient()
+			if err != nil {
+				return err
+			}
+
+			_, err = config.RequireAccountID()
+			if err != nil {
+				return err
+			}
+
+			path := cmdutil.AccountPath("contacts", contactID)
 
 			body := map[string]interface{}{
 				"contact": contactData,
@@ -91,7 +93,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&contactID, "id", "", "Contact ID (required)")
-	cmd.Flags().StringVar(&email, "email", "", "Contact email (required)")
+	cmd.Flags().StringVar(&email, "email", "", "Contact email")
 	cmd.Flags().StringVar(&firstName, "first-name", "", "Contact first name")
 	cmd.Flags().StringVar(&lastName, "last-name", "", "Contact last name")
 	cmd.Flags().IntSliceVar(&listIDsIncluded, "list-ids-included", nil, "List IDs to subscribe to")

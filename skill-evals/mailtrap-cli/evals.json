@@ -103,8 +103,8 @@
     "prompt": "Import contacts from my contacts.json file into list 5",
     "expected": {
       "command": "contacts import",
-      "flags": ["--file", "--list-id"],
-      "must_not_contain": ["create", "export"]
+      "flags": ["--file"],
+      "must_not_contain": ["create", "export", "--list-id"]
     }
   },
   {

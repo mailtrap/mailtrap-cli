@@ -163,7 +163,7 @@ mailtrap tokens reset --id 42 --expires-at never
 
 # Contacts
 mailtrap contacts create --email "user@example.com" --first-name "John"
-mailtrap contacts update --id <CONTACT_ID> --email "user@example.com" \
+mailtrap contacts update --id <CONTACT_ID> \
   --subscription-topics '[{"subscription_topic_id":7,"domain_id":4321,"status":"unsubscribed"}]'
 mailtrap contact-lists list
 mailtrap contact-lists list --search news

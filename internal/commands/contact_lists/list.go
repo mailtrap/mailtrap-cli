@@ -55,7 +55,7 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&search, "search", "", "Filter by name (case-insensitive prefix match)")
+	cmd.Flags().StringVar(&search, "search", "", "Filter by name (case-insensitive, matches anywhere in the name)")
 
 	return cmd
 }

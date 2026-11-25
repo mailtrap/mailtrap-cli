@@ -1,0 +1,19 @@
+.goreleaser.yml
+  s_aba84dffbec401::t_e42c9e0d8ac067 46-47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8cfca56bef68f6d497d0993d0b3a8770c64cc5e3",
+  "prompts": {},
+  "sessions": {
+    "s_aba84dffbec401": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ca61e69a-e58b-43bf-8cd3-3ca0086154b6",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "IzikAJ <izikaj@gmail.com>"
+    }
+  }
+}

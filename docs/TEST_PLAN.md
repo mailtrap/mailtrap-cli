@@ -203,7 +203,7 @@ Tests are organized by endpoint group. Each test specifies:
 | 10.4 | List contacts | `mailtrap contacts list` | Table with contacts (may 404 — investigate) |
 | 10.5 | Import contacts | `mailtrap contacts import --file contacts.csv` | Import initiated |
 | 10.6 | Import status | `mailtrap contacts import-status --id <IMPORT_ID>` | Status details |
-| 10.7 | Export contacts | `mailtrap contacts export` | Export initiated |
+| 10.7 | Export contacts | `mailtrap contacts export --status subscribed` | Export initiated |
 | 10.8 | Export status | `mailtrap contacts export-status --id <EXPORT_ID>` | Status details |
 | 10.9 | Create event | `mailtrap contacts create-event --id <CONTACT_ID> --name "purchase"` | Event created |
 | 10.10 | Delete contact | `mailtrap contacts delete --id <CONTACT_ID>` | Success message |

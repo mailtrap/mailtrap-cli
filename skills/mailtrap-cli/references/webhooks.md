@@ -88,3 +88,5 @@ Delete a webhook.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--id` | string | Yes | Webhook ID |
+
+**Output:** `Webhook deleted successfully.`, also with `--output json`.

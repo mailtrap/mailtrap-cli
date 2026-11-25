@@ -114,7 +114,7 @@ Schedule a draft email campaign.
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
 | `--id` | string | Yes | Email campaign ID |
-| `--datetime` | string | Yes | When to send the campaign, ISO 8601 (e.g. `2030-01-01T09:00:00Z`) |
+| `--datetime` | string | Yes | When to send the campaign, ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`), in the future and at most a month ahead |
 
 ---
 

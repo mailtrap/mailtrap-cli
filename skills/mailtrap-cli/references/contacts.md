@@ -84,7 +84,7 @@ The file is posted as is. Lists are set per contact in the file: `list_ids_inclu
 
 ## contacts export
 
-Export contacts.
+Export contacts. Pass at least one of `--list-ids` or `--status`: the API refuses an export with no filter (`API error 422: filters invalid`).
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
@@ -131,7 +131,7 @@ List all contact lists.
 
 | Flag | Type | Required | Description |
 |------|------|----------|-------------|
-| `--search` | string | No | Filter by name (case-insensitive prefix match) |
+| `--search` | string | No | Filter by name (case-insensitive, matches anywhere in the name) |
 
 ---
 

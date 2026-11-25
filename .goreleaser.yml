@@ -43,12 +43,8 @@ checksum:
   name_template: "checksums.txt"
 
 changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
-      - "^ci:"
+  # GitHub lists merged PRs by the categories in .github/release.yml
+  use: github-native
 
 release:
   github:

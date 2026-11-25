@@ -31,7 +31,7 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 
 			// The API finds the contact by its ID, so the email is sent only to change it.
 			contactData := map[string]interface{}{}
-			if cmd.Flags().Changed("email") {
+			if cmd.Flags().Changed("email") && email != "" {
 				contactData["email"] = email
 			}
 			if cmd.Flags().Changed("subscription-topics") {

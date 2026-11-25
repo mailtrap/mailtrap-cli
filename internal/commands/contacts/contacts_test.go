@@ -297,6 +297,7 @@ func TestContactsUpdateNothingToUpdate(t *testing.T) {
 	}
 
 	expectError(t, noRequest, []string{"update", "--id", "abc-123"}, "at least one attribute flag is required")
+	expectError(t, noRequest, []string{"update", "--id", "abc-123", "--email", ""}, "at least one attribute flag is required")
 }
 
 func TestContactsDelete(t *testing.T) {

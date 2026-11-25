@@ -1,0 +1,22 @@
+internal/client/errors.go
+  s_bdf247c8ce8afc::t_710bbcb63ce118 47
+  s_bdf247c8ce8afc::t_e517404978217f 78-81
+internal/commands/contacts/update.go
+  s_bdf247c8ce8afc::t_f44a6bd2924da0 34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5ce82152d8c8894ad0088505fe97d7500b6f3746",
+  "prompts": {},
+  "sessions": {
+    "s_bdf247c8ce8afc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fbeb0ea3-50b2-4cf1-8a18-cd739e30ca9d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

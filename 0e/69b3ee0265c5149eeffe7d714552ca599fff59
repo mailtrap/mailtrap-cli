@@ -1,0 +1,26 @@
+skills/mailtrap-cli/references/error-codes.md
+  s_c5d1a769c7d92d::t_d14eaa43f86acc 48
+  s_c5d1a769c7d92d::t_6490b3d0c1dfb5 62,98
+internal/client/errors.go
+  s_c5d1a769c7d92d::t_b1a99724a82d4f 20,23
+internal/client/client_test.go
+  s_c5d1a769c7d92d::t_ae0685ad46b346 357-359
+skills/mailtrap-cli/references/webhooks.md
+  s_c5d1a769c7d92d::t_6490b3d0c1dfb5 76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0e69b3ee0265c5149eeffe7d714552ca599fff59",
+  "prompts": {},
+  "sessions": {
+    "s_c5d1a769c7d92d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "34a9167b-ec9b-4b61-84d3-a09aa99a07a0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+internal/commands/organizations/organizations_test.go
+  h_68ae9308e52348 182-205
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "87f6fbbe584442bc74f6c75f3fa22b4b66fe95e9",
+  "prompts": {},
+  "humans": {
+    "h_68ae9308e52348": {
+      "author": "Alex Shchyhol <oleksandr.shchyhol@railsware.com>"
+    }
+  }
+}

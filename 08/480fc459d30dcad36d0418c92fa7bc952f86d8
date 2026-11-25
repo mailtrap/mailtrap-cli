@@ -1,0 +1,23 @@
+README.md
+  s_7445ec35d4535a::t_40c8c1d7aedf34 124
+skills/mailtrap-cli/references/contacts.md
+  s_7445ec35d4535a::t_caddde20108e72 47
+docs/TEST_PLAN.md
+  s_7445ec35d4535a::t_b544e3c8c1be00 202
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "08480fc459d30dcad36d0418c92fa7bc952f86d8",
+  "prompts": {},
+  "sessions": {
+    "s_7445ec35d4535a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9c18936a-2fb3-4776-9c8f-08ee3ae6af11",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

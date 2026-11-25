@@ -1,0 +1,29 @@
+internal/client/client.go
+  s_c5d1a769c7d92d::t_1e7930a4f0337a 88,150
+skills/mailtrap-cli/references/error-codes.md
+  s_c5d1a769c7d92d::t_56d0dcf2988582 30-51,66-71,78-87
+  s_c5d1a769c7d92d::t_804e67f772c4f2 88
+  s_c5d1a769c7d92d::t_5902abe0efa27b 89
+internal/client/errors.go
+  s_c5d1a769c7d92d::t_df8aa533ca8aa3 3-9,13-26,30,32-35,37-43,49-50,54-85,87
+  s_c5d1a769c7d92d::t_4aa2354f02d5ee 44-48,51-53,86
+internal/client/client_test.go
+  s_c5d1a769c7d92d::t_415d02a1898bcb 327-328,332,337-380
+  s_c5d1a769c7d92d::t_a6a5adfc15d0bb 381-382
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "75f6aea1d4604286aab7eed715965db18d463e1c",
+  "prompts": {},
+  "sessions": {
+    "s_c5d1a769c7d92d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "34a9167b-ec9b-4b61-84d3-a09aa99a07a0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

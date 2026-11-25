@@ -1,0 +1,20 @@
+skills/mailtrap-cli/references/email-campaigns.md
+  s_324d507a188abd::t_23253243c1c1b7 96-97
+  s_324d507a188abd::t_29e6a52b189fae 160-161
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b47ab4d97c2852543cc1a3a295e132b07cc032ea",
+  "prompts": {},
+  "sessions": {
+    "s_324d507a188abd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "642fab83-ab19-4c8f-bb7f-2f578a4af72a",
+        "model": "unknown"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+skill-evals/mailtrap-cli/evals.json
+  s_d392b1a7bd3998::t_0a17d75b5c5989 179
+skills/mailtrap-cli/SKILL.md
+  s_d392b1a7bd3998::t_c63374482b2f6b 91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a4dc7487d79045d6d297bee769f3cc2eacfe2aca",
+  "prompts": {},
+  "sessions": {
+    "s_d392b1a7bd3998": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9c39a2a8-37c3-4aec-869e-1f55857a4a10",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Alex Shchyhol <oleksandr.shchyhol@railsware.com>"
+    }
+  }
+}

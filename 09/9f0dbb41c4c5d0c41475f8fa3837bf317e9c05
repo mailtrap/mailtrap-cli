@@ -1,0 +1,25 @@
+skills/mailtrap-cli/references/domains.md
+  s_9dd1991a9f877c::t_1c0e89304f05bc 120
+docs/TEST_PLAN.md
+  s_9dd1991a9f877c::t_1c0e89304f05bc 400
+internal/commands/suppressions/list.go
+  s_9dd1991a9f877c::t_1c0e89304f05bc 80-81
+skills/mailtrap-cli/references/subscription-topics.md
+  s_9dd1991a9f877c::t_1c0e89304f05bc 61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "099f0dbb41c4c5d0c41475f8fa3837bf317e9c05",
+  "prompts": {},
+  "sessions": {
+    "s_9dd1991a9f877c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "037af311-449c-4cd6-8107-49bb64d5ca87",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Maciej Walusiak <maciej.walusiak@railsware.com>"
+    }
+  }
+}

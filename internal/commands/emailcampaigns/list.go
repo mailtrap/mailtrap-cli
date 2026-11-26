@@ -24,6 +24,7 @@ var campaignColumns = []output.Column{
 	{Header: "STATE", Field: "current_state"},
 	{Header: "DOMAIN", Field: "domain_name"},
 	{Header: "RECIPIENTS", Field: "recipient_total_count"},
+	{Header: "TOPIC ID", Field: "subscription_topic_id"},
 	{Header: "CREATED", Field: "created_at"},
 }
 

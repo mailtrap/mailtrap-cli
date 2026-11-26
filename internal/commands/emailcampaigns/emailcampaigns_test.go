@@ -59,6 +59,7 @@ func sampleCampaign() map[string]interface{} {
 		"recipient_total_count": 1500,
 		"contact_list_ids":      []int{55, 56},
 		"delivery_mode":         "rapid",
+		"subscription_topic_id": 77,
 		"template": map[string]interface{}{
 			"id":      789,
 			"subject": "Spring is here",
@@ -308,6 +309,9 @@ func TestEmailCampaignsCreate(t *testing.T) {
 		if segments, ok := reqBody["contact_segment_ids"].([]interface{}); !ok || len(segments) != 1 {
 			t.Errorf("expected 1 contact_segment_id, got %v", reqBody["contact_segment_ids"])
 		}
+		if reqBody["subscription_topic_id"] != float64(77) {
+			t.Errorf("expected subscription_topic_id 77, got %v", reqBody["subscription_topic_id"])
+		}
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
@@ -329,6 +333,7 @@ func TestEmailCampaignsCreate(t *testing.T) {
 		"--emails-per-hour", "1000",
 		"--contact-list-ids", "55,56",
 		"--contact-segment-ids", "12",
+		"--subscription-topic-id", "77",
 	})
 	cmd.SetOut(buf)
 
@@ -342,6 +347,9 @@ func TestEmailCampaignsCreate(t *testing.T) {
 	}
 	if !strings.Contains(output, "draft") {
 		t.Errorf("expected output to contain 'draft', got:\n%s", output)
+	}
+	if !strings.Contains(output, "TOPIC ID") || !strings.Contains(output, "77") {
+		t.Errorf("expected output to show the subscription topic ID, got:\n%s", output)
 	}
 }
 
@@ -399,6 +407,9 @@ func TestEmailCampaignsUpdate(t *testing.T) {
 		}
 		if _, ok := reqBody["reply_to"]; ok {
 			t.Errorf("did not expect reply_to to be set, got %v", reqBody["reply_to"])
+		}
+		if _, ok := reqBody["subscription_topic_id"]; ok {
+			t.Errorf("did not expect subscription_topic_id to be set, got %v", reqBody["subscription_topic_id"])
 		}
 
 		w.Header().Set("Content-Type", "application/json")
@@ -476,6 +487,33 @@ func TestEmailCampaignsUpdateClearConflictsWithIDs(t *testing.T) {
 
 	if err := cmd.Execute(); err == nil {
 		t.Fatal("expected an error for mutually exclusive flags")
+	}
+}
+
+func TestEmailCampaignsUpdateSubscriptionTopic(t *testing.T) {
+	f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+		body, _ := io.ReadAll(r.Body)
+		var reqBody map[string]interface{}
+		json.Unmarshal(body, &reqBody)
+
+		if want := map[string]interface{}{"subscription_topic_id": float64(78)}; !reflect.DeepEqual(reqBody, want) {
+			t.Errorf("expected body %v, got %v", want, reqBody)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{"data": sampleCampaign()})
+	})
+	defer cleanup()
+
+	cmd := emailcampaigns.NewCmdEmailCampaigns(f)
+	cmd.SetArgs([]string{"update", "--id", "4567", "--subscription-topic-id", "78"})
+	cmd.SetOut(buf)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !strings.Contains(buf.String(), "Spring Sale") {
+		t.Errorf("expected output to contain 'Spring Sale', got:\n%s", buf.String())
 	}
 }
 

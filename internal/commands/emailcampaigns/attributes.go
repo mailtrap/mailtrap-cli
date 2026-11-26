@@ -6,21 +6,22 @@ import (
 
 // campaignAttrs holds the writable campaign attributes shared by create and update.
 type campaignAttrs struct {
-	Name               string
-	DomainID           int64
-	FromDisplayName    string
-	FromLocalPart      string
-	ReplyToDisplayName string
-	ReplyToLocalPart   string
-	ReplyToDomain      string
-	Subject            string
-	BodyHTML           string
-	BodyText           string
-	MergeTags          []string
-	DeliveryMode       string
-	EmailsPerHour      int64
-	ContactListIDs     []int64
-	ContactSegmentIDs  []int64
+	Name                string
+	DomainID            int64
+	FromDisplayName     string
+	FromLocalPart       string
+	ReplyToDisplayName  string
+	ReplyToLocalPart    string
+	ReplyToDomain       string
+	Subject             string
+	BodyHTML            string
+	BodyText            string
+	MergeTags           []string
+	DeliveryMode        string
+	EmailsPerHour       int64
+	ContactListIDs      []int64
+	ContactSegmentIDs   []int64
+	SubscriptionTopicID int64
 }
 
 func addAttributeFlags(cmd *cobra.Command, attrs *campaignAttrs) {
@@ -39,6 +40,7 @@ func addAttributeFlags(cmd *cobra.Command, attrs *campaignAttrs) {
 	cmd.Flags().Int64Var(&attrs.EmailsPerHour, "emails-per-hour", 0, "Emails per hour when delivery mode is gradual")
 	cmd.Flags().Int64SliceVar(&attrs.ContactListIDs, "contact-list-ids", nil, "Contact list IDs to send to (comma-separated)")
 	cmd.Flags().Int64SliceVar(&attrs.ContactSegmentIDs, "contact-segment-ids", nil, "Contact segment IDs to send to (comma-separated)")
+	cmd.Flags().Int64Var(&attrs.SubscriptionTopicID, "subscription-topic-id", 0, "Subscription topic ID (see subscription-topics list)")
 }
 
 // buildAttributesBody builds the flat request body (no wrapper key) from the flags
@@ -101,6 +103,9 @@ func buildAttributesBody(cmd *cobra.Command, attrs *campaignAttrs) map[string]in
 	}
 	if cmd.Flags().Changed("contact-segment-ids") {
 		body["contact_segment_ids"] = attrs.ContactSegmentIDs
+	}
+	if cmd.Flags().Changed("subscription-topic-id") {
+		body["subscription_topic_id"] = attrs.SubscriptionTopicID
 	}
 
 	return body

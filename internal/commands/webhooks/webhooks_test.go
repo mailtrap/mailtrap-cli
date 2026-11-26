@@ -364,3 +364,18 @@ func TestWebhooksDelete(t *testing.T) {
 		t.Errorf("expected success message, got:\n%s", buf.String())
 	}
 }
+
+func TestWebhooksEventTypesHelpListsSubscriptionPreferencesUpdate(t *testing.T) {
+	f, _, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {})
+	defer cleanup()
+
+	for _, name := range []string{"create", "update"} {
+		cmd, _, err := webhooks.NewCmdWebhooks(f).Find([]string{name})
+		if err != nil {
+			t.Fatalf("find %s: %v", name, err)
+		}
+		if usage := cmd.Flags().Lookup("event-types").Usage; !strings.Contains(usage, "subscription_preferences_update") {
+			t.Errorf("expected %s --event-types help to list subscription_preferences_update, got %q", name, usage)
+		}
+	}
+}

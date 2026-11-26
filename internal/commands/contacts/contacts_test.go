@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -496,5 +497,175 @@ func TestContactsExportStatus(t *testing.T) {
 	output := buf.String()
 	if !strings.Contains(output, "completed") {
 		t.Errorf("expected output to contain 'completed', got:\n%s", output)
+	}
+}
+
+func TestContactsSendSubscriptionTopics(t *testing.T) {
+	topics := `[{"subscription_topic_id":7,"domain_id":4321,"status":"unsubscribed"},{"subscription_topic_id":8,"domain_id":4322,"status":"subscribed"}]`
+	withTopics := map[string]interface{}{
+		"email": "x@y.com",
+		"subscription_topics": []interface{}{
+			map[string]interface{}{"subscription_topic_id": float64(7), "domain_id": float64(4321), "status": "unsubscribed"},
+			map[string]interface{}{"subscription_topic_id": float64(8), "domain_id": float64(4322), "status": "subscribed"},
+		},
+	}
+	withoutTopics := map[string]interface{}{"email": "x@y.com"}
+
+	// A topic-only update: the CLI still requires --email.
+	for _, tc := range []struct {
+		name    string
+		args    []string
+		contact map[string]interface{}
+	}{
+		{"create", []string{"create", "--email", "x@y.com", "--subscription-topics", topics}, withTopics},
+		{"update", []string{"update", "--id", "abc-123", "--email", "x@y.com", "--subscription-topics", topics}, withTopics},
+		{"create without topics", []string{"create", "--email", "x@y.com"}, withoutTopics},
+		{"update without topics", []string{"update", "--id", "abc-123", "--email", "x@y.com"}, withoutTopics},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+				var payload map[string]interface{}
+				if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+					t.Fatalf("failed to decode body: %v", err)
+				}
+
+				want := map[string]interface{}{"contact": tc.contact}
+				if !reflect.DeepEqual(payload, want) {
+					t.Errorf("expected body %v, got %v", want, payload)
+				}
+
+				w.Header().Set("Content-Type", "application/json")
+				w.Write([]byte(`{"data":{"id":"abc-123","email":"x@y.com","status":"subscribed"}}`))
+			})
+			defer cleanup()
+
+			cmd := contacts.NewCmdContacts(f)
+			cmd.SetArgs(tc.args)
+			cmd.SetOut(buf)
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+		})
+	}
+}
+
+// expectError runs the contacts command against handler and checks it fails with want.
+func expectError(t *testing.T, handler http.HandlerFunc, args []string, want string) {
+	t.Helper()
+
+	f, _, cleanup := setupTest(handler)
+	defer cleanup()
+
+	cmd := contacts.NewCmdContacts(f)
+	cmd.SetArgs(args)
+	cmd.SilenceUsage = true
+	cmd.SilenceErrors = true
+
+	err := cmd.Execute()
+	if err == nil || !strings.Contains(err.Error(), want) {
+		t.Fatalf("expected error containing %q, got: %v", want, err)
+	}
+}
+
+func TestContactsInvalidSubscriptionTopics(t *testing.T) {
+	// Malformed JSON, unknown keys and trailing data are cmdutil.ParseJSONArrayFlag's,
+	// covered with --conditions in the forwardrules tests.
+	cases := []struct {
+		name  string
+		value string
+		want  string
+	}{
+		{"not an array", `{"subscription_topic_id":7,"domain_id":4321,"status":"subscribed"}`, "invalid --subscription-topics: must be a JSON array"},
+		{"string id", `[{"subscription_topic_id":"7","domain_id":4321,"status":"subscribed"}]`, "invalid --subscription-topics JSON"},
+		{"missing topic", `[{"domain_id":4321,"status":"subscribed"}]`, "entry 1: subscription_topic_id must be greater than 0"},
+		{"missing domain", `[{"subscription_topic_id":7,"domain_id":4321,"status":"subscribed"},{"subscription_topic_id":7,"status":"subscribed"}]`, "entry 2: domain_id must be greater than 0"},
+		{"bad status", `[{"subscription_topic_id":7,"domain_id":4321,"status":"active"}]`, "entry 1: status must be one of subscribed, unsubscribed"},
+		{"null entry", `[null]`, "entry 1: subscription_topic_id must be greater than 0"},
+	}
+
+	noRequest := func(w http.ResponseWriter, r *http.Request) {
+		t.Error("unexpected request")
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			expectError(t, noRequest, []string{"create", "--email", "x@y.com", "--subscription-topics", tc.value}, tc.want)
+		})
+	}
+	// update shares the parser; one case shows it is wired in.
+	t.Run("update", func(t *testing.T) {
+		expectError(t, noRequest, []string{"update", "--id", "abc-123", "--email", "x@y.com", "--subscription-topics", `[{"subscription_topic_id":7}]`},
+			"entry 1: domain_id must be greater than 0")
+	})
+}
+
+func TestContactsJSONKeepsContactAsIs(t *testing.T) {
+	withTopics := `{"id":"abc-123","email":"x@y.com","created_at":1700000000000,"updated_at":1700000000000,` +
+		`"list_ids":[],"status":"subscribed","fields":{"first_name":null},` +
+		`"subscription_topics":[{"subscription_topic_id":7,"domain_id":4321,"status":"unsubscribed"}]}`
+	unreadable := `{"id":"abc-123","email":"x@y.com","list_ids":[],"status":"subscribed","fields":{},"subscription_topics":null}`
+	topicsOff := `{"id":"abc-123","email":"x@y.com","list_ids":[],"status":"subscribed","fields":{}}`
+
+	for _, tc := range []struct {
+		name    string
+		contact string
+		args    []string
+	}{
+		{"get with topics", withTopics, []string{"get", "--id", "abc-123"}},
+		{"get unreadable topics", unreadable, []string{"get", "--id", "abc-123"}},
+		{"get topics off", topicsOff, []string{"get", "--id", "abc-123"}},
+		{"create", withTopics, []string{"create", "--email", "x@y.com"}},
+		{"update", withTopics, []string{"update", "--id", "abc-123", "--email", "x@y.com"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			f, buf, cleanup := setupTest(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				io.WriteString(w, `{"data":`+tc.contact+`}`)
+			})
+			defer cleanup()
+
+			viper.Set("output", "json")
+
+			cmd := contacts.NewCmdContacts(f)
+			cmd.SetArgs(tc.args)
+			cmd.SetOut(buf)
+
+			if err := cmd.Execute(); err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+
+			var got, want map[string]interface{}
+			if err := json.Unmarshal(buf.Bytes(), &got); err != nil {
+				t.Fatalf("output is not valid JSON: %v\noutput:\n%s", err, buf.String())
+			}
+			json.Unmarshal([]byte(tc.contact), &want)
+			if !reflect.DeepEqual(got, want) {
+				t.Errorf("expected the contact unchanged\nwant: %v\ngot:  %v", want, got)
+			}
+		})
+	}
+}
+
+func TestContactsSubscriptionTopicsErrorsKeepMessage(t *testing.T) {
+	cases := []struct {
+		name   string
+		status int
+		body   string
+		want   string
+	}{
+		{"topics off", http.StatusUnprocessableEntity, `{"errors":{"subscription_topics":["are not available for this account"]}}`, "are not available for this account"},
+		{"topics not saved", http.StatusServiceUnavailable, `{"errors":"The contact was saved, but its subscription topic preferences were not. Send them again in an update of contact abc-123."}`, "Send them again in an update of contact abc-123"},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			handler := func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(tc.status)
+				io.WriteString(w, tc.body)
+			}
+			expectError(t, handler, []string{"create", "--email", "x@y.com", "--subscription-topics", `[{"subscription_topic_id":7,"domain_id":4321,"status":"subscribed"}]`}, tc.want)
+		})
 	}
 }

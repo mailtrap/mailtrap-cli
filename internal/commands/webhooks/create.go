@@ -21,6 +21,9 @@ type webhookCreateResponse struct {
 
 var webhookCreateColumns = append(append([]output.Column{}, webhookColumns...), output.Column{Header: "SIGNING SECRET", Field: "signing_secret"})
 
+const eventTypesUsage = "Event types (comma-separated): delivery, soft_bounce, bounce, suspension, unsubscribe, open, spam_complaint, click, reject, " +
+	"subscription_preferences_update (bulk email_sending and campaigns webhooks only)"
+
 func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	var (
 		webhookURL     string
@@ -95,7 +98,7 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 	cmd.Flags().BoolVar(&active, "active", true, "Whether the webhook is active")
 	cmd.Flags().StringVar(&payloadFormat, "payload-format", "", "Payload format: json, jsonlines")
 	cmd.Flags().StringVar(&sendingStream, "sending-stream", "", "Sending stream: transactional, bulk")
-	cmd.Flags().StringSliceVar(&eventTypes, "event-types", nil, "Event types (comma-separated): delivery, soft_bounce, bounce, suspension, unsubscribe, open, spam_complaint, click, reject")
+	cmd.Flags().StringSliceVar(&eventTypes, "event-types", nil, eventTypesUsage)
 	cmd.Flags().IntVar(&domainID, "domain-id", 0, "Domain ID to scope the webhook to (email_sending and campaigns)")
 	cmd.Flags().IntVar(&inboundInboxID, "inbound-inbox-id", 0, "Email Inbound inbox ID to scope the webhook to (inbound_receiving only; omit to apply to all inboxes)")
 
